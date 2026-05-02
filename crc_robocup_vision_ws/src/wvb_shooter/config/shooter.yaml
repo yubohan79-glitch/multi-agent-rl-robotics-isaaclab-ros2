@@ -1,0 +1,10 @@
+shooter_controller:
+  ros__parameters:
+    port: "/dev/arm"
+    baudrate: 9600
+    dry_run: false
+    close_after_disable: false
+    enable_command: [163]
+    fire_command: [163]
+    disable_command: [160]
+

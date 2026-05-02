@@ -1,0 +1,19 @@
+competition_behavior:
+  ros__parameters:
+    # Blue robot starts from the blue side and attacks only yellow-side targets.
+    # Normal targets use Tag36h11 ID 1; the yellow base target uses ID 2.
+    target_name:
+      - T08_SouthMiddle
+      - T04_WestBelowGate
+      - T06_EastBelowGate
+      - T07_SouthWest
+      - YellowBaseTarget
+    target_owner: ["yellow", "yellow", "yellow", "yellow", "yellow"]
+    target_x: [1.75, 0.30, 2.70, 0.55, 2.20]
+    target_y: [0.72, 1.28, 1.28, 0.45, 0.80]
+    target_yaw: [1.57, 0.00, 3.14, 0.78, 2.30]
+    target_tag_id: [1, 1, 1, 1, 2]
+    home_x: 2.75
+    home_y: 2.75
+    home_yaw: -1.57
+

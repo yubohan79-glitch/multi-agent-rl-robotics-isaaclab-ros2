@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1000" viewBox="0 0 1900 1000">
+  <defs>
+    <style>
+      .bg{fill:#fff}.title{font:700 38px Arial,Inter,sans-serif;fill:#111827}.sub{font:500 16px Arial,Inter,sans-serif;fill:#64748b}.h{font:700 22px Arial,Inter,sans-serif;fill:#1f2937}.mh{font:700 16px Arial,Inter,sans-serif;fill:#334155}.txt{font:500 14px Arial,Inter,sans-serif;fill:#475569}.small{font:600 12px Arial,Inter,sans-serif;fill:#475569}.tiny{font:700 10px Arial,Inter,sans-serif;fill:#475569}.eq{font:600 15px Consolas,Menlo,monospace;fill:#111827}
+      .panel{fill:#f8fafc;stroke:#cbd5e1;stroke-width:2}.stage{fill:#fff;stroke:#cbd5e1;stroke-width:2}.sim{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.rand{fill:#f5f3ff;stroke:#7c3aed;stroke-width:2}.policy{fill:#fffbeb;stroke:#d6a90e;stroke-width:2}.real{fill:#ecfdf5;stroke:#16a34a;stroke-width:2}.safe{fill:#fff1f2;stroke:#e11d48;stroke-width:2}.card{fill:#fff;stroke:#cbd5e1;stroke-width:1.8}
+      .arena{fill:#fff;stroke:#334155;stroke-width:2}.grid{stroke:#dbeafe;stroke-width:.8;stroke-dasharray:4 4}.obs{fill:#fee2e2;stroke:#ef4444;stroke-width:1.3;stroke-dasharray:4 3}.robotY{fill:#f2c94c;stroke:#92400e;stroke-width:1.2}.robotB{fill:#2563eb;stroke:#1e3a8a;stroke-width:1.2}
+      .arrow{fill:none;stroke:#64748b;stroke-width:3;marker-end:url(#ad)}.arrowB{fill:none;stroke:#2563eb;stroke-width:4;marker-end:url(#ab)}.arrowG{fill:none;stroke:#16a34a;stroke-width:4;marker-end:url(#ag)}.arrowR{fill:none;stroke:#e11d48;stroke-width:3;marker-end:url(#ar)}.arrowV{fill:none;stroke:#7c3aed;stroke-width:3.5;marker-end:url(#av)}.dash{stroke-dasharray:9 8}.green{fill:#15803d}.red{fill:#be123c}.blue{fill:#1d4ed8}.violet{fill:#6d28d9}.yellow{fill:#a16207}
+    </style>
+    <marker id="ad" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#64748b"/></marker>
+    <marker id="ab" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#2563eb"/></marker>
+    <marker id="ag" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#16a34a"/></marker>
+    <marker id="ar" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#e11d48"/></marker>
+    <marker id="av" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#7c3aed"/></marker>
+    <g id="tinyArena">
+      <rect class="arena" x="0" y="0" width="96" height="72"/>
+      <path class="grid" d="M32 0 V72 M64 0 V72 M0 36 H96"/>
+      <rect x="0" y="0" width="20" height="20" fill="#dbeafe" stroke="#2563eb"/>
+      <rect x="76" y="52" width="20" height="20" fill="#fef3c7" stroke="#d6a90e"/>
+      <rect class="obs" x="42" y="28" width="15" height="15"/>
+      <path class="robotB" d="M38 18 l-14 -7 l14 -7 z"/><path class="robotY" d="M58 54 l14 7 l-14 7 z"/>
+      <circle cx="48" cy="4" r="4" fill="#fff" stroke="#334155"/><circle cx="92" cy="36" r="4" fill="#fff" stroke="#334155"/><circle cx="4" cy="36" r="4" fill="#fff" stroke="#334155"/>
+    </g>
+  </defs>
+  <rect class="bg" width="1900" height="1000"/>
+  <text class="title" x="72" y="64">Sim2Real Pipeline</text>
+  <text class="sub" x="74" y="98">A closed-loop workflow couples parallel simulation, domain randomization, ROS2-compatible policies, hardware calibration, and replay validation.</text>
+  <rect class="panel" x="54" y="132" width="1792" height="792" rx="14"/>
+
+  <g transform="translate(90 184)">
+    <rect class="sim" x="0" y="0" width="330" height="590" rx="12"/>
+    <text class="h" x="24" y="42">1. Parallel Simulation</text>
+    <text class="txt" x="24" y="70">IsaacLab vectorized arenas</text>
+    <g transform="translate(34 108)">
+      <use href="#tinyArena"/><use href="#tinyArena" x="132"/><use href="#tinyArena" y="112"/><use href="#tinyArena" x="132" y="112"/>
+      <use href="#tinyArena" y="224"/><use href="#tinyArena" x="132" y="224"/>
+      <text class="tiny blue" x="48" y="-12" text-anchor="middle">env_1</text><text class="tiny blue" x="180" y="-12" text-anchor="middle">env_2</text><text class="tiny blue" x="48" y="324" text-anchor="middle">...</text><text class="tiny blue" x="180" y="324" text-anchor="middle">env_N</text>
+    </g>
+    <g transform="translate(34 478)">
+      <rect class="card" x="0" y="0" width="260" height="34" rx="6"/><text class="small" x="130" y="23" text-anchor="middle">contact + hit events</text>
+      <rect class="card" x="0" y="48" width="260" height="34" rx="6"/><text class="small" x="130" y="71" text-anchor="middle">synthetic camera / lidar / imu</text>
+    </g>
+  </g>
+
+  <path class="arrowB" d="M430 480 H492"/>
+
+  <g transform="translate(498 184)">
+    <rect class="rand" x="0" y="0" width="310" height="590" rx="12"/>
+    <text class="h" x="24" y="42">2. Domain Randomization</text>
+    <text class="txt" x="24" y="70">sampled on reset, expanded by validation</text>
+    <g transform="translate(28 108)">
+      <rect class="card" x="0" y="0" width="120" height="42" rx="6"/><text class="small" x="60" y="27" text-anchor="middle">lighting</text>
+      <rect class="card" x="140" y="0" width="120" height="42" rx="6"/><text class="small" x="200" y="27" text-anchor="middle">tag yaw</text>
+      <rect class="card" x="0" y="58" width="120" height="42" rx="6"/><text class="small" x="60" y="85" text-anchor="middle">camera noise</text>
+      <rect class="card" x="140" y="58" width="120" height="42" rx="6"/><text class="small" x="200" y="85" text-anchor="middle">wheel slip</text>
+      <rect class="card" x="0" y="116" width="120" height="42" rx="6"/><text class="small" x="60" y="143" text-anchor="middle">deadband</text>
+      <rect class="card" x="140" y="116" width="120" height="42" rx="6"/><text class="small" x="200" y="143" text-anchor="middle">latency</text>
+      <rect class="card" x="0" y="174" width="120" height="42" rx="6"/><text class="small" x="60" y="201" text-anchor="middle">friction</text>
+      <rect class="card" x="140" y="174" width="120" height="42" rx="6"/><text class="small" x="200" y="201" text-anchor="middle">obstacles</text>
+    </g>
+    <g transform="translate(38 384)">
+      <line x1="0" y1="130" x2="230" y2="130" stroke="#94a3b8" stroke-width="2"/><line x1="0" y1="130" x2="0" y2="18" stroke="#94a3b8" stroke-width="2"/>
+      <path d="M6 116 C42 92 70 90 96 64 C126 34 178 34 226 20" fill="none" stroke="#7c3aed" stroke-width="4"/>
+      <text class="tiny violet" x="115" y="158" text-anchor="middle">curriculum range</text>
+    </g>
+  </g>
+
+  <path class="arrowV" d="M814 480 H876"/>
+
+  <g transform="translate(882 184)">
+    <rect class="policy" x="0" y="0" width="360" height="590" rx="12"/>
+    <text class="h" x="24" y="42">3. Policy + ROS2 Contract</text>
+    <text class="txt" x="24" y="70">MAPPO/self-play outputs executable actions</text>
+    <rect class="card" x="38" y="116" width="284" height="58" rx="7"/><text class="mh" x="180" y="142" text-anchor="middle">observations</text><text class="tiny" x="180" y="162" text-anchor="middle">tags, scan, imu, odom, rule state</text>
+    <path class="arrow" d="M180 174 V220"/>
+    <rect class="card" x="38" y="220" width="284" height="62" rx="7"/><text class="mh" x="180" y="247" text-anchor="middle">high-level action</text><text class="tiny" x="180" y="268" text-anchor="middle">target, route, block, recover, fire gate</text>
+    <path class="arrow" d="M180 282 V330"/>
+    <rect class="safe" x="38" y="330" width="284" height="66" rx="7"/><text class="mh red" x="180" y="357" text-anchor="middle">opponent-target safety gate</text><text class="tiny red" x="180" y="378" text-anchor="middle">mask own-side targets before /shooter/fire</text>
+    <g transform="translate(44 440)">
+      <text class="mh" x="0" y="0">ROS2 contract</text>
+      <text class="eq" x="0" y="34">/target_detection  /scan</text>
+      <text class="eq" x="0" y="62">/imu/data_raw      /wheel/odom</text>
+      <text class="eq" x="0" y="90">/cmd_vel           shooter services</text>
+    </g>
+  </g>
+
+  <path class="arrowG" d="M1248 480 H1312"/>
+
+  <g transform="translate(1318 184)">
+    <rect class="real" x="0" y="0" width="300" height="590" rx="12"/>
+    <text class="h" x="24" y="42">4. Real Robot Calibration</text>
+    <text class="txt" x="24" y="70">fit hardware parameters to the contract</text>
+    <g transform="translate(54 118)">
+      <rect x="0" y="74" width="190" height="88" rx="14" fill="#fff" stroke="#111827" stroke-width="2"/>
+      <rect x="30" y="34" width="128" height="72" rx="10" fill="#fff" stroke="#111827" stroke-width="2"/>
+      <circle cx="28" cy="144" r="22" fill="#111827"/><circle cx="162" cy="144" r="22" fill="#111827"/>
+      <rect x="78" y="0" width="50" height="32" rx="6" fill="#111827"/>
+      <rect x="154" y="60" width="40" height="24" rx="5" fill="#fff" stroke="#111827" stroke-width="2"/>
+      <path d="M194 72 L260 44 L260 100 Z" fill="#67e8f9" opacity=".25" stroke="#06b6d4" stroke-width="2"/>
+      <path d="M194 72 H270" stroke="#e11d48" stroke-width="3" stroke-dasharray="8 6"/>
+    </g>
+    <g transform="translate(30 356)">
+      <rect class="card" x="0" y="0" width="240" height="36" rx="6"/><text class="small" x="120" y="24" text-anchor="middle">camera intrinsics</text>
+      <rect class="card" x="0" y="48" width="240" height="36" rx="6"/><text class="small" x="120" y="72" text-anchor="middle">TF frames</text>
+      <rect class="card" x="0" y="96" width="240" height="36" rx="6"/><text class="small" x="120" y="120" text-anchor="middle">wheel radius / track width</text>
+      <rect class="card" x="0" y="144" width="240" height="36" rx="6"/><text class="small" x="120" y="168" text-anchor="middle">EKF + shooter offset</text>
+    </g>
+  </g>
+
+  <path class="arrowG" d="M1624 480 H1650"/>
+
+  <g transform="translate(1656 184)">
+    <rect class="safe" x="0" y="0" width="150" height="590" rx="12"/>
+    <text class="h" x="24" y="42">5. Replay</text>
+    <text class="h" x="24" y="70">Validation</text>
+    <rect class="card" x="24" y="132" width="102" height="42" rx="6"/><text class="tiny" x="75" y="158" text-anchor="middle">rosbag2</text>
+    <g transform="translate(36 220)">
+      <line x1="0" y1="130" x2="82" y2="130" stroke="#94a3b8" stroke-width="2"/><line x1="0" y1="130" x2="0" y2="20" stroke="#94a3b8" stroke-width="2"/>
+      <path d="M4 118 C26 82 52 60 78 42" fill="none" stroke="#16a34a" stroke-width="4"/>
+    </g>
+    <g transform="translate(24 400)">
+      <rect class="card" x="0" y="0" width="102" height="30" rx="5"/><text class="tiny" x="51" y="20" text-anchor="middle">hit rate</text>
+      <rect class="card" x="0" y="40" width="102" height="30" rx="5"/><text class="tiny" x="51" y="60" text-anchor="middle">base time</text>
+      <rect class="card" x="0" y="80" width="102" height="30" rx="5"/><text class="tiny" x="51" y="100" text-anchor="middle">recovery</text>
+      <rect class="safe" x="0" y="120" width="102" height="34" rx="5"/><text class="tiny red" x="51" y="142" text-anchor="middle">no own fire</text>
+    </g>
+  </g>
+
+  <path class="arrowR dash" d="M1744 806 C1470 905 980 914 554 802"/>
+  <text class="small red" x="1050" y="892" text-anchor="middle">validation failures update domain ranges, latency models, and simulator parameters</text>
+</svg>

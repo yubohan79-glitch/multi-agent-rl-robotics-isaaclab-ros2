@@ -1,0 +1,13 @@
+apriltag_detector:
+  ros__parameters:
+    image_topic: "/camera/image_raw"
+    camera_info_topic: "/camera/camera_info"
+    detection_topic: "/target_detection"
+    tag_size_m: 0.05
+    normal_tag_id: 1
+    yellow_base_tag_id: 2
+    blue_base_tag_id: 3
+    target_center_tolerance: 0.08
+    target_distance_m: 0.52
+    target_distance_tolerance_m: 0.06
+

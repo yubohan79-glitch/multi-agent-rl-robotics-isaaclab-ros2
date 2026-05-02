@@ -1,0 +1,69 @@
+sim2real:
+  ros__parameters:
+    field:
+      frame_id: "map"
+      length_m: 3.0
+      width_m: 3.0
+      wall_height_m: 0.50
+      start_zone_m: 0.50
+      base_zone_m: 0.50
+      map_origin: "south_west_corner"
+    robot:
+      wheel_radius_m: 0.035
+      track_width_m: 0.205
+      max_linear_mps: 0.30
+      max_angular_radps: 1.20
+      linear_accel_limit_mps2: 0.55
+      angular_accel_limit_radps2: 2.0
+      motor_deadband_pwm: 18
+    sensor_stack:
+      wheel_odom_topic: "/wheel/odom"
+      imu_topic: "/imu/data_raw"
+      lidar_topic: "/scan"
+      rgb_camera_topic: "/camera/image_raw"
+      depth_camera_topic: "/depth/image_raw"
+      tof_front_left_topic: "/range/front_left"
+      tof_front_right_topic: "/range/front_right"
+      bumper_left_topic: "/bumper/front_left"
+      bumper_right_topic: "/bumper/front_right"
+      filtered_odom_topic: "/odometry/filtered"
+      required_frames:
+        - "base_link"
+        - "imu_link"
+        - "laser_link"
+        - "camera_link"
+        - "depth_camera_link"
+        - "front_tof_left_link"
+        - "front_tof_right_link"
+    camera:
+      image_topic: "/camera/image_raw"
+      camera_info_topic: "/camera/camera_info"
+      optical_frame: "camera_optical_frame"
+      tag_family: "Tag36h11"
+      tag_size_m: 0.05
+      tag_bottom_height_m: 0.07
+      exposure_lock_required: true
+    shooter:
+      service_enable: "/shooter/enable"
+      service_fire: "/shooter/fire"
+      service_disable: "/shooter/disable"
+      fire_latency_ms: 80
+      beam_to_camera_x_m: 0.0
+      beam_to_camera_y_m: -0.015
+      beam_to_camera_z_m: -0.035
+      hit_radius_m: 0.035
+    domain_randomization:
+      lighting_lux: [600, 1200]
+      camera_latency_ms: [30, 120]
+      actuation_latency_ms: [40, 160]
+      wheel_slip_ratio: [0.00, 0.18]
+      friction: [0.65, 1.05]
+      tag_yaw_deg: [30, 45, 60]
+      obstacle_position_noise_m: 0.03
+      target_position_noise_m: 0.02
+    safety:
+      enforce_opponent_targets: true
+      match_timeout_s: 180.0
+      stationary_timeout_s: 20.0
+      geofence_margin_m: 0.04
+      e_stop_topic: "/emergency_stop"

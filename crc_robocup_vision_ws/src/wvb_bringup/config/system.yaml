@@ -1,0 +1,7 @@
+system:
+  ros__parameters:
+    target_platform: "Ubuntu 24.04 + ROS2 Jazzy"
+    competition: "RoboCup China visual challenge"
+    camera_topic: "/camera/image_raw"
+    scan_topic: "/scan"
+    cmd_vel_topic: "/cmd_vel"

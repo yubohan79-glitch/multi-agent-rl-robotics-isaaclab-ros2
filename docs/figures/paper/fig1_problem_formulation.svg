@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1100" viewBox="0 0 1800 1100">
+  <defs>
+    <style>
+      .bg{fill:#fff}.ink{fill:#111827}.muted{fill:#64748b}.label{fill:#334155}.tiny{font:700 10px Arial,Inter,sans-serif}.small{font:600 12px Arial,Inter,sans-serif}.txt{font:500 14px Arial,Inter,sans-serif}.mh{font:700 16px Arial,Inter,sans-serif}.h{font:700 22px Arial,Inter,sans-serif}.title{font:700 38px Arial,Inter,sans-serif}
+      .panel{fill:#f8fafc;stroke:#cbd5e1;stroke-width:2}.card{fill:#fff;stroke:#cbd5e1;stroke-width:2}.arena{fill:#fff;stroke:#111827;stroke-width:3}.grid{stroke:#e2e8f0;stroke-width:1;stroke-dasharray:5 6}
+      .outerWall{fill:none;stroke:#6b7280;stroke-width:10}.innerWall{fill:none;stroke:#94a3b8;stroke-width:16;stroke-linecap:square}.innerWall2{fill:none;stroke:#6b7280;stroke-width:7;stroke-linecap:square}
+      .blueZone{fill:#dbeafe;stroke:#2563eb;stroke-width:2}.yellowZone{fill:#fef3c7;stroke:#d6a90e;stroke-width:2}.obs{fill:#f3f4f6;stroke:#ef4444;stroke-width:2;stroke-dasharray:6 5}
+      .robotY{fill:#f2c94c;stroke:#92400e;stroke-width:2}.robotB{fill:#2563eb;stroke:#1e3a8a;stroke-width:2}.targetY{fill:#fff;stroke:#f2c94c;stroke-width:3}.targetB{fill:#fff;stroke:#2563eb;stroke-width:3}.armorY{fill:#fff7ed;stroke:#d6a90e;stroke-width:2}.armorB{fill:#eff6ff;stroke:#2563eb;stroke-width:2}
+      .legal{fill:none;stroke:#16a34a;stroke-width:5;marker-end:url(#arrowG)}.forbid{fill:none;stroke:#dc2626;stroke-width:3;stroke-dasharray:10 7;marker-end:url(#arrowR)}.dim{stroke:#334155;stroke-width:2;marker-start:url(#dimS);marker-end:url(#dimE)}.link{stroke:#94a3b8;stroke-width:2;stroke-dasharray:7 6}.green{fill:#15803d}.red{fill:#be123c}.blue{fill:#1d4ed8}.yellow{fill:#a16207}
+      .matrix{font:600 17px Consolas,Menlo,monospace;fill:#111827}.eq{font:600 16px Consolas,Menlo,monospace;fill:#111827}
+    </style>
+    <marker id="arrowG" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M0 0 L14 7 L0 14 Z" fill="#16a34a"/></marker>
+    <marker id="arrowR" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#dc2626"/></marker>
+    <marker id="dimS" markerWidth="10" markerHeight="10" refX="2" refY="5" orient="auto"><path d="M10 0 L0 5 L10 10" fill="none" stroke="#334155" stroke-width="2"/></marker>
+    <marker id="dimE" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#334155" stroke-width="2"/></marker>
+  </defs>
+  <rect class="bg" width="1800" height="1100"/>
+  <text class="title ink" x="72" y="64">Problem Formulation: Two-Robot Visual Duel</text>
+  <text class="txt muted" x="74" y="98">Regulation arena, opponent-only target constraint, armor-state transition, and terminal win/loss condition as one Markov game.</text>
+
+  <rect class="panel" x="54" y="128" width="1692" height="890" rx="14"/>
+
+  <g transform="translate(98 176)">
+    <text class="h ink" x="0" y="0">A. Arena, legal interaction, and safety mask</text>
+    <rect class="card" x="0" y="32" width="880" height="802" rx="10"/>
+    <g transform="translate(62 72)">
+      <path class="dim" d="M0 -24 H720"/><text class="small label" x="360" y="-32" text-anchor="middle">3.0 m</text>
+      <path class="dim" d="M-30 0 V720"/><text class="small label" x="-58" y="360" text-anchor="middle" transform="rotate(-90 -58 360)">3.0 m</text>
+      <rect class="arena" x="0" y="0" width="720" height="720"/>
+      <path class="grid" d="M120 0 V720 M240 0 V720 M360 0 V720 M480 0 V720 M600 0 V720 M0 120 H720 M0 240 H720 M0 360 H720 M0 480 H720 M0 600 H720"/>
+      <rect class="blueZone" x="0" y="0" width="120" height="120"/><text class="small blue" x="60" y="64" text-anchor="middle">Blue base</text>
+      <rect class="blueZone" x="240" y="0" width="120" height="120"/><text class="small blue" x="300" y="64" text-anchor="middle">Blue start</text>
+      <rect class="yellowZone" x="360" y="600" width="120" height="120"/><text class="small yellow" x="420" y="666" text-anchor="middle">Yellow start</text>
+      <rect class="yellowZone" x="600" y="600" width="120" height="120"/><text class="small yellow" x="660" y="666" text-anchor="middle">Yellow base</text>
+      <path class="innerWall" d="M0 360 H272 M448 360 H720"/><path class="innerWall2" d="M0 360 H272 M448 360 H720"/>
+      <rect class="obs" x="535" y="135" width="72" height="72"/><text class="tiny label" x="571" y="176" text-anchor="middle">0.3 m cube</text>
+      <rect class="obs" x="172" y="535" width="72" height="72"/><text class="tiny label" x="208" y="576" text-anchor="middle">0.3 m cube</text>
+      <rect x="0" y="0" width="720" height="720" fill="none" stroke="#6b7280" stroke-width="10"/>
+
+      <g id="targets">
+        <g transform="translate(360 0)"><circle class="targetB" r="18"/><rect x="-8" y="-8" width="16" height="16" fill="#eff6ff" stroke="#2563eb"/><text class="tiny blue" y="42" text-anchor="middle">ID 1</text></g>
+        <g transform="translate(706 14)"><circle class="targetB" r="18"/><rect x="-8" y="-8" width="16" height="16" fill="#eff6ff" stroke="#2563eb"/><text class="tiny blue" y="42" text-anchor="middle">ID 1</text></g>
+        <g transform="translate(14 344)"><circle class="targetB" r="18"/><rect x="-8" y="-8" width="16" height="16" fill="#eff6ff" stroke="#2563eb"/><text class="tiny blue" x="40" y="-10">ID 1</text></g>
+        <g transform="translate(706 344)"><circle class="targetB" r="18"/><rect x="-8" y="-8" width="16" height="16" fill="#eff6ff" stroke="#2563eb"/><text class="tiny blue" x="-40" y="-10" text-anchor="end">ID 1</text></g>
+        <g transform="translate(14 396)"><circle class="targetY" r="18"/><rect x="-8" y="-8" width="16" height="16" fill="#fffbeb" stroke="#d6a90e"/><text class="tiny yellow" x="40" y="18">ID 1</text></g>
+        <g transform="translate(706 396)"><circle class="targetY" r="18"/><rect x="-8" y="-8" width="16" height="16" fill="#fffbeb" stroke="#d6a90e"/><text class="tiny yellow" x="-40" y="18" text-anchor="end">ID 1</text></g>
+        <g transform="translate(14 706)"><circle class="targetY" r="18"/><rect x="-8" y="-8" width="16" height="16" fill="#fffbeb" stroke="#d6a90e"/><text class="tiny yellow" x="34" y="-16">ID 1</text></g>
+        <g transform="translate(360 720)"><circle class="targetY" r="18"/><rect x="-8" y="-8" width="16" height="16" fill="#fffbeb" stroke="#d6a90e"/><text class="tiny yellow" y="-28" text-anchor="middle">ID 1</text></g>
+      </g>
+
+      <g transform="translate(50 52) rotate(-42)"><rect x="-22" y="-14" width="44" height="28" rx="4" fill="#fff" stroke="#111827" stroke-width="2"/><circle cx="-7" cy="0" r="3" fill="#2563eb"/><path d="M-16 -7 H16 M-16 0 H16 M-16 7 H16" stroke="#111827" stroke-width="1"/></g>
+      <text class="tiny blue" x="30" y="96">Blue base target ID 3</text>
+      <g transform="translate(670 668) rotate(-42)"><rect x="-22" y="-14" width="44" height="28" rx="4" fill="#fff" stroke="#111827" stroke-width="2"/><circle cx="7" cy="0" r="3" fill="#f2c94c"/><path d="M-16 -7 H16 M-16 0 H16 M-16 7 H16" stroke="#111827" stroke-width="1"/></g>
+      <text class="tiny yellow" x="548" y="634">Yellow base target ID 2</text>
+
+      <g transform="translate(18 18)">
+        <rect class="armorB" x="50" y="0" width="28" height="24"/><text class="tiny blue" x="64" y="17" text-anchor="middle">1</text>
+        <rect class="armorB" x="82" y="38" width="28" height="24"/><text class="tiny blue" x="96" y="55" text-anchor="middle">2</text>
+        <rect class="armorB" x="50" y="78" width="28" height="24"/><text class="tiny blue" x="64" y="95" text-anchor="middle">3</text>
+        <rect class="armorB" x="8" y="78" width="28" height="24"/><text class="tiny blue" x="22" y="95" text-anchor="middle">4</text>
+      </g>
+      <g transform="translate(610 616)">
+        <rect class="armorY" x="46" y="0" width="28" height="24"/><text class="tiny yellow" x="60" y="17" text-anchor="middle">1</text>
+        <rect class="armorY" x="10" y="40" width="28" height="24"/><text class="tiny yellow" x="24" y="57" text-anchor="middle">2</text>
+        <rect class="armorY" x="46" y="80" width="28" height="24"/><text class="tiny yellow" x="60" y="97" text-anchor="middle">3</text>
+        <rect class="armorY" x="84" y="0" width="28" height="24"/><text class="tiny yellow" x="98" y="17" text-anchor="middle">4</text>
+      </g>
+
+      <g transform="translate(418 640) rotate(-88)"><path class="robotY" d="M0 -18 L34 0 L0 18 Z"/><circle cx="-8" cy="-16" r="5" fill="#111827"/><circle cx="-8" cy="16" r="5" fill="#111827"/></g>
+      <g transform="translate(302 82) rotate(92)"><path class="robotB" d="M0 -18 L34 0 L0 18 Z"/><circle cx="-8" cy="-16" r="5" fill="#111827"/><circle cx="-8" cy="16" r="5" fill="#111827"/></g>
+      <path class="legal" d="M418 624 C406 430 438 252 584 172"/>
+      <path class="legal" d="M302 98 C410 252 540 460 646 620"/>
+      <path class="forbid" d="M418 660 C500 656 594 674 662 676"/><text class="tiny red" x="500" y="645">own target forbidden</text>
+      <path class="forbid" d="M302 76 C226 68 150 56 82 54"/><text class="tiny red" x="170" y="86">own target forbidden</text>
+    </g>
+  </g>
+
+  <g transform="translate(1016 176)">
+    <text class="h ink" x="0" y="0">B. Rule state and score transition</text>
+    <rect class="card" x="0" y="32" width="650" height="260" rx="10"/>
+    <text class="mh ink" x="30" y="76">Armor state vectors</text>
+    <text class="matrix" x="30" y="116">A_y = [1, 1, 1, 1]</text>
+    <text class="matrix" x="30" y="154">A_b = [1, 1, 1, 1]</text>
+    <text class="txt muted" x="30" y="196">Normal hit: +5 score; remove next opponent armor.</text>
+    <g transform="translate(360 74)">
+      <rect x="0" y="0" width="220" height="132" rx="8" fill="#fffbeb" stroke="#d6a90e" stroke-width="2"/>
+      <text class="small yellow" x="110" y="28" text-anchor="middle">normal target ID 1 hit</text>
+      <path d="M42 72 H178" stroke="#16a34a" stroke-width="4" marker-end="url(#arrowG)"/>
+      <text class="small green" x="110" y="104" text-anchor="middle">remove opponent armor</text>
+    </g>
+    <rect x="30" y="222" width="584" height="40" rx="6" fill="#ecfdf5" stroke="#16a34a" stroke-width="2"/>
+    <text class="mh green" x="322" y="248" text-anchor="middle">opponent base target down -> terminal win</text>
+
+    <rect class="card" x="0" y="326" width="650" height="286" rx="10"/>
+    <text class="mh ink" x="30" y="370">Markov game notation</text>
+    <text class="eq" x="30" y="412">s_t = {x_y, x_b, T, A_y, A_b, tau}</text>
+    <text class="txt muted" x="54" y="438">poses, target set, armor state, remaining time</text>
+    <text class="eq" x="30" y="486">a_t = {target, route, align, fire,</text>
+    <text class="eq" x="76" y="514">block, recover}</text>
+    <text class="txt muted" x="54" y="540">high-level tactical decision with safety-constrained firing</text>
+    <text class="eq" x="30" y="584">J = score - lambda_base * P(own_base_down)</text>
+    <g transform="translate(438 372)">
+      <rect x="0" y="0" width="162" height="42" rx="6" fill="#fff1f2" stroke="#dc2626" stroke-width="2"/>
+      <text class="small red" x="81" y="27" text-anchor="middle">own fire mask</text>
+      <rect x="0" y="58" width="162" height="42" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+      <text class="small blue" x="81" y="85" text-anchor="middle">opponent target set</text>
+      <rect x="0" y="116" width="162" height="42" rx="6" fill="#ecfdf5" stroke="#16a34a" stroke-width="2"/>
+      <text class="small green" x="81" y="143" text-anchor="middle">terminal rules</text>
+    </g>
+
+    <rect class="card" x="0" y="626" width="650" height="208" rx="10"/>
+    <text class="mh ink" x="30" y="666">Figure legend</text>
+    <g transform="translate(30 694)">
+      <rect x="0" y="0" width="54" height="34" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/><text class="small label" x="78" y="22">blue-owned zone/target</text>
+      <rect x="260" y="0" width="54" height="34" fill="#fef3c7" stroke="#d6a90e" stroke-width="2"/><text class="small label" x="338" y="22">yellow-owned zone/target</text>
+      <path d="M0 72 H54" stroke="#16a34a" stroke-width="5" marker-end="url(#arrowG)"/><text class="small label" x="78" y="78">legal opponent attack</text>
+      <path d="M260 72 H314" stroke="#dc2626" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#arrowR)"/><text class="small label" x="338" y="78">forbidden own target</text>
+      <circle cx="24" cy="108" r="15" fill="#fff" stroke="#2563eb" stroke-width="3"/><text class="small label" x="78" y="114">normal AprilTag target ID 1</text>
+      <rect x="260" y="94" width="40" height="28" rx="5" fill="#fff" stroke="#111827" stroke-width="2" transform="rotate(-35 280 108)"/><text class="small label" x="338" y="114">tilted base target ID 2 / ID 3</text>
+    </g>
+  </g>
+</svg>

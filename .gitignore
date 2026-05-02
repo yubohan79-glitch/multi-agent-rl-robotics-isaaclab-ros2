@@ -1,0 +1,60 @@
+# ROS2/colcon build outputs
+build/
+install/
+log/
+.colcon/
+
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Runtime captures and generated outputs
+*.bag
+*.db3
+*.mcap
+*.log
+isaaclab_sim/output/
+isaaclab_sim/runs/
+isaaclab_sim/wandb/
+isaaclab_sim/rule_pages/
+isaaclab_sim/rules_total.txt
+isaaclab_sim/target_requirements.txt
+rosbags/
+
+# Training artifacts and checkpoints
+*.pt
+*.pth
+*.onnx
+*.ckpt
+*.zip
+checkpoints/
+models/
+tensorboard/
+
+# Local competition/reference material
+*.pdf
+*.doc
+*.docx
+*.ppt
+*.pptx
+
+# Local machine configuration
+.env
+.env.*
+*.local.yaml
+*.local.yml
+local_config/

@@ -1,0 +1,61 @@
+name: ROS2 CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup ROS2 Jazzy
+        uses: ros-tooling/setup-ros@v0.7
+        with:
+          required-ros-distributions: jazzy
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          sudo apt-get update
+          rosdep update
+          cd crc_robocup_vision_ws
+          rosdep install --from-paths src --ignore-src -r -y --rosdistro jazzy
+
+      - name: Build workspace
+        shell: bash
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          cd crc_robocup_vision_ws
+          colcon build --symlink-install --event-handlers console_direct+
+
+  python-smoke:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install RL smoke dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r isaaclab_sim/rl/requirements.txt
+
+      - name: Compile Python modules
+        run: |
+          python -m py_compile \
+            isaaclab_sim/rl/robocup_visionrl_gym_env.py \
+            isaaclab_sim/rl/robocup_visionrl_selfplay_env.py \
+            isaaclab_sim/rl/robocup_visionrl_selfplay_vec.py \
+            isaaclab_sim/rl/train_mappo_selfplay_parallel_torch.py
+
+      - name: Run rule-env smoke test
+        run: |
+          cd isaaclab_sim/rl
+          python robocup_visionrl_selfplay_vec.py

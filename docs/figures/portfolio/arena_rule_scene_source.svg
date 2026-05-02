@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+  <defs>
+    <style>
+      .bg{fill:#fff}
+      .title{font:700 34px Arial,Inter,sans-serif;fill:#1f2937}
+      .subtitle{font:500 15px Arial,Inter,sans-serif;fill:#64748b}
+      .label{font:700 15px Arial,Inter,sans-serif;fill:#1f2937}
+      .small{font:500 12px Arial,Inter,sans-serif;fill:#334155}
+      .tiny{font:700 10px Arial,Inter,sans-serif;fill:#334155}
+      .dim{font:700 14px Arial,Inter,sans-serif;fill:#334155}
+      .grid{stroke:#dbe3ee;stroke-width:1;stroke-dasharray:5 5}
+      .outerWallShadow{fill:none;stroke:#9ca3af;stroke-width:18;opacity:.38}
+      .wall{fill:none;stroke:#111827;stroke-width:7;stroke-linecap:square}
+      .innerWallShadow{fill:none;stroke:#9ca3af;stroke-width:16;opacity:.38;stroke-linecap:square}
+      .zoneBlue{fill:#dbeafe;stroke:#2563eb;stroke-width:2}
+      .zoneYellow{fill:#fef3c7;stroke:#d6a90e;stroke-width:2}
+      .obstacle{fill:#fee2e2;stroke:#ef4444;stroke-width:2;stroke-dasharray:7 4}
+      .armorBlue{fill:#fff;stroke:#2563eb;stroke-width:2}
+      .armorYellow{fill:#fff;stroke:#d6a90e;stroke-width:2}
+      .targetBlue{fill:#eff6ff;stroke:#2563eb;stroke-width:3}
+      .targetYellow{fill:#fffbeb;stroke:#f2c94c;stroke-width:3}
+      .baseTarget{fill:#fff;stroke:#1f2937;stroke-width:2}
+      .attackYellow{fill:none;stroke:#16a34a;stroke-width:4;marker-end:url(#arrowGreen)}
+      .attackBlue{fill:none;stroke:#16a34a;stroke-width:4;marker-end:url(#arrowGreen)}
+      .forbidden{fill:none;stroke:#dc2626;stroke-width:3;stroke-dasharray:12 8;marker-end:url(#arrowRed)}
+      .dimLine{fill:none;stroke:#334155;stroke-width:2;marker-start:url(#arrowDimStart);marker-end:url(#arrowDimEnd)}
+      .panel{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:6}
+      .robotYellow{fill:#f2c94c;stroke:#92400e;stroke-width:2}
+      .robotBlue{fill:#2563eb;stroke:#1e3a8a;stroke-width:2}
+    </style>
+    <marker id="arrowGreen" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M0 0 L14 7 L0 14 Z" fill="#16a34a"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto">
+      <path d="M0 0 L13 6.5 L0 13 Z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowDimStart" markerWidth="10" markerHeight="10" refX="2" refY="5" orient="auto">
+      <path d="M10 0 L0 5 L10 10" fill="none" stroke="#334155" stroke-width="2"/>
+    </marker>
+    <marker id="arrowDimEnd" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10" fill="none" stroke="#334155" stroke-width="2"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1600" height="1200"/>
+  <text class="title" x="110" y="72">RoboCup Vision Challenge Arena</text>
+  <text class="subtitle" x="112" y="100">Regulation top-down map: 3.0m x 3.0m field, 0.5m start/base zones, 0.3m obstacles, opponent-side attack rule.</text>
+
+  <!-- Arena transform: top-left origin, 280 px per meter, arena size 840 px. -->
+  <g id="arena" transform="translate(130 190)">
+    <rect x="0" y="0" width="840" height="840" fill="#fff"/>
+    <g id="metric-grid">
+      <path class="grid" d="M140 0 V840 M280 0 V840 M420 0 V840 M560 0 V840 M700 0 V840"/>
+      <path class="grid" d="M0 140 H840 M0 280 H840 M0 420 H840 M0 560 H840 M0 700 H840"/>
+    </g>
+
+    <!-- Regulation zones, 0.5m x 0.5m. -->
+    <rect class="zoneBlue" x="0" y="0" width="140" height="140"/>
+    <text class="label" x="154" y="42">Blue Base</text>
+    <text class="tiny" x="154" y="65">0.5m x 0.5m</text>
+
+    <rect class="zoneBlue" x="280" y="0" width="140" height="140"/>
+    <text class="label" x="350" y="58" text-anchor="middle">Blue Start</text>
+    <text class="tiny" x="350" y="82" text-anchor="middle">0.5m x 0.5m</text>
+
+    <rect class="zoneYellow" x="420" y="700" width="140" height="140"/>
+    <text class="label" x="490" y="758" text-anchor="middle">Yellow Start</text>
+    <text class="tiny" x="490" y="782" text-anchor="middle">0.5m x 0.5m</text>
+
+    <rect class="zoneYellow" x="700" y="700" width="140" height="140"/>
+    <text class="label" x="770" y="856" text-anchor="middle">Yellow Base</text>
+    <text class="tiny" x="770" y="876" text-anchor="middle">0.5m x 0.5m</text>
+
+    <!-- Obstacles, 0.3m cube footprint. -->
+    <rect class="obstacle" x="626" y="154" width="84" height="84"/>
+    <text class="tiny" x="668" y="190" text-anchor="middle">0.3m</text>
+    <text class="tiny" x="668" y="207" text-anchor="middle">cube</text>
+    <rect class="obstacle" x="196" y="616" width="84" height="84"/>
+    <text class="tiny" x="238" y="652" text-anchor="middle">0.3m</text>
+    <text class="tiny" x="238" y="669" text-anchor="middle">cube</text>
+
+    <!-- Outer and inner fences, height noted in legend. -->
+    <rect class="outerWallShadow" x="0" y="0" width="840" height="840"/>
+    <rect x="0" y="0" width="840" height="840" fill="none" stroke="#111827" stroke-width="7"/>
+    <path class="innerWallShadow" d="M0 420 H300"/>
+    <path class="wall" d="M0 420 H300"/>
+    <path class="innerWallShadow" d="M560 420 H840"/>
+    <path class="wall" d="M560 420 H840"/>
+
+    <!-- Normal targets: 8 total, all marked AprilTag ID 1. -->
+    <g id="normal-targets">
+      <g transform="translate(420 0)">
+        <circle class="targetBlue" r="18"/><circle fill="#fff" stroke="#2563eb" stroke-width="5" r="8"/>
+        <text class="tiny" x="0" y="42" text-anchor="middle">ID 1</text>
+      </g>
+      <g transform="translate(828 12)">
+        <circle class="targetBlue" r="18"/><circle fill="#fff" stroke="#2563eb" stroke-width="5" r="8"/>
+        <text class="tiny" x="-8" y="42" text-anchor="middle">ID 1</text>
+      </g>
+      <g transform="translate(12 406)">
+        <circle class="targetBlue" r="18"/><circle fill="#fff" stroke="#2563eb" stroke-width="5" r="8"/>
+        <text class="tiny" x="46" y="-10">ID 1</text>
+      </g>
+      <g transform="translate(12 438)">
+        <circle class="targetYellow" r="18"/><circle fill="#fff" stroke="#f2c94c" stroke-width="5" r="8"/>
+        <text class="tiny" x="46" y="15">ID 1</text>
+      </g>
+      <g transform="translate(828 406)">
+        <circle class="targetBlue" r="18"/><circle fill="#fff" stroke="#2563eb" stroke-width="5" r="8"/>
+        <text class="tiny" x="-46" y="-10" text-anchor="end">ID 1</text>
+      </g>
+      <g transform="translate(828 438)">
+        <circle class="targetYellow" r="18"/><circle fill="#fff" stroke="#f2c94c" stroke-width="5" r="8"/>
+        <text class="tiny" x="-46" y="15" text-anchor="end">ID 1</text>
+      </g>
+      <g transform="translate(18 822)">
+        <circle class="targetYellow" r="18"/><circle fill="#fff" stroke="#f2c94c" stroke-width="5" r="8"/>
+        <text class="tiny" x="34" y="-18">ID 1</text>
+      </g>
+      <g transform="translate(420 840)">
+        <circle class="targetYellow" r="18"/><circle fill="#fff" stroke="#f2c94c" stroke-width="5" r="8"/>
+        <text class="tiny" x="0" y="-30" text-anchor="middle">ID 1</text>
+      </g>
+    </g>
+
+    <!-- Base targets: yellow base target ID 2, blue base target ID 3. -->
+    <g id="blue-base-target" transform="translate(46 46) rotate(-45)">
+      <rect class="baseTarget" x="-22" y="-14" width="44" height="28" rx="4"/>
+      <circle cx="-8" cy="0" r="3" fill="#2563eb"/>
+      <text class="tiny" x="-6" y="48" transform="rotate(45)" text-anchor="middle">ID 3</text>
+    </g>
+    <g id="yellow-base-target" transform="translate(794 794) rotate(-45)">
+      <rect class="baseTarget" x="-22" y="-14" width="44" height="28" rx="4"/>
+      <circle cx="8" cy="0" r="3" fill="#f2c94c"/>
+      <text class="tiny" x="6" y="-44" transform="rotate(45)" text-anchor="middle">ID 2</text>
+    </g>
+
+    <!-- Four armor plates around each base target; numbered removal order. -->
+    <g id="blue-armor">
+      <rect class="armorBlue" x="70" y="18" width="28" height="24"/><text class="tiny" x="84" y="34" text-anchor="middle">1</text>
+      <rect class="armorBlue" x="104" y="58" width="28" height="24"/><text class="tiny" x="118" y="74" text-anchor="middle">2</text>
+      <rect class="armorBlue" x="70" y="98" width="28" height="24"/><text class="tiny" x="84" y="114" text-anchor="middle">3</text>
+      <rect class="armorBlue" x="26" y="98" width="28" height="24"/><text class="tiny" x="40" y="114" text-anchor="middle">4</text>
+    </g>
+    <g id="yellow-armor">
+      <rect class="armorYellow" x="742" y="718" width="28" height="24"/><text class="tiny" x="756" y="734" text-anchor="middle">1</text>
+      <rect class="armorYellow" x="708" y="758" width="28" height="24"/><text class="tiny" x="722" y="774" text-anchor="middle">2</text>
+      <rect class="armorYellow" x="742" y="798" width="28" height="24"/><text class="tiny" x="756" y="814" text-anchor="middle">3</text>
+      <rect class="armorYellow" x="786" y="718" width="28" height="24"/><text class="tiny" x="800" y="734" text-anchor="middle">4</text>
+    </g>
+
+    <!-- Robots and high-level rule arrows. -->
+    <g transform="translate(486 742) rotate(-92)">
+      <path class="robotYellow" d="M0 -15 L26 0 L0 15 Z"/>
+    </g>
+    <g transform="translate(354 98) rotate(88)">
+      <path class="robotBlue" d="M0 -15 L26 0 L0 15 Z"/>
+    </g>
+    <path class="attackYellow" d="M488 716 C470 550 505 300 642 212"/>
+    <path class="attackYellow" d="M505 718 C500 500 470 232 422 38"/>
+    <path class="attackBlue" d="M354 122 C360 300 410 530 514 704"/>
+    <path class="attackBlue" d="M370 120 C520 300 650 520 746 686"/>
+
+    <!-- Forbidden own-target examples kept short and outside labels. -->
+    <path class="forbidden" d="M460 744 C565 734 660 758 730 788"/>
+    <path class="forbidden" d="M320 92 C235 82 166 70 95 64"/>
+    <text class="tiny" x="596" y="724" fill="#dc2626">own target forbidden</text>
+    <text class="tiny" x="150" y="92" fill="#dc2626">own target forbidden</text>
+  </g>
+
+  <!-- Dimension annotations. -->
+  <path class="dimLine" d="M130 145 H970"/>
+  <text class="dim" x="550" y="130" text-anchor="middle">3.0 m</text>
+  <path class="dimLine" d="M86 190 V1030"/>
+  <text class="dim" x="54" y="610" text-anchor="middle" transform="rotate(-90 54 610)">3.0 m</text>
+
+  <!-- Coordinate axis. -->
+  <g transform="translate(88 1100)">
+    <path d="M0 0 H64 M0 0 V-64" fill="none" stroke="#111827" stroke-width="3"/>
+    <path d="M64 0 l-12 -7 v14 z" fill="#111827"/>
+    <path d="M0 -64 l-7 12 h14 z" fill="#111827"/>
+    <text class="label" x="75" y="5">x</text>
+    <text class="label" x="-5" y="-74">y</text>
+    <text class="small" x="-18" y="30">(0, 0)</text>
+  </g>
+
+  <!-- Legend and rule notes. -->
+  <g id="legend" transform="translate(1040 230)">
+    <rect class="panel" x="0" y="0" width="430" height="680"/>
+    <text class="label" x="30" y="44">Legend</text>
+
+    <rect x="34" y="74" width="58" height="44" fill="#fff" stroke="#2563eb" stroke-width="2" stroke-dasharray="7 4"/>
+    <text class="small" x="122" y="102">Start Zone, 0.5m x 0.5m</text>
+
+    <rect x="34" y="144" width="58" height="44" class="zoneBlue"/>
+    <text class="small" x="122" y="172">Base Zone, 0.5m x 0.5m</text>
+
+    <rect x="50" y="218" width="28" height="30" class="armorBlue"/>
+    <text class="small" x="122" y="240">Armor plate, removal order 1-4</text>
+
+    <circle cx="64" cy="302" r="18" class="targetBlue"/><circle cx="64" cy="302" r="8" fill="#fff" stroke="#2563eb" stroke-width="5"/>
+    <text class="small" x="122" y="308">Normal Target, AprilTag ID 1</text>
+
+    <g transform="translate(64 370) rotate(-45)">
+      <rect class="baseTarget" x="-22" y="-14" width="44" height="28" rx="4"/>
+      <circle cx="8" cy="0" r="3" fill="#2563eb"/>
+    </g>
+    <text class="small" x="122" y="376">Base Target, ID 2 / ID 3</text>
+
+    <rect class="obstacle" x="34" y="428" width="58" height="58"/>
+    <text class="small" x="122" y="464">Obstacle, 0.3m cube</text>
+
+    <path class="attackYellow" d="M34 540 H92"/>
+    <text class="small" x="122" y="546">Legal attack into opponent field</text>
+
+    <path class="forbidden" d="M34 590 H92"/>
+    <text class="small" x="122" y="596">Forbidden own-target attack</text>
+
+    <path class="wall" d="M36 638 H92"/>
+    <text class="small" x="122" y="644">Outer / inner fence, 0.5m high</text>
+  </g>
+
+  <rect class="panel" x="130" y="1070" width="1130" height="76"/>
+  <text class="small" x="156" y="1100">Checked against the national final field map: 8 normal targets + 2 base targets, two 0.3m obstacles, blue base upper-left, yellow base lower-right.</text>
+  <text class="small" x="156" y="1128">Rule emphasis: each robot enters the opponent side to attack opponent targets only; shooting own-side targets is forbidden.</text>
+</svg>

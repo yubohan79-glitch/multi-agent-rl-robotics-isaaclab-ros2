@@ -1,0 +1,18 @@
+# Historical baseline kept for migration traceability.
+# This file is not loaded by the ROS2 launch stack.
+baseline:
+  os: "Ubuntu 18.04"
+  ros: "ROS Melodic"
+  build_tool: "catkin_make"
+  mapping: "gmapping"
+  localization: "amcl"
+  navigation: "move_base + DWA local planner"
+  vision: "ROS1 apriltag_ros + OpenCV experiments"
+  shooter_control: "serial package with hard-coded /dev/arm and byte commands"
+  migration_target:
+    os: "Ubuntu 24.04"
+    ros: "ROS2 Jazzy"
+    build_tool: "colcon"
+    mapping: "slam_toolbox"
+    navigation: "Nav2 NavigateToPose action"
+

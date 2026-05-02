@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000">
+  <defs>
+    <style>
+      .bg{fill:#fff}.title{font:700 38px Arial,Inter,sans-serif;fill:#111827}.sub{font:500 16px Arial,Inter,sans-serif;fill:#64748b}.h{font:700 22px Arial,Inter,sans-serif;fill:#1f2937}.mh{font:700 16px Arial,Inter,sans-serif;fill:#334155}.txt{font:500 14px Arial,Inter,sans-serif;fill:#475569}.small{font:600 12px Arial,Inter,sans-serif;fill:#475569}.tiny{font:700 10px Arial,Inter,sans-serif;fill:#475569}.eq{font:600 16px Consolas,Menlo,monospace;fill:#111827}
+      .panel{fill:#f8fafc;stroke:#cbd5e1;stroke-width:2}.stage{fill:#fff;stroke:#cbd5e1;stroke-width:2}.card{fill:#fff;stroke:#cbd5e1;stroke-width:1.8}.warn{fill:#fff7ed;stroke:#f97316;stroke-width:2}.danger{fill:#fff1f2;stroke:#e11d48;stroke-width:2}.ok{fill:#ecfdf5;stroke:#16a34a;stroke-width:2}.cyan{fill:#ecfeff;stroke:#06b6d4;stroke-width:2}
+      .robot{fill:#fff;stroke:#111827;stroke-width:2}.wheel{fill:#111827}.robotY{fill:#f2c94c;stroke:#92400e;stroke-width:2}.robotB{fill:#2563eb;stroke:#1e3a8a;stroke-width:2}.grid{stroke:#e2e8f0;stroke-width:1;stroke-dasharray:4 5}.drift{stroke:#fb923c;stroke-width:1.4;stroke-dasharray:7 6}.lidar{fill:none;stroke:#06b6d4;stroke-width:2}.arrow{fill:none;stroke:#64748b;stroke-width:3;marker-end:url(#ad)}.arrowO{fill:none;stroke:#f97316;stroke-width:3;marker-end:url(#ao)}.arrowR{fill:none;stroke:#e11d48;stroke-width:3;marker-end:url(#ar)}.arrowG{fill:none;stroke:#16a34a;stroke-width:4;marker-end:url(#ag)}.arrowC{fill:none;stroke:#06b6d4;stroke-width:3;marker-end:url(#ac)}.dash{stroke-dasharray:8 7}.green{fill:#15803d}.red{fill:#be123c}.orange{fill:#c2410c}.blue{fill:#0891b2}
+    </style>
+    <marker id="ad" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#64748b"/></marker>
+    <marker id="ao" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#f97316"/></marker>
+    <marker id="ar" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#e11d48"/></marker>
+    <marker id="ag" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#16a34a"/></marker>
+    <marker id="ac" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#06b6d4"/></marker>
+    <linearGradient id="conf" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e11d48"/><stop offset=".55" stop-color="#f97316"/><stop offset="1" stop-color="#16a34a"/></linearGradient>
+  </defs>
+  <rect class="bg" width="1800" height="1000"/>
+  <text class="title" x="72" y="64">Collision-Aware Localization Recovery</text>
+  <text class="sub" x="74" y="98">A contact-triggered confidence model switches from attack execution to active perception, then returns to Nav2 once pose covariance is stable.</text>
+  <rect class="panel" x="54" y="130" width="1692" height="780" rx="14"/>
+
+  <g transform="translate(90 178)">
+    <rect class="stage" x="0" y="0" width="382" height="560" rx="10"/>
+    <text class="h" x="24" y="42">1. Contact / Stuck</text><text class="txt" x="24" y="70">bumper spike and odom residuals disagree</text>
+    <g transform="translate(42 108)">
+      <rect class="card" x="0" y="0" width="298" height="236" rx="6"/>
+      <path class="grid" d="M50 0 V236 M100 0 V236 M150 0 V236 M200 0 V236 M250 0 V236 M0 50 H298 M0 100 H298 M0 150 H298 M0 200 H298"/>
+      <path class="drift" d="M42 -10 V246 M92 -10 V246 M142 -10 V246 M192 -10 V246 M242 -10 V246 M-10 42 H308 M-10 92 H308 M-10 142 H308 M-10 192 H308"/>
+      <rect x="218" y="76" width="52" height="52" fill="#fee2e2" stroke="#ef4444" stroke-width="2" stroke-dasharray="6 5"/>
+      <g transform="translate(170 116) rotate(22)"><rect class="robot" x="-48" y="-30" width="96" height="60" rx="13"/><circle class="wheel" cx="-38" cy="32" r="12"/><circle class="wheel" cx="38" cy="32" r="12"/><rect x="22" y="-12" width="34" height="24" rx="5" fill="#fff" stroke="#111827" stroke-width="2"/><path class="robotY" d="M52 0 l24 -13 v26 z"/></g>
+      <g transform="translate(226 102) rotate(-9)"><rect class="robot" x="-38" y="-24" width="76" height="48" rx="11" opacity=".72"/><circle class="wheel" cx="-30" cy="26" r="10"/><circle class="wheel" cx="30" cy="26" r="10"/><path class="robotB" d="M38 0 l21 -11 v22 z"/></g>
+      <path class="arrowO" d="M84 178 C118 142 154 124 190 114"/>
+      <path d="M116 48 L146 104 L84 104 Z" fill="#fff7ed" stroke="#f97316" stroke-width="2"/><text class="mh orange" x="116" y="90" text-anchor="middle">!</text>
+      <text class="tiny orange" x="110" y="220">map frame drift</text>
+    </g>
+    <g transform="translate(34 392)">
+      <rect class="warn" x="0" y="0" width="138" height="54" rx="6"/><text class="mh orange" x="69" y="23" text-anchor="middle">bumper = 1</text><text class="tiny" x="69" y="42" text-anchor="middle">contact impulse</text>
+      <rect class="danger" x="162" y="0" width="146" height="54" rx="6"/><text class="mh red" x="235" y="23" text-anchor="middle">odom slip</text><text class="tiny" x="235" y="42" text-anchor="middle">residual high</text>
+      <path class="arrowR" d="M69 66 C118 104 188 104 235 66"/><text class="tiny red" x="154" y="118" text-anchor="middle">recovery request</text>
+    </g>
+  </g>
+  <path class="arrow" d="M486 456 H536"/>
+
+  <g transform="translate(542 178)">
+    <rect class="stage" x="0" y="0" width="350" height="560" rx="10"/>
+    <text class="h" x="24" y="42">2. Confidence Drop</text><text class="txt" x="24" y="70">confidence crosses recovery threshold</text>
+    <g transform="translate(38 116)">
+      <rect class="card" x="0" y="0" width="274" height="220" rx="6"/>
+      <line x1="42" y1="176" x2="240" y2="176" stroke="#94a3b8" stroke-width="2"/><line x1="42" y1="38" x2="42" y2="176" stroke="#94a3b8" stroke-width="2"/>
+      <line x1="42" y1="108" x2="240" y2="108" stroke="#e11d48" stroke-width="2" stroke-dasharray="8 6"/>
+      <path d="M46 56 C88 58 124 74 142 104 C162 138 168 174 238 172" fill="none" stroke="url(#conf)" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="158" cy="132" r="8" fill="#e11d48"/><text class="tiny red" x="176" y="136">c_t &lt; theta_rec</text>
+      <text class="tiny" x="28" y="42" text-anchor="end">1.0</text><text class="tiny" x="32" y="112" text-anchor="end">theta</text><text class="tiny" x="28" y="180" text-anchor="end">0</text>
+      <rect x="58" y="192" width="166" height="14" rx="7" fill="url(#conf)"/>
+    </g>
+    <g transform="translate(34 374)">
+      <rect class="card" x="0" y="0" width="282" height="42" rx="6"/><text class="eq" x="18" y="27">c_t &lt;- c_t - delta_collision</text>
+      <rect class="card" x="0" y="58" width="282" height="42" rx="6"/><text class="eq red" x="18" y="85">if c_t &lt; theta_rec:</text>
+      <rect class="danger" x="36" y="118" width="210" height="44" rx="6"/><text class="mh red" x="141" y="146" text-anchor="middle">RECOVER_LOCALIZATION</text>
+    </g>
+  </g>
+  <path class="arrow" d="M906 456 H956"/>
+
+  <g transform="translate(962 178)">
+    <rect class="stage" x="0" y="0" width="370" height="560" rx="10"/>
+    <text class="h" x="24" y="42">3. Active Spin Scan</text><text class="txt" x="24" y="70">360 deg perception rebuilds consistency</text>
+    <g transform="translate(42 98)">
+      <rect class="cyan" x="0" y="0" width="286" height="280" rx="7"/>
+      <g transform="translate(143 140)">
+        <circle class="lidar" r="44"/><circle class="lidar" r="78"/><circle class="lidar" r="112"/><path class="arrowC dash" d="M-98 -18 A100 100 0 1 1 -30 94"/><path class="arrowC dash" d="M68 -84 A108 108 0 0 1 110 10"/>
+        <g transform="rotate(28)"><rect class="robot" x="-50" y="-32" width="100" height="64" rx="13"/><circle class="wheel" cx="-40" cy="34" r="13"/><circle class="wheel" cx="40" cy="34" r="13"/><rect x="30" y="-14" width="38" height="28" rx="5" fill="#fff" stroke="#111827" stroke-width="2"/><path d="M50 0 L128 -38 L128 38 Z" fill="#67e8f9" opacity=".25" stroke="#06b6d4" stroke-width="2"/></g>
+      </g>
+      <g transform="translate(44 36) rotate(-10)"><rect x="-18" y="-12" width="36" height="24" rx="4" fill="#fff" stroke="#111827" stroke-width="2"/><path d="M-10 -5 H10 M-10 5 H10 M0 -10 V10" stroke="#111827" stroke-width="1.4"/></g>
+      <g transform="translate(236 58) rotate(8)"><rect x="-18" y="-12" width="36" height="24" rx="4" fill="#fff" stroke="#111827" stroke-width="2"/><path d="M-10 -5 H10 M-10 5 H10 M0 -10 V10" stroke="#111827" stroke-width="1.4"/></g>
+    </g>
+    <g transform="translate(30 410)">
+      <rect class="card" x="0" y="0" width="90" height="62" rx="6"/><text class="mh blue" x="45" y="25" text-anchor="middle">Lidar</text><text class="tiny" x="45" y="45" text-anchor="middle">scan match</text>
+      <rect class="card" x="110" y="0" width="90" height="62" rx="6"/><text class="mh blue" x="155" y="25" text-anchor="middle">Camera</text><text class="tiny" x="155" y="45" text-anchor="middle">tags</text>
+      <rect class="card" x="220" y="0" width="90" height="62" rx="6"/><text class="mh green" x="265" y="25" text-anchor="middle">IMU</text><text class="tiny" x="265" y="45" text-anchor="middle">yaw rate</text>
+      <path class="arrowG" d="M45 76 C92 116 214 116 265 76"/><text class="tiny green" x="155" y="126" text-anchor="middle">residuals normalize</text>
+    </g>
+  </g>
+  <path class="arrow" d="M1346 456 H1394"/>
+
+  <g transform="translate(1400 178)">
+    <rect class="stage" x="0" y="0" width="310" height="560" rx="10"/>
+    <text class="h" x="24" y="42">4. EKF + Nav2 Resume</text><text class="txt" x="24" y="70">covariance stable, attack replanned</text>
+    <g transform="translate(28 110)">
+      <rect class="card" x="0" y="0" width="112" height="44" rx="6"/><text class="small" x="56" y="28" text-anchor="middle">/wheel/odom</text>
+      <rect class="card" x="0" y="62" width="112" height="44" rx="6"/><text class="small" x="56" y="90" text-anchor="middle">/imu/data</text>
+      <rect class="card" x="0" y="124" width="112" height="44" rx="6"/><text class="small" x="56" y="152" text-anchor="middle">scan score</text>
+      <path class="arrow" d="M114 22 H152"/><path class="arrow" d="M114 84 H152"/><path class="arrow" d="M114 146 H152"/>
+      <rect class="ok" x="154" y="38" width="120" height="92" rx="7"/><text class="h green" x="214" y="77" text-anchor="middle">EKF</text><text class="tiny green" x="214" y="106" text-anchor="middle">covariance stable</text>
+    </g>
+    <g transform="translate(28 332)">
+      <rect class="card" x="0" y="0" width="254" height="148" rx="6"/>
+      <path class="grid" d="M50 0 V148 M100 0 V148 M150 0 V148 M200 0 V148 M0 50 H254 M0 100 H254"/>
+      <rect x="8" y="8" width="48" height="38" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/><rect x="198" y="102" width="48" height="38" fill="#fef3c7" stroke="#d6a90e" stroke-width="2"/>
+      <circle cx="210" cy="28" r="12" fill="#fff" stroke="#2563eb" stroke-width="3"/><text class="tiny" x="210" y="54" text-anchor="middle">target</text>
+      <g transform="translate(70 118) rotate(-34)"><path class="robotY" d="M0 -12 L28 0 L0 12 Z"/></g>
+      <path class="arrowG" d="M78 110 C110 76 150 42 198 30"/><text class="tiny green" x="134" y="128" text-anchor="middle">Nav2 replan</text>
+    </g>
+    <circle cx="66" cy="520" r="18" fill="#16a34a"/><path d="M56 520 l7 8 l15 -18" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><text class="mh green" x="104" y="526">resume attack</text>
+  </g>
+
+  <g transform="translate(156 820)">
+    <line x1="0" y1="26" x2="1488" y2="26" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="0" cy="26" r="15" fill="#f97316"/><text class="small" x="0" y="68" text-anchor="middle">t0 contact</text>
+    <circle cx="372" cy="26" r="15" fill="#e11d48"/><text class="small" x="372" y="68" text-anchor="middle">t1 confidence low</text>
+    <circle cx="744" cy="26" r="15" fill="#06b6d4"/><text class="small" x="744" y="68" text-anchor="middle">t2 spin scan</text>
+    <circle cx="1116" cy="26" r="15" fill="#16a34a"/><text class="small" x="1116" y="68" text-anchor="middle">t3 pose stable</text>
+    <circle cx="1488" cy="26" r="15" fill="#16a34a"/><text class="small" x="1488" y="68" text-anchor="middle">t4 replan</text>
+  </g>
+</svg>
