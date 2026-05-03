@@ -100,6 +100,16 @@ The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. It use
 
 ![RL Sim2Real pipeline](./assets/readme/rl_sim2real_pipeline.png)
 
+## Runtime Evidence
+
+The ROS2 runtime is organized around `rcvrl_bringup`, `rcvrl_behavior`, `rcvrl_vision`, `rcvrl_navigation`, `rcvrl_shooter`, `rcvrl_description` and `rcvrl_interfaces`. A demo video is available on Bilibili:
+
+[RoboCup VisionRL runtime/demo video](https://www.bilibili.com/video/BV1Pj9ZBKEc8/?spm_id_from=333.1387.list.card_archive.click&vd_source=f79b94dd69d0c8d08ee5c3400b69d46d)
+
+The local demo video is intentionally not committed to this repository because runtime videos are large binary artifacts. Keep it under `docs/` locally or publish it through an external video page.
+
+![ROS2 runtime evidence](./assets/readme/ros2_runtime_graph.png)
+
 ## Reproducibility
 
 - `docs/reproducibility.md`: exact smoke-test, ROS2 dry-run, IsaacLab preview and evaluation commands.
