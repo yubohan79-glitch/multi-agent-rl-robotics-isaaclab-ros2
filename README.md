@@ -10,7 +10,7 @@ RoboCup VisionRL is a ROS2-based autonomous target-searching and laser-shooting 
 
 This repository documents the engineering solution evolved from a national top-three RoboCup China visual challenge entry, rewritten as a clean, reproducible, self-contained portfolio system.
 
-![RoboCup VisionRL overview](docs/figures/portfolio/portfolio_overview_robocup.png)
+![RoboCup VisionRL overview](./assets/readme/overview.png)
 
 ```text
 crc_robocup_vision_ws/
@@ -84,21 +84,21 @@ The ROS2 workspace is the clean submission package. Historical ROS1 material is 
 
 Sim2Real calibration and validation are documented in `docs/sim2real.md`. Elimination strategy and RL self-play design are documented in `docs/strategy.md`. A concise rules summary is kept in `docs/rules_summary.md` instead of redistributing official competition PDFs or extracted pages.
 
-![RoboCup field rule scene](docs/figures/portfolio/arena_rule_scene.png)
+![RoboCup field rule scene](./assets/readme/arena_rule_scene.png)
 
-![Robot sensor layout](docs/figures/portfolio/robot_sensor_layout.png)
+![Robot sensor layout](./assets/readme/robot_sensor_layout.png)
 
-![ROS2 runtime graph](docs/figures/portfolio/ros2_runtime_graph.png)
+![ROS2 runtime graph](./assets/readme/ros2_runtime_graph.png)
 
 ## Learning Strategy
 
 The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. It uses PPO as a fast single-agent baseline and MAPPO-style self-play for two-robot elimination strategy learning.
 
-![Hierarchical MAPPO strategy](docs/figures/rl/rl_hierarchical_policy.png)
+![Hierarchical MAPPO strategy](./assets/readme/rl_hierarchical_policy.png)
 
-![Parallel MAPPO self-play training](docs/figures/rl/rl_selfplay_training.png)
+![Parallel MAPPO self-play training](./assets/readme/rl_selfplay_training.png)
 
-![RL Sim2Real pipeline](docs/figures/rl/rl_sim2real_pipeline.png)
+![RL Sim2Real pipeline](./assets/readme/rl_sim2real_pipeline.png)
 
 ## Reproducibility
 
@@ -110,6 +110,7 @@ The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. It use
 ## Repository Layout
 
 - `config/`: public rule, target-layout and scoring contract used by docs/tests.
+- `assets/readme/`: GitHub README preview images.
 - `crc_robocup_vision_ws/`: ROS2 workspace for the competition robot.
 - `isaaclab_sim/`: IsaacLab arena, rule simulation, and RL training interfaces.
 - `docs/`: architecture, strategy, Sim2Real, migration, and result notes.

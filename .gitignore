@@ -26,6 +26,10 @@ desktop.ini
 *.bag
 *.db3
 *.mcap
+*.mp4
+*.mov
+*.avi
+*.mkv
 *.log
 isaaclab_sim/output/
 isaaclab_sim/runs/
