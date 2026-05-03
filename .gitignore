@@ -34,6 +34,7 @@ desktop.ini
 isaaclab_sim/output/
 isaaclab_sim/runs/
 isaaclab_sim/wandb/
+.isaaclab_runtime/
 isaaclab_sim/rule_pages/
 isaaclab_sim/rules_total.txt
 isaaclab_sim/target_requirements.txt

@@ -125,8 +125,8 @@ class RoboCupVisionRLGymEnv(gym.Env):
             dtype=np.float32,
         )
         self.observation_space = spaces.Box(
-            low=np.full(26, -np.inf, dtype=np.float32),
-            high=np.full(26, np.inf, dtype=np.float32),
+            low=np.full(31, -np.inf, dtype=np.float32),
+            high=np.full(31, np.inf, dtype=np.float32),
             dtype=np.float32,
         )
         self.nav_blockers = self._make_blockers(inflated=True)
@@ -292,6 +292,32 @@ class RoboCupVisionRLGymEnv(gym.Env):
                 return True
         return False
 
+    def _opponent_tracking_features(self) -> np.ndarray:
+        delta = self.blue[:2] - self.yellow[:2]
+        distance = float(np.linalg.norm(delta))
+        bearing = math.atan2(float(delta[1]), float(delta[0])) if distance > 1e-6 else float(self.yellow[2])
+        relative_bearing = wrap_angle(bearing - float(self.yellow[2]))
+        visible = 0.0 if self._line_blocked((float(self.yellow[0]), float(self.yellow[1])), (float(self.blue[0]), float(self.blue[1]))) else 1.0
+
+        base_delta = YELLOW_BASE_XY - self.blue[:2]
+        base_distance = float(np.linalg.norm(base_delta))
+        base_bearing = math.atan2(float(base_delta[1]), float(base_delta[0])) if base_distance > 1e-6 else float(self.blue[2])
+        heading_to_yellow_base = abs(wrap_angle(base_bearing - float(self.blue[2])))
+        proximity_threat = max(0.0, 1.0 - base_distance / 1.10)
+        heading_threat = max(0.0, 1.0 - heading_to_yellow_base / math.pi)
+        threat = max(0.0, min(1.0, proximity_threat * (0.55 + 0.45 * heading_threat) * (1.0 if visible else 0.72)))
+
+        return np.array(
+            [
+                distance / ARENA_SIZE,
+                math.cos(relative_bearing),
+                math.sin(relative_bearing),
+                visible,
+                threat,
+            ],
+            dtype=np.float32,
+        )
+
     def _apply_fire_rule(self, team: str, info: dict[str, object]) -> float:
         target = self._detect_laser_hit(team)
         if target is None:
@@ -328,10 +354,12 @@ class RoboCupVisionRLGymEnv(gym.Env):
             nearest_vec = np.zeros(2, dtype=np.float32)
         blue_base_vec = (BLUE_BASE_XY - self.yellow[:2]) / ARENA_SIZE
         knocked_flags = np.array([1.0 if target.knocked else 0.0 for target in normal_targets], dtype=np.float32)
+        opponent_track = self._opponent_tracking_features()
         obs = np.concatenate(
             [
                 np.array([self.yellow[0] / HALF_ARENA, self.yellow[1] / HALF_ARENA, math.cos(self.yellow[2]), math.sin(self.yellow[2])]),
                 np.array([self.blue[0] / HALF_ARENA, self.blue[1] / HALF_ARENA, math.cos(self.blue[2]), math.sin(self.blue[2])]),
+                opponent_track,
                 np.array([self.armor["blue"] / 4.0, self.armor["yellow"] / 4.0, self.elapsed / self.max_time_s, float(self.last_contact)]),
                 np.array([self.localization_confidence]),
                 knocked_flags,

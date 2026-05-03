@@ -59,8 +59,8 @@ class RoboCupVisionRLSelfPlayEnv:
         }
         self.observation_spaces = {
             team: spaces.Box(
-                low=np.full(29, -np.inf, dtype=np.float32),
-                high=np.full(29, np.inf, dtype=np.float32),
+                low=np.full(34, -np.inf, dtype=np.float32),
+                high=np.full(34, np.inf, dtype=np.float32),
                 dtype=np.float32,
             )
             for team in AGENTS
@@ -270,6 +270,33 @@ class RoboCupVisionRLSelfPlayEnv:
                 return True
         return False
 
+    def _opponent_tracking_features(self, team: str, own: np.ndarray, other: np.ndarray) -> np.ndarray:
+        own_base = YELLOW_BASE_XY if team == "yellow" else BLUE_BASE_XY
+        delta = other[:2] - own[:2]
+        distance = float(np.linalg.norm(delta))
+        bearing = math.atan2(float(delta[1]), float(delta[0])) if distance > 1e-6 else float(own[2])
+        relative_bearing = wrap_angle(bearing - float(own[2]))
+        visible = 0.0 if self._line_blocked((float(own[0]), float(own[1])), (float(other[0]), float(other[1]))) else 1.0
+
+        base_delta = own_base - other[:2]
+        base_distance = float(np.linalg.norm(base_delta))
+        base_bearing = math.atan2(float(base_delta[1]), float(base_delta[0])) if base_distance > 1e-6 else float(other[2])
+        heading_to_own_base = abs(wrap_angle(base_bearing - float(other[2])))
+        proximity_threat = max(0.0, 1.0 - base_distance / 1.10)
+        heading_threat = max(0.0, 1.0 - heading_to_own_base / math.pi)
+        threat = max(0.0, min(1.0, proximity_threat * (0.55 + 0.45 * heading_threat) * (1.0 if visible else 0.72)))
+
+        return np.array(
+            [
+                distance / ARENA_SIZE,
+                math.cos(relative_bearing),
+                math.sin(relative_bearing),
+                visible,
+                threat,
+            ],
+            dtype=np.float32,
+        )
+
     def _score_shot(
         self,
         result: ShotResult,
@@ -324,10 +351,12 @@ class RoboCupVisionRLSelfPlayEnv:
             nearest_vec = np.zeros(2, dtype=np.float32)
         knocked_flags = np.array([1.0 if target.knocked else 0.0 for target in normal_targets], dtype=np.float32)
         rel_opponent = (other[:2] - own[:2]) / ARENA_SIZE
+        opponent_track = self._opponent_tracking_features(team, own, other)
         obs = np.concatenate(
             [
                 np.array([own[0] / HALF_ARENA, own[1] / HALF_ARENA, math.cos(own[2]), math.sin(own[2])]),
                 rel_opponent,
+                opponent_track,
                 np.array([math.cos(other[2]), math.sin(other[2])]),
                 np.array([self.armor[opponent] / 4.0, self.armor[team] / 4.0]),
                 np.array([(self.scores[team] - self.scores[opponent]) / 60.0, self.elapsed / self.max_time_s]),
