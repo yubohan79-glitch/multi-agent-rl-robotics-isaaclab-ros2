@@ -6,11 +6,11 @@
 [![RL](https://img.shields.io/badge/RL-MAPPO%20Self--Play-7C3AED)](isaaclab_sim/rl/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-111827)](LICENSE)
 
-RoboCup VisionRL is a ROS2-based autonomous target-searching and laser-shooting robot project for the China Robot Competition / RoboCup China visual challenge scenario. It combines IsaacLab simulation, reinforcement-learning self-play, Nav2 navigation, AprilTag perception, and a Sim2Real-ready ROS2 runtime contract. The submitted engineering workspace is:
+RoboCup VisionRL is a ROS2-based autonomous target-searching and laser-shooting robot project for the China Robot Competition / RoboCup China visual challenge scenario. It combines IsaacLab simulation, reinforcement-learning, Nav2 navigation, AprilTag perception, and a Sim2Real-ready ROS2 runtime contract. The submitted engineering workspace is:
 
 This repository documents the engineering solution evolved from a national top-three RoboCup China visual challenge entry, rewritten as a clean, reproducible, self-contained portfolio system.
 
-![RoboCup VisionRL overview](https://raw.githubusercontent.com/yub3463-maker/RoboCup-VisionRL-IsaacLab-to-ROS2-Sim2Real/main/assets/readme/overview.png)
+![RoboCup VisionRL overview](assets/readme/overview.png)
 
 ```text
 crc_robocup_vision_ws/
@@ -84,21 +84,21 @@ The ROS2 workspace is the clean submission package. Historical ROS1 material is 
 
 Sim2Real calibration and validation are documented in `docs/sim2real.md`. Elimination strategy and RL self-play design are documented in `docs/strategy.md`. A concise rules summary is kept in `docs/rules_summary.md` instead of redistributing official competition PDFs or extracted pages.
 
-![RoboCup field rule scene](https://raw.githubusercontent.com/yub3463-maker/RoboCup-VisionRL-IsaacLab-to-ROS2-Sim2Real/main/assets/readme/arena_rule_scene.png)
+![RoboCup field rule scene](assets/readme/arena_rule_scene.png)
 
-![Robot sensor layout](https://raw.githubusercontent.com/yub3463-maker/RoboCup-VisionRL-IsaacLab-to-ROS2-Sim2Real/main/assets/readme/robot_sensor_layout.png)
+![Robot sensor layout](assets/readme/robot_sensor_layout.png)
 
-![ROS2 runtime graph](https://raw.githubusercontent.com/yub3463-maker/RoboCup-VisionRL-IsaacLab-to-ROS2-Sim2Real/main/assets/readme/ros2_runtime_graph.png)
+![ROS2 runtime graph](assets/readme/ros2_runtime_graph.png)
 
 ## Learning Strategy
 
 The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. It uses PPO as a fast single-agent baseline and MAPPO-style self-play for two-robot elimination strategy learning.
 
-![Hierarchical MAPPO strategy](https://raw.githubusercontent.com/yub3463-maker/RoboCup-VisionRL-IsaacLab-to-ROS2-Sim2Real/main/assets/readme/rl_hierarchical_policy.png)
+![Hierarchical MAPPO strategy](assets/readme/rl_hierarchical_policy.png)
 
-![Parallel MAPPO self-play training](https://raw.githubusercontent.com/yub3463-maker/RoboCup-VisionRL-IsaacLab-to-ROS2-Sim2Real/main/assets/readme/rl_selfplay_training.png)
+![Parallel MAPPO self-play training](assets/readme/rl_selfplay_training.png)
 
-![RL Sim2Real pipeline](https://raw.githubusercontent.com/yub3463-maker/RoboCup-VisionRL-IsaacLab-to-ROS2-Sim2Real/main/assets/readme/rl_sim2real_pipeline.png)
+![RL Sim2Real pipeline](assets/readme/rl_sim2real_pipeline.png)
 
 ## Runtime Evidence
 
@@ -108,7 +108,7 @@ The ROS2 runtime is organized around `rcvrl_bringup`, `rcvrl_behavior`, `rcvrl_v
 
 The local demo video is intentionally not committed to this repository because runtime videos are large binary artifacts. Keep it under `docs/` locally or publish it through an external video page.
 
-![ROS2 runtime evidence](https://raw.githubusercontent.com/yub3463-maker/RoboCup-VisionRL-IsaacLab-to-ROS2-Sim2Real/main/assets/readme/ros2_runtime_graph.png)
+![ROS2 runtime evidence](assets/readme/ros2_runtime_graph.png)
 
 ## Reproducibility
 
