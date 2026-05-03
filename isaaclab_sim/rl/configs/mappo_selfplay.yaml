@@ -1,0 +1,25 @@
+algorithm: mappo_selfplay
+seed: 7
+num_envs: 16
+rollout_steps: 256
+timesteps: 500000
+learning_rate: 0.0003
+gamma: 0.99
+gae_lambda: 0.95
+clip_coef: 0.20
+entropy_coef: 0.01
+value_coef: 0.50
+max_grad_norm: 0.50
+ctde:
+  centralized_critic: true
+  actor_observation: local_only
+  critic_observation: global_rule_state
+deployment:
+  policy_role: high_level_tactical_actor
+  ros2_contract:
+    - /target_detection
+    - /cmd_vel
+    - /scan
+    - /imu/data_raw
+    - /wheel/odom
+    - /shooter/fire

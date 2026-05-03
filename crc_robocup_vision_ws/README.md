@@ -20,24 +20,24 @@ source install/setup.bash
 Main launch:
 
 ```bash
-ros2 launch wvb_bringup competition.launch.py
+ros2 launch rcvrl_bringup competition.launch.py
 ```
 
 Hardware-free launch check:
 
 ```bash
-ros2 launch wvb_bringup competition.launch.py start_navigation:=false shooter_dry_run:=true auto_start:=false
+ros2 launch rcvrl_bringup competition.launch.py start_navigation:=false shooter_dry_run:=true auto_start:=false
 ```
 
 WSL note: build from a native Linux path such as `~/crc_robocup_vision_ws`. ROSIDL may fail if the workspace is built directly from a Windows-mounted path containing non-ASCII characters.
 
 Package layout:
 
-- `wvb_bringup`: system launch files and top-level runtime wiring
-- `wvb_navigation`: Nav2, slam_toolbox, maps and target route configuration
-- `wvb_vision`: AprilTag Tag36h11 detection from camera images
-- `wvb_shooter`: serial laser module controller
-- `wvb_behavior`: competition state machine
-- `wvb_description`: robot URDF and frame description
-- `wvb_interfaces`: custom ROS2 message definitions
-- `wvb_docs`: project documentation used for portfolio submission
+- `rcvrl_bringup`: system launch files and top-level runtime wiring
+- `rcvrl_navigation`: Nav2, slam_toolbox, maps and target route configuration
+- `rcvrl_vision`: AprilTag Tag36h11 detection from camera images
+- `rcvrl_shooter`: serial laser module controller
+- `rcvrl_behavior`: competition state machine
+- `rcvrl_description`: robot URDF and frame description
+- `rcvrl_interfaces`: custom ROS2 message definitions
+- `rcvrl_docs`: project documentation used for portfolio submission

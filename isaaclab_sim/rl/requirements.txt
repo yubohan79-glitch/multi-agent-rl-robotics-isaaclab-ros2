@@ -1,4 +1,6 @@
 gymnasium>=0.29
 numpy>=1.24
+pytest>=8.0
+PyYAML>=6.0
 torch>=2.2
 stable-baselines3>=2.3

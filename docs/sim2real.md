@@ -13,12 +13,12 @@ This project does not transfer a perfect Isaac Sim state directly to the real ro
 ## Calibration Order
 
 1. Field frame: set `map` origin at the south-west arena corner and verify the 3.0m x 3.0m boundary, 0.5m start zones, 0.5m base zones, inner fences, and 0.3m cube obstacles.
-2. Robot geometry: measure wheel radius, track width, chassis footprint, camera pose, lidar pose, shooter pose, and base link height. Update `wvb_description` and `wvb_bringup/config/sim2real.yaml`.
+2. Robot geometry: measure wheel radius, track width, chassis footprint, camera pose, lidar pose, shooter pose, and base link height. Update `rcvrl_description` and `rcvrl_bringup/config/sim2real.yaml`.
 3. Sensor parity: mount and model IMU, wheel encoders, 2D lidar, RGB camera, depth/ToF range sensors, bumper contacts, and the fixed laser module with the same frames as the real robot.
 4. Differential drive fit: drive straight 1m and rotate 360 degrees on the real robot. Fit wheel radius, track width, motor deadband, max speed, and acceleration limits until odom and measured motion agree.
 5. EKF fit: fuse `/wheel/odom` and `/imu/data_raw` with `robot_localization`; verify yaw does not jump after collision and that odom drift stays bounded during a 360-degree spin.
 6. Camera calibration: record `camera_info`, tag size 0.05m, camera-to-base TF, exposure, focus, and lighting. Validate target distance and center error with AprilTag boards at 0.3m, 0.5m, 0.8m, and 1.2m.
-7. Shooter calibration: measure camera-to-beam offset, serial command latency, hit radius, and fire repeat interval. Save the offset in `sim2real.yaml` and the command bytes in `wvb_shooter/config/shooter.yaml`.
+7. Shooter calibration: measure camera-to-beam offset, serial command latency, hit radius, and fire repeat interval. Save the offset in `sim2real.yaml` and the command bytes in `rcvrl_shooter/config/shooter.yaml`.
 8. Map validation: compare Nav2 paths in sim and on the real arena. The robot must never cross fences, cube obstacles, or the other robot footprint.
 9. Recovery validation: hit the bumper or push the chassis sideways, force localization confidence low, then verify the robot spins in place to rebuild the map before continuing.
 10. Rule validation: run yellow and blue separately with their own route files. Confirm neither side fires on its own base tag or own target owner.

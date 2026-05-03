@@ -1,0 +1,20 @@
+targets:
+  normal:
+    tag_id: 1
+    score: 5
+    hit_effect: remove_one_opponent_armor_plate
+    positions:
+      - {name: T01_NorthMiddle, owner: blue, xy: [0.00, 1.455], yaw: -1.5708}
+      - {name: T02_NorthEast, owner: blue, xy: [1.455, 1.455], yaw: -1.5708}
+      - {name: T03_WestAboveGate, owner: blue, xy: [-1.455, 0.12], yaw: 0.0}
+      - {name: T04_WestBelowGate, owner: yellow, xy: [-1.455, -0.12], yaw: 0.0}
+      - {name: T05_EastAboveGate, owner: blue, xy: [1.455, 0.12], yaw: 3.1416}
+      - {name: T06_EastBelowGate, owner: yellow, xy: [1.455, -0.12], yaw: 3.1416}
+      - {name: T07_SouthWest, owner: yellow, xy: [-1.455, -1.455], yaw: 1.5708}
+      - {name: T08_SouthMiddle, owner: yellow, xy: [0.00, -1.455], yaw: 1.5708}
+  base:
+    yellow: {tag_id: 2, owner: yellow, xy: [1.25, -1.25], tilt_deg: 45}
+    blue: {tag_id: 3, owner: blue, xy: [-1.25, 1.25], tilt_deg: 45}
+  armor:
+    plates_per_base: 4
+    removal_order: [1, 2, 3, 4]

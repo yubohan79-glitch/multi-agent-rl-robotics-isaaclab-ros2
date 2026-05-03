@@ -1,0 +1,27 @@
+scoring:
+  opponent_normal_target_hit: 5
+  opponent_base_target_hit: terminal_win
+  own_base_target_hit: terminal_loss
+  timeout_resolution: higher_score_wins
+
+rule_events:
+  normal_hit:
+    updates:
+      - add_score
+      - knock_down_target
+      - remove_next_opponent_armor
+  base_hit:
+    updates:
+      - knock_down_target
+      - end_match
+  collision_target_fall:
+    score_awarded_to: non_contacting_side
+
+rl_reward_model:
+  opponent_normal_hit: 6.0
+  opponent_base_hit: 70.0
+  own_target_hit: -8.0
+  own_base_hit: -80.0
+  blocked_motion: -0.35
+  useful_relocalization_spin: 0.35
+  wasted_time_step: -0.01

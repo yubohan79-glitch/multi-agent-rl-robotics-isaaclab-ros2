@@ -1,0 +1,8 @@
+algorithm: ppo_baseline
+seed: 7
+num_envs: 8
+timesteps: 200000
+policy: MlpPolicy
+learning_rate: 0.0003
+gamma: 0.99
+purpose: fast_single_agent_smoke_test_before_two_robot_self_play

@@ -7,7 +7,7 @@ Run from the local IsaacLab checkout:
     isaaclab.bat -p <this_file.py> --enable_cameras
 
 The scene is metric and keeps the robot/sensor dimensions aligned with the
-ROS2 description in wvb_description/urdf/robocup_visionrl_robot.urdf.xacro.
+ROS2 description in rcvrl_description/urdf/robocup_visionrl_robot.urdf.xacro.
 """
 
 import argparse

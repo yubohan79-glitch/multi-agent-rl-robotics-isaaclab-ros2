@@ -1,0 +1,31 @@
+arena:
+  frame_id: map
+  size_m: [3.0, 3.0]
+  wall_height_m: 0.5
+  wall_thickness_m: 0.04
+  start_zone_m: [0.5, 0.5]
+  base_zone_m: [0.5, 0.5]
+  obstacle_size_m: [0.3, 0.3, 0.3]
+
+robots:
+  yellow_start: [0.25, -1.25, 1.5708]
+  blue_start: [-0.25, 1.25, -1.5708]
+  envelope_m: [0.34, 0.24, 0.245]
+  drive_type: differential_drive
+
+match:
+  duration_s: 180
+  no_progress_guard_s: 20
+  own_target_fire_allowed: false
+  own_base_hit_result: terminal_loss
+
+sensors:
+  required:
+    - wheel_encoder
+    - imu
+    - lidar_2d
+    - rgb_camera
+    - depth_camera
+    - tof_range
+    - bumper_contact
+    - fixed_laser_module

@@ -53,9 +53,20 @@ jobs:
             isaaclab_sim/rl/robocup_visionrl_gym_env.py \
             isaaclab_sim/rl/robocup_visionrl_selfplay_env.py \
             isaaclab_sim/rl/robocup_visionrl_selfplay_vec.py \
+            isaaclab_sim/rl/evaluate_selfplay.py \
+            isaaclab_sim/rl/export_policy.py \
             isaaclab_sim/rl/train_mappo_selfplay_parallel_torch.py
 
       - name: Run rule-env smoke test
         run: |
           cd isaaclab_sim/rl
           python robocup_visionrl_selfplay_vec.py
+
+      - name: Run project tests
+        run: |
+          python -m pytest tests -q -p no:cacheprovider
+
+      - name: Run deterministic self-play evaluation
+        run: |
+          cd isaaclab_sim/rl
+          python evaluate_selfplay.py --episodes 4 --output ../output/eval/ci_selfplay_summary.json

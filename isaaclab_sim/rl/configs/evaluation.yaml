@@ -1,0 +1,14 @@
+episodes: 32
+seed: 11
+policy: scripted_line_of_sight
+max_time_s: 180
+outputs:
+  summary_json: ../../isaaclab_sim/output/eval/selfplay_summary.json
+metrics:
+  - yellow_win_rate
+  - blue_win_rate
+  - draw_rate
+  - normal_hits_per_episode
+  - base_hit_win_rate
+  - collision_recovery_events
+  - simulated_steps_per_second
