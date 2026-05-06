@@ -1,30 +1,116 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1100" viewBox="0 0 1800 1100">
   <defs>
-    <marker id="arrowGray" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#7A869A"/></marker>
-    <marker id="arrowBlue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#0072B2"/></marker>
-    <marker id="arrowGreen" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#009E73"/></marker>
-
     <style>
-      text{font-family:Inter,Arial,Helvetica,sans-serif}
-      .title{font-size:34px;font-weight:700;fill:#1B1F23}
-      .subtitle{font-size:15px;font-weight:400;fill:#5B6472}
-      .label{font-size:15px;font-weight:650;fill:#1B1F23}
-      .body{font-size:13px;font-weight:400;fill:#5B6472}
-      .small{font-size:11px;font-weight:400;fill:#5B6472}
-      .tiny{font-size:9px;font-weight:500;fill:#5B6472}
-      .panel{fill:#fff;stroke:#C9D1D9;stroke-width:1.2}
-      .soft{fill:#F7F9FB;stroke:#C9D1D9;stroke-width:1}
-      .grid{stroke:#E6EBF0;stroke-width:1}
-      .axis{stroke:#1B1F23;stroke-width:1.1}
-      .wire{fill:none;stroke:#7A869A;stroke-width:1.8;marker-end:url(#arrowGray)}
-      .wireBlue{fill:none;stroke:#0072B2;stroke-width:2;marker-end:url(#arrowBlue)}
-      .wireGreen{fill:none;stroke:#009E73;stroke-width:2;marker-end:url(#arrowGreen)}
-      .dash{stroke-dasharray:6 6}
+      .bg{fill:#fff}.title{font:700 38px Arial,Inter,sans-serif;fill:#111827}.sub{font:500 16px Arial,Inter,sans-serif;fill:#64748b}
+      .panel{fill:#f8fafc;stroke:#cbd5e1;stroke-width:2}.sim{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.rand{fill:#fffbeb;stroke:#d6a90e;stroke-width:2}.real{fill:#ecfdf5;stroke:#16a34a;stroke-width:2}.safe{fill:#fff1f2;stroke:#e11d48;stroke-width:2}.card{fill:#fff;stroke:#cbd5e1;stroke-width:2}
+      .h{font:700 22px Arial,Inter,sans-serif;fill:#1f2937}.mh{font:700 16px Arial,Inter,sans-serif;fill:#334155}.txt{font:500 14px Arial,Inter,sans-serif;fill:#475569}.small{font:600 12px Arial,Inter,sans-serif;fill:#475569}.tiny{font:700 10px Arial,Inter,sans-serif;fill:#475569}.eq{font:600 15px Consolas,Menlo,monospace;fill:#111827}
+      .arrow{fill:none;stroke:#64748b;stroke-width:3;marker-end:url(#ad)}.arrowB{fill:none;stroke:#2563eb;stroke-width:4;marker-end:url(#ab)}.arrowG{fill:none;stroke:#16a34a;stroke-width:4;marker-end:url(#ag)}.arrowR{fill:none;stroke:#e11d48;stroke-width:3.5;marker-end:url(#ar)}.arrowY{fill:none;stroke:#d6a90e;stroke-width:3.5;marker-end:url(#ay)}.dash{stroke-dasharray:9 8}.blue{fill:#1d4ed8}.green{fill:#15803d}.red{fill:#be123c}.yellow{fill:#a16207}
+      .arena{fill:#fff;stroke:#111827;stroke-width:3}.grid{stroke:#e2e8f0;stroke-width:1;stroke-dasharray:5 6}.robot{fill:#fff;stroke:#111827;stroke-width:2}.wheel{fill:#111827}
     </style>
-
+    <marker id="ad" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#64748b"/></marker>
+    <marker id="ab" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#2563eb"/></marker>
+    <marker id="ag" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#16a34a"/></marker>
+    <marker id="ar" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#e11d48"/></marker>
+    <marker id="ay" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#d6a90e"/></marker>
   </defs>
-  <rect width="1600" height="900" fill="#FFFFFF"/>
-  <text class="title" x="64" y="58">IsaacLab-to-ROS2 Sim2Real Pipeline</text>
-  <text class="subtitle" x="66" y="86">Training, export, ROS2 deployment and evidence collection are separated by explicit contracts.</text>
-<rect class="soft" x="64.0" y="126.0" width="1468.0" height="650.0" rx="10.0"/><rect class="panel" x="115.0" y="295.0" width="220.0" height="150.0" rx="6.0"/><text class="label" x="139.0" y="345.0" text-anchor="start">IsaacLab scene</text><text class="body" x="139.0" y="382.0" text-anchor="start">rigid bodies, targets, sensors</text><path class="wireBlue" d="M335.0 370.0 L395.0 370.0"/><rect class="panel" x="400.0" y="295.0" width="220.0" height="150.0" rx="6.0"/><text class="label" x="424.0" y="345.0" text-anchor="start">Rule env</text><text class="body" x="424.0" y="382.0" text-anchor="start">fast MAPPO rollout</text><path class="wireBlue" d="M620.0 370.0 L680.0 370.0"/><rect class="panel" x="685.0" y="295.0" width="220.0" height="150.0" rx="6.0"/><text class="label" x="709.0" y="345.0" text-anchor="start">Policy export</text><text class="body" x="709.0" y="382.0" text-anchor="start">TorchScript / ONNX actor</text><path class="wireBlue" d="M905.0 370.0 L965.0 370.0"/><rect class="panel" x="970.0" y="295.0" width="220.0" height="150.0" rx="6.0"/><text class="label" x="994.0" y="345.0" text-anchor="start">ROS2 runtime</text><text class="body" x="994.0" y="382.0" text-anchor="start">Nav2, vision, shooter</text><path class="wireBlue" d="M1190.0 370.0 L1250.0 370.0"/><rect class="panel" x="1255.0" y="295.0" width="220.0" height="150.0" rx="6.0"/><text class="label" x="1279.0" y="345.0" text-anchor="start">Field logs</text><text class="body" x="1279.0" y="382.0" text-anchor="start">bags, drift, replay audit</text><path class="wire dash" d="M1260 445 C1260 610 250 610 250 445"/><text class="body" x="595.0" y="650.0" text-anchor="start">calibration feedback: sensor noise, contact margins and action shields</text><rect class="panel" x="430.0" y="170.0" width="730.0" height="68.0" rx="6.0"/><text class="label" x="470.0" y="214.0" text-anchor="start">No privileged simulator state crosses into deployment</text>
+  <rect class="bg" width="1800" height="1100"/>
+  <text class="title" x="76" y="66">Sim2Real Pipeline for RL Strategy Deployment</text>
+  <text class="sub" x="78" y="98">The learned strategy crosses the reality gap through staged simulation, randomized training, ROS2 parity, replay validation, and safety-gated deployment.</text>
+
+  <rect class="panel" x="60" y="132" width="1680" height="880" rx="14"/>
+
+  <g transform="translate(100 190)">
+    <rect class="sim" x="0" y="0" width="280" height="170" rx="10"/>
+    <text class="h" x="28" y="42">1. Fast Rule Env</text>
+    <text class="txt" x="28" y="76">cheap PPO/MAPPO debugging</text>
+    <text class="txt" x="28" y="108">collision and scoring rules</text>
+    <text class="txt" x="28" y="140">thousands of rollouts</text>
+  </g>
+  <path class="arrowB" d="M390 275 H470"/>
+  <g transform="translate(480 190)">
+    <rect class="sim" x="0" y="0" width="280" height="170" rx="10"/>
+    <text class="h" x="28" y="42">2. IsaacLab Twin</text>
+    <text class="txt" x="28" y="76">rigid-body robots and targets</text>
+    <text class="txt" x="28" y="108">lidar, camera, IMU, contact</text>
+    <text class="txt" x="28" y="140">two-agent visual challenge</text>
+  </g>
+  <path class="arrowY" d="M770 275 H850"/>
+  <g transform="translate(860 190)">
+    <rect class="rand" x="0" y="0" width="280" height="170" rx="10"/>
+    <text class="h" x="28" y="42">3. Randomization</text>
+    <text class="txt" x="28" y="76">friction, mass, lighting</text>
+    <text class="txt" x="28" y="108">tag noise, odom drift</text>
+    <text class="txt" x="28" y="140">latency and shot uncertainty</text>
+  </g>
+  <path class="arrowG" d="M1150 275 H1230"/>
+  <g transform="translate(1240 190)">
+    <rect class="real" x="0" y="0" width="360" height="170" rx="10"/>
+    <text class="h" x="28" y="42">4. ROS2 Contract</text>
+    <text class="txt" x="28" y="76">TargetDetection, Nav2 action</text>
+    <text class="txt" x="28" y="108">/cmd_vel and shooter services</text>
+    <text class="txt" x="28" y="140">same API as the robot</text>
+  </g>
+
+  <g transform="translate(100 455)">
+    <rect class="card" x="0" y="0" width="470" height="250" rx="10"/>
+    <text class="h" x="28" y="42">A. Digital Twin Checks</text>
+    <g transform="translate(54 78)">
+      <rect class="arena" x="0" y="0" width="210" height="150"/>
+      <path class="grid" d="M52 0 V150 M104 0 V150 M156 0 V150 M0 50 H210 M0 100 H210"/>
+      <rect x="0" y="0" width="40" height="40" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+      <rect x="170" y="110" width="40" height="40" fill="#fef3c7" stroke="#d6a90e" stroke-width="2"/>
+      <g transform="translate(122 105) rotate(-36)"><rect class="robot" x="-18" y="-12" width="36" height="24" rx="5"/><circle cx="20" cy="0" r="4" fill="#111827"/></g>
+      <path d="M122 105 C140 70 160 44 194 18" fill="none" stroke="#e11d48" stroke-width="3" stroke-dasharray="8 6"/>
+      <path d="M68 104 C92 76 126 70 156 104" fill="none" stroke="#06b6d4" stroke-width="2" stroke-dasharray="7 5"/>
+    </g>
+    <g transform="translate(310 78)">
+      <rect class="card" x="0" y="0" width="120" height="34" rx="5"/><text class="small" x="60" y="22" text-anchor="middle">hit rate</text>
+      <line x1="8" y1="124" x2="118" y2="124" stroke="#94a3b8" stroke-width="2"/><line x1="8" y1="124" x2="8" y2="50" stroke="#94a3b8" stroke-width="2"/>
+      <path d="M12 116 C34 96 60 82 88 72 C100 68 110 62 116 58" fill="none" stroke="#16a34a" stroke-width="3"/>
+    </g>
+  </g>
+
+  <path class="arrowG" d="M570 580 H650"/><text class="tiny green" x="610" y="562" text-anchor="middle">logs</text>
+
+  <g transform="translate(660 455)">
+    <rect class="real" x="0" y="0" width="430" height="250" rx="10"/>
+    <text class="h" x="28" y="42">B. Interface Parity</text>
+    <text class="txt" x="28" y="74">policy never consumes simulator-only state</text>
+    <rect class="card" x="42" y="112" width="320" height="34" rx="5"/><text class="mh" x="202" y="135" text-anchor="middle">/target_detection</text>
+    <rect class="card" x="42" y="158" width="320" height="34" rx="5"/><text class="mh" x="202" y="181" text-anchor="middle">Nav2 NavigateToPose</text>
+    <rect class="safe" x="42" y="204" width="320" height="34" rx="5"/><text class="mh red" x="202" y="227" text-anchor="middle">/shooter/fire behind rule gate</text>
+  </g>
+
+  <path class="arrowG" d="M1090 580 H1170"/><text class="tiny green" x="1130" y="562" text-anchor="middle">same API</text>
+
+  <g transform="translate(1180 455)">
+    <rect class="safe" x="0" y="0" width="420" height="250" rx="10"/>
+    <text class="h" x="28" y="42">C. Real-Robot Deployment</text>
+    <g transform="translate(76 78)">
+      <rect x="0" y="70" width="210" height="82" rx="14" fill="#fff" stroke="#111827" stroke-width="2"/>
+      <rect x="36" y="24" width="138" height="72" rx="10" fill="#fff" stroke="#111827" stroke-width="2"/>
+      <circle class="wheel" cx="28" cy="140" r="22"/><circle class="wheel" cx="182" cy="140" r="22"/>
+      <rect x="82" y="0" width="54" height="32" rx="6" fill="#111827"/>
+      <rect x="172" y="50" width="42" height="26" rx="5" fill="#fff" stroke="#111827" stroke-width="2"/>
+      <path d="M214 62 L300 30 L300 96 Z" fill="#67e8f9" opacity=".22" stroke="#06b6d4" stroke-width="2"/>
+      <path d="M214 62 H320" stroke="#e11d48" stroke-width="3" stroke-dasharray="8 6"/>
+    </g>
+    <text class="txt" x="28" y="210">calibrated camera, lidar, wheel baseline and shooter timing</text>
+    <rect class="safe" x="28" y="218" width="300" height="30" rx="5"/><text class="small red" x="178" y="238" text-anchor="middle">opponent-target safety remains active</text>
+  </g>
+
+  <g transform="translate(100 790)">
+    <rect class="card" x="0" y="0" width="1500" height="150" rx="10"/>
+    <text class="h" x="28" y="42">D. Replay Validation and Failure Feedback Loop</text>
+    <text class="txt" x="28" y="78">Collision or map drift lowers localization confidence; spin-scan recovery must restore confidence before re-entering attack mode.</text>
+    <g transform="translate(780 38)">
+      <line x1="0" y1="88" x2="300" y2="88" stroke="#94a3b8" stroke-width="2"/><line x1="0" y1="88" x2="0" y2="18" stroke="#94a3b8" stroke-width="2"/>
+      <path d="M4 28 C70 34 94 92 150 88 C204 84 216 36 296 28" fill="none" stroke="#2563eb" stroke-width="3"/>
+      <text class="tiny" x="150" y="116" text-anchor="middle">collision -> spin scan -> recovered</text>
+    </g>
+    <g transform="translate(1140 44)">
+      <rect class="safe" x="0" y="0" width="250" height="34" rx="5"/><text class="mh red" x="125" y="23" text-anchor="middle">domain gap cases</text>
+      <rect class="card" x="0" y="50" width="250" height="34" rx="5"/><text class="mh" x="125" y="73" text-anchor="middle">update randomization</text>
+    </g>
+  </g>
 </svg>

@@ -1,51 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="850" viewBox="0 0 1600 850">
-  <defs>
-    <marker id="arrowGray" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#7A869A"/></marker>
-    <marker id="arrowBlue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#0072B2"/></marker>
-    <marker id="arrowGreen" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#009E73"/></marker>
-
-    <style>
-      text{font-family:Inter,Arial,Helvetica,sans-serif}
-      .title{font-size:34px;font-weight:700;fill:#1B1F23}
-      .subtitle{font-size:15px;font-weight:400;fill:#5B6472}
-      .label{font-size:15px;font-weight:650;fill:#1B1F23}
-      .body{font-size:13px;font-weight:400;fill:#5B6472}
-      .small{font-size:11px;font-weight:400;fill:#5B6472}
-      .tiny{font-size:9px;font-weight:500;fill:#5B6472}
-      .panel{fill:#fff;stroke:#C9D1D9;stroke-width:1.2}
-      .soft{fill:#F7F9FB;stroke:#C9D1D9;stroke-width:1}
-      .grid{stroke:#E6EBF0;stroke-width:1}
-      .axis{stroke:#1B1F23;stroke-width:1.1}
-      .wire{fill:none;stroke:#7A869A;stroke-width:1.8;marker-end:url(#arrowGray)}
-      .wireBlue{fill:none;stroke:#0072B2;stroke-width:2;marker-end:url(#arrowBlue)}
-      .wireGreen{fill:none;stroke:#009E73;stroke-width:2;marker-end:url(#arrowGreen)}
-      .dash{stroke-dasharray:6 6}
-    </style>
-
-  </defs>
-  <rect width="1600" height="850" fill="#FFFFFF"/>
-  <text class="title" x="64" y="58">Recessed-Base Evaluation Metrics</text>
-  <text class="subtitle" x="66" y="86">Evaluation snapshot for moving boxes and recessed-base target rules.</text>
-
-  <rect class="soft" x="58.0" y="120.0" width="1484.0" height="670.0" rx="10.0"/>
-  <text class="label" x="110.0" y="190.0" text-anchor="start">A. Win balance</text>
-  <rect x="148.1" y="425.5" width="97.1" height="149.5" rx="3" fill="#E69F00"/>
-<text class="tiny" x="196.7" y="417.5" text-anchor="middle">45.3%</text>
-<text class="tiny" x="196.7" y="593.0" text-anchor="middle">Yellow</text>
-<rect x="321.5" y="404.9" width="97.1" height="170.1" rx="3" fill="#0072B2"/>
-<text class="tiny" x="370.0" y="396.9" text-anchor="middle">51.6%</text>
-<text class="tiny" x="370.0" y="593.0" text-anchor="middle">Blue</text>
-<rect x="494.8" y="564.7" width="97.1" height="10.3" rx="3" fill="#7A869A"/>
-<text class="tiny" x="543.3" y="556.7" text-anchor="middle">3.1%</text>
-<text class="tiny" x="543.3" y="593.0" text-anchor="middle">Draw</text>
-  <text class="label" x="790.0" y="190.0" text-anchor="start">B. Contract metrics</text>
-  <rect class="panel" x="790.0" y="245.0" width="610.0" height="330.0" rx="6.0"/>
-  <text class="body" x="830.0" y="300.0" text-anchor="start">normal hits / episode: 1.906</text>
-<text class="body" x="830.0" y="342.0" text-anchor="start">base wins / episode: 0.969</text>
-<text class="body" x="830.0" y="384.0" text-anchor="start">own-target penalties / episode: 0.000</text>
-<text class="body" x="830.0" y="426.0" text-anchor="start">hard replay violations: 0</text>
-<text class="body" x="830.0" y="468.0" text-anchor="start">strict replay warnings: 0</text>
-  <rect class="panel" x="160.0" y="675.0" width="1180.0" height="62.0" rx="6.0"/>
-  <text class="body" x="190.0" y="715.0" text-anchor="start">Audited figures use committed CSV/JSON snapshots under docs/rl_data, not local runtime output.</text>
-
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="930" viewBox="0 0 1700 930">
+<style>
+.title{font:700 36px Arial, sans-serif;fill:#172033}.sub{font:18px Arial,sans-serif;fill:#667085}.h{font:700 22px Arial,sans-serif;fill:#172033}.txt{font:16px Arial,sans-serif;fill:#344054}.small{font:13px Arial,sans-serif;fill:#667085}.mono{font:13px Consolas,monospace;fill:#344054}
+</style><rect width="100%" height="100%" fill="#FFFFFF"/>
+<text x="70" y="70" class="title">Off-Axis Base-Rush Evaluation</text>
+<text x="70" y="104" class="sub">64 stochastic evaluation episodes and 16 strict replay audit episodes from the new checkpoint.</text>
+<rect x="90" y="150" width="820" height="470" rx="8" fill="#FFFFFF" stroke="#C8D2E0"/><text x="130" y="198" class="h">Win Rate and Safety</text><rect x="150" y="374.68" width="120" height="145.32" rx="6" fill="#F2C94C"/><text x="210.0" y="364.68" text-anchor="middle" class="h">0.484</text><text x="210.0" y="544.0" text-anchor="middle" class="txt">Yellow win</text><rect x="360" y="388.75" width="120" height="131.25" rx="6" fill="#2563EB"/><text x="420.0" y="378.75" text-anchor="middle" class="h">0.438</text><text x="420.0" y="544.0" text-anchor="middle" class="txt">Blue win</text><rect x="570" y="496.57" width="120" height="23.43" rx="6" fill="#98A2B3"/><text x="630.0" y="486.57" text-anchor="middle" class="h">0.0781</text><text x="630.0" y="544.0" text-anchor="middle" class="txt">Draw</text><rect x="780" y="243.43" width="120" height="276.57" rx="6" fill="#16A34A"/><text x="840.0" y="233.43" text-anchor="middle" class="h">0.922</text><text x="840.0" y="544.0" text-anchor="middle" class="txt">Base wins</text><rect x="990" y="518" width="120" height="2" rx="6" fill="#D92D20"/><text x="1050.0" y="508" text-anchor="middle" class="h">0</text><text x="1050.0" y="544" text-anchor="middle" class="txt">Own penalties</text>
+<rect x="970" y="150" width="620" height="470" rx="8" fill="#FFFFFF" stroke="#C8D2E0"/><text x="1010" y="198" class="h">Winner Normal Targets Before Base</text><rect x="1020" y="509.6875" width="70" height="20.3125" rx="6" fill="#98A2B3"/><text x="1055.0" y="499.6875" text-anchor="middle" class="h">5</text><text x="1055.0" y="554.0" text-anchor="middle" class="txt">0 hit</text><rect x="1140" y="294.375" width="70" height="235.625" rx="6" fill="#16A34A"/><text x="1175.0" y="284.375" text-anchor="middle" class="h">58</text><text x="1175.0" y="554.0" text-anchor="middle" class="txt">1 hit</text><rect x="1260" y="525.9375" width="70" height="4.0625" rx="6" fill="#16A34A"/><text x="1295.0" y="515.9375" text-anchor="middle" class="h">1</text><text x="1295.0" y="554.0" text-anchor="middle" class="txt">2 hit</text><rect x="1380" y="528" width="70" height="2" rx="6" fill="#98A2B3"/><text x="1415.0" y="518" text-anchor="middle" class="h">0</text><text x="1415.0" y="554" text-anchor="middle" class="txt">3 hit</text><rect x="1500" y="528" width="70" height="2" rx="6" fill="#98A2B3"/><text x="1535.0" y="518" text-anchor="middle" class="h">0</text><text x="1535.0" y="554" text-anchor="middle" class="txt">4 hit</text>
+<rect x="90" y="690" width="1500" height="130" rx="8" fill="#F7F9FC" stroke="#C8D2E0"/>
+<text x="130" y="742" class="txt">normal hits / episode: 1.5156 | base-hit wins / episode: 0.9219 | hard violations: 0 | warnings: 0 | target contact: 0.0</text>
+<text x="130" y="784" class="txt">Policy condition: shooting range 0.05-0.50 m, dwell 0.80 s, base hit caps 60/70/85/95%, off-axis gate for 1-2 target base rush.</text>
+<text x="70" y="880" class="small">Sources: mappo_offaxis_base_seed121_eval64_stochastic.json; mappo_offaxis_base_seed121_strict16/strict_replay_summary.json</text>
 </svg>

@@ -1,30 +1,15 @@
 {
-  "style": "publication_vector_v2",
-  "palette": "Okabe-Ito inspired, colorblind-safe",
   "figures": [
-    "docs/figures/portfolio/overview.svg",
-    "docs/figures/portfolio/arena_rule_scene.svg",
-    "docs/figures/portfolio/robot_sensor_layout.svg",
-    "docs/figures/portfolio/ros2_runtime_graph.svg",
-    "docs/figures/rl/rl_hierarchical_policy.svg",
-    "docs/figures/rl/rl_selfplay_training.svg",
-    "docs/figures/rl/rl_sim2real_pipeline.svg",
     "docs/figures/rl/rl_training_curve_gpu.svg",
     "docs/figures/rl/rl_strategy_event_metrics.svg",
     "docs/figures/rl/rl_policy_episode_trace.svg",
-    "docs/figures/rl/rl_tactical_contract.svg",
-    "docs/figures/rl/rl_sensorfusion_training_curve.svg",
-    "docs/figures/rl/rl_sensorfusion_eval_metrics.svg",
-    "docs/figures/rl/rl_offaxis_base_training_curve.svg",
-    "docs/figures/rl/rl_offaxis_base_eval_metrics.svg",
-    "docs/figures/rl/ros2_isaaclab_sensorfusion_architecture.svg",
-    "docs/figures/rl/ros2_motion_drift_live.svg"
+    "docs/figures/rl/rl_tactical_contract.svg"
   ],
   "source_data": [
-    "docs/rl_data/mappo_selfplay_full_gpu/",
-    "docs/rl_data/drshield_recessed_base_shared/",
-    "docs/rl_data/recessed_base_boxmove_final_shared/",
-    "docs/rl_data/ros2_motion_drift_live/motion_drift_live_log.csv",
-    "docs/rl_data/rule_geometry_audit.csv"
+    "docs\\rl_data\\mappo_selfplay_full_gpu\\training_curve.csv",
+    "docs\\rl_data\\mappo_selfplay_full_gpu\\training_summary.json",
+    "docs\\rl_data\\mappo_selfplay_full_gpu\\mappo_full_gpu_eval.json",
+    "docs\\rl_data\\mappo_selfplay_full_gpu\\mappo_full_gpu_eval_stochastic.json",
+    "docs\\rl_data\\mappo_selfplay_full_gpu\\scripted_rules_baseline_eval.json"
   ]
 }
