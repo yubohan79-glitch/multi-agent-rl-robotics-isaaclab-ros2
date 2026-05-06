@@ -1,4 +1,4 @@
-# RoboCup VisionRL: IsaacLab-to-ROS2 Sim2Real
+# Multi-Agent Robot RL: IsaacLab + ROS2 Sim2Real
 
 [![ROS2 Jazzy](https://img.shields.io/badge/ROS2-Jazzy-2563EB)](https://docs.ros.org/en/jazzy/)
 [![Ubuntu 24.04](https://img.shields.io/badge/Ubuntu-24.04-E95420)](https://ubuntu.com/)
@@ -6,7 +6,9 @@
 [![RL](https://img.shields.io/badge/RL-MAPPO%20Self--Play-7C3AED)](isaaclab_sim/rl/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-111827)](LICENSE)
 
-RoboCup VisionRL is a ROS2-based autonomous target-searching and laser-shooting robot project for the China Robot Competition / RoboCup China visual challenge scenario. It combines IsaacLab simulation, reinforcement learning, Nav2 navigation, AprilTag perception, multi-sensor fusion and a Sim2Real-ready ROS2 runtime contract.
+Multi-Agent Robot RL is a practical robotics stack for multi-agent reinforcement learning, IsaacLab simulation, ROS2/Nav2 deployment, sensor fusion, visual target interaction and Sim2Real evaluation. It uses a RoboCup-style visual challenge arena as a hard benchmark, but the reusable pieces are broader: dual-agent MAPPO self-play, rule-aware action shielding, pushable rigid obstacles, ROS2 runtime contracts and reproducible evaluation/replay tooling.
+
+Search keywords: multi-agent reinforcement learning, robot learning, IsaacLab, Isaac Sim, ROS2, Nav2, Sim2Real, MAPPO, autonomous robots, sensor fusion, visual navigation.
 
 This repository documents the engineering solution evolved from a national top-three RoboCup China visual challenge entry, rewritten as a clean, reproducible, self-contained portfolio system. The submitted ROS2 engineering workspace is `crc_robocup_vision_ws/`.
 

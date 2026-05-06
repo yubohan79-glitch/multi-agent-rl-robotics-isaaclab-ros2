@@ -3,7 +3,25 @@
 Recommended repository URL:
 
 ```text
-https://github.com/yubohan79-glitch/RoboCupVisionRL_IsaacLab_ROS2
+https://github.com/yubohan79-glitch/multi-agent-rl-robotics-isaaclab-ros2
+```
+
+Recommended repository name:
+
+```text
+multi-agent-rl-robotics-isaaclab-ros2
+```
+
+Recommended description:
+
+```text
+Multi-agent reinforcement learning for robotics with IsaacLab, ROS2/Nav2, Sim2Real evaluation, sensor fusion and reproducible replay tooling.
+```
+
+Recommended GitHub topics:
+
+```text
+multi-agent-rl, reinforcement-learning, robot-learning, robotics, isaaclab, isaac-sim, ros2, nav2, sim2real, mappo, autonomous-robots, sensor-fusion
 ```
 
 Submission contents:
@@ -31,12 +49,37 @@ source code, ROS2 packages, RL scripts, reproducibility data, figures and compac
 README media.
 
 ```bash
-git remote set-url origin https://github.com/yubohan79-glitch/RoboCupVisionRL_IsaacLab_ROS2.git
+git remote set-url origin https://github.com/yubohan79-glitch/multi-agent-rl-robotics-isaaclab-ros2.git
 git add -A
 git status --short
-git commit -m "Publish RoboCup VisionRL IsaacLab ROS2 project"
+git commit -m "Publish multi-agent robot RL IsaacLab ROS2 project"
 git branch -M main
 git push -u origin main
+```
+
+If the old repository already exists, rename it first from GitHub CLI:
+
+```bash
+gh repo rename multi-agent-rl-robotics-isaaclab-ros2 \
+  --repo yubohan79-glitch/RoboCupVisionRL_IsaacLab_ROS2 \
+  --confirm
+
+gh repo edit yubohan79-glitch/multi-agent-rl-robotics-isaaclab-ros2 \
+  --description "Multi-agent reinforcement learning for robotics with IsaacLab, ROS2/Nav2, Sim2Real evaluation, sensor fusion and reproducible replay tooling." \
+  --add-topic multi-agent-rl \
+  --add-topic reinforcement-learning \
+  --add-topic robot-learning \
+  --add-topic robotics \
+  --add-topic isaaclab \
+  --add-topic isaac-sim \
+  --add-topic ros2 \
+  --add-topic nav2 \
+  --add-topic sim2real \
+  --add-topic mappo \
+  --add-topic autonomous-robots \
+  --add-topic sensor-fusion
+
+git remote set-url origin git@github.com:yubohan79-glitch/multi-agent-rl-robotics-isaaclab-ros2.git
 ```
 
 Do not commit local runtime artifacts:
