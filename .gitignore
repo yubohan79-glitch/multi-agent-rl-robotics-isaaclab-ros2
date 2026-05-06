@@ -31,13 +31,20 @@ desktop.ini
 *.avi
 *.mkv
 *.log
+!docs/media/
+!docs/media/*.mp4
+!docs/media/*.gif
+docs/media/debug_frames/
 isaaclab_sim/output/
+**/isaaclab_sim/output/
 isaaclab_sim/runs/
 isaaclab_sim/wandb/
 .isaaclab_runtime/
 isaaclab_sim/rule_pages/
 isaaclab_sim/rules_total.txt
 isaaclab_sim/target_requirements.txt
+docs/rule_reference_pages/
+docs/rl_data/rules_pdf_extract.txt
 rosbags/
 
 # Training artifacts and checkpoints

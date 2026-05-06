@@ -1,0 +1,15 @@
+{
+  "figures": [
+    "docs/figures/rl/rl_offaxis_base_training_curve.svg",
+    "docs/figures/rl/rl_offaxis_base_eval_metrics.svg",
+    "docs/figures/rl/ros2_motion_drift_live.svg",
+    "docs/figures/rl/ros2_isaaclab_sensorfusion_architecture.svg"
+  ],
+  "data_sources": [
+    "C:\\Users\\Administrator\\Desktop\\\u4f5c\u54c1\u96c6\\RoboCupVisionRL_IsaacLab_ROS2\\isaaclab_sim\\output\\rl\\mappo_offaxis_base_ros2_gpu_seed121\\training_curve.csv",
+    "C:\\Users\\Administrator\\Desktop\\\u4f5c\u54c1\u96c6\\RoboCupVisionRL_IsaacLab_ROS2\\isaaclab_sim\\output\\eval\\mappo_offaxis_base_seed121_eval64_stochastic.json",
+    "C:\\Users\\Administrator\\Desktop\\\u4f5c\u54c1\u96c6\\RoboCupVisionRL_IsaacLab_ROS2\\isaaclab_sim\\output\\replay\\mappo_offaxis_base_seed121_strict16\\strict_replay_summary.json",
+    "C:\\Users\\Administrator\\Desktop\\\u4f5c\u54c1\u96c6\\RoboCupVisionRL_IsaacLab_ROS2\\docs\\rl_data\\ros2_motion_drift_live\\motion_drift_live_log.csv",
+    "C:\\Users\\Administrator\\Desktop\\\u4f5c\u54c1\u96c6\\RoboCupVisionRL_IsaacLab_ROS2\\docs\\rl_data\\ros2_motion_drift_live\\motion_drift_live_summary.json"
+  ]
+}

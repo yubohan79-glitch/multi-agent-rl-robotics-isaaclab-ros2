@@ -1,0 +1,15 @@
+{
+  "figures": [
+    "docs/figures/rl/rl_training_curve_gpu.svg",
+    "docs/figures/rl/rl_strategy_event_metrics.svg",
+    "docs/figures/rl/rl_policy_episode_trace.svg",
+    "docs/figures/rl/rl_tactical_contract.svg"
+  ],
+  "source_data": [
+    "docs\\rl_data\\mappo_selfplay_full_gpu\\training_curve.csv",
+    "docs\\rl_data\\mappo_selfplay_full_gpu\\training_summary.json",
+    "docs\\rl_data\\mappo_selfplay_full_gpu\\mappo_full_gpu_eval.json",
+    "docs\\rl_data\\mappo_selfplay_full_gpu\\mappo_full_gpu_eval_stochastic.json",
+    "docs\\rl_data\\mappo_selfplay_full_gpu\\scripted_rules_baseline_eval.json"
+  ]
+}

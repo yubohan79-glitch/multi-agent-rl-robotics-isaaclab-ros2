@@ -20,12 +20,17 @@ competition_behavior:
     target_center_tolerance: 0.08
     target_distance_m: 0.52
     target_distance_tolerance_m: 0.06
+    laser_dwell_required_s: 0.80
     localization_recovery_spin_s: 5.8
     localization_recovery_angular_speed: 0.55
     localization_recovery_limit: 2
     collision_recovery_cooldown_s: 2.0
     collision_accel_threshold: 4.0
     collision_yaw_rate_threshold: 2.4
+    filtered_odom_topic: "/odometry/filtered"
+    filtered_odom_min_confidence: 0.35
+    filtered_odom_xy_cov_warn: 0.18
+    filtered_odom_yaw_cov_warn: 0.16
     imu_topic: "/imu/data_raw"
     bumper_left_topic: "/bumper/front_left"
     bumper_right_topic: "/bumper/front_right"

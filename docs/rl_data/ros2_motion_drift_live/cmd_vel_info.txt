@@ -1,0 +1,3 @@
+Type: geometry_msgs/msg/Twist
+Publisher count: 1
+Subscription count: 1

@@ -1,0 +1,730 @@
+{
+  "summary": {
+    "episodes": 16,
+    "yellow_win_rate": 0.625,
+    "blue_win_rate": 0.375,
+    "draw_or_timeout_rate": 0.0,
+    "hard_violations": 0,
+    "warnings": 0,
+    "normal_hits_per_episode": 2.0,
+    "base_wins_per_episode": 1.0,
+    "own_target_penalties_per_episode": 0.0,
+    "blocked_steps_per_episode": 0.0,
+    "target_contact_events_per_episode": 0.0,
+    "robot_contacts_per_episode": 28.25,
+    "recovery_events_per_episode": 0.25,
+    "block_steps_per_episode": 1.75,
+    "base_rush_steps_per_episode": 126.0625,
+    "wall_time_s": 37.438
+  },
+  "checkpoint": "isaaclab_sim/output/rl/mappo_drshield_recessed_base_shared_gpu_seed419/policy.pt",
+  "deterministic": false,
+  "device": "cuda",
+  "torch_version": "2.11.0+cu128",
+  "cuda_device": "NVIDIA GeForce RTX 4090",
+  "training_config": {
+    "timesteps": 220000,
+    "num_envs": 24,
+    "rollout_steps": 128,
+    "update_epochs": 3,
+    "minibatch_size": 2048,
+    "gamma": 0.995,
+    "gae_lambda": 0.95,
+    "clip_coef": 0.2,
+    "ent_coef": 0.01,
+    "vf_coef": 0.5,
+    "max_grad_norm": 0.5,
+    "learning_rate": 0.0003,
+    "seed": 419,
+    "hidden_dim": 192,
+    "policy_mode": "residual_expert",
+    "residual_scale": 0.4,
+    "residual_l2_coef": 0.0015,
+    "actor_mode": "shared",
+    "domain_randomization": true,
+    "action_shield": true
+  },
+  "policy_mode": "residual_expert",
+  "residual_scale": 0.4,
+  "episodes": [
+    {
+      "episode": 0,
+      "seed": 3300,
+      "winner": "yellow",
+      "elapsed_s": 22.5,
+      "steps": 225,
+      "scores": {
+        "yellow": 65,
+        "blue": 5
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": 228.953,
+        "blue": -77.874
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 30,
+        "block_steps": 2,
+        "base_rush_steps": 103,
+        "interference_steps": 2
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate",
+          "BlueBaseTarget"
+        ],
+        "blue": [
+          "T06_EastBelowGate"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 1,
+      "seed": 3301,
+      "winner": "yellow",
+      "elapsed_s": 23.5,
+      "steps": 235,
+      "scores": {
+        "yellow": 65,
+        "blue": 5
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": 213.796,
+        "blue": -77.045
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 28,
+        "block_steps": 3,
+        "base_rush_steps": 129,
+        "interference_steps": 3
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate",
+          "BlueBaseTarget"
+        ],
+        "blue": [
+          "T06_EastBelowGate"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 2,
+      "seed": 3302,
+      "winner": "yellow",
+      "elapsed_s": 19.6,
+      "steps": 196,
+      "scores": {
+        "yellow": 65,
+        "blue": 5
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": 193.832,
+        "blue": -82.244
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 1,
+        "robot_contacts": 24,
+        "block_steps": 2,
+        "base_rush_steps": 117,
+        "interference_steps": 2
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate",
+          "BlueBaseTarget"
+        ],
+        "blue": [
+          "T06_EastBelowGate"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 3,
+      "seed": 3303,
+      "winner": "yellow",
+      "elapsed_s": 20.7,
+      "steps": 207,
+      "scores": {
+        "yellow": 65,
+        "blue": 5
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": 195.052,
+        "blue": -83.908
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 1,
+        "robot_contacts": 24,
+        "block_steps": 3,
+        "base_rush_steps": 108,
+        "interference_steps": 3
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate",
+          "BlueBaseTarget"
+        ],
+        "blue": [
+          "T06_EastBelowGate"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 4,
+      "seed": 3304,
+      "winner": "blue",
+      "elapsed_s": 16.9,
+      "steps": 169,
+      "scores": {
+        "yellow": 5,
+        "blue": 65
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": -103.152,
+        "blue": 203.291
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 26,
+        "block_steps": 1,
+        "base_rush_steps": 48,
+        "interference_steps": 1
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate"
+        ],
+        "blue": [
+          "T06_EastBelowGate",
+          "YellowBaseTarget"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 5,
+      "seed": 3305,
+      "winner": "yellow",
+      "elapsed_s": 29.0,
+      "steps": 290,
+      "scores": {
+        "yellow": 65,
+        "blue": 5
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": 269.042,
+        "blue": -47.771
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 28,
+        "block_steps": 4,
+        "base_rush_steps": 234,
+        "interference_steps": 4
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate",
+          "BlueBaseTarget"
+        ],
+        "blue": [
+          "T06_EastBelowGate"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 6,
+      "seed": 3306,
+      "winner": "yellow",
+      "elapsed_s": 23.1,
+      "steps": 231,
+      "scores": {
+        "yellow": 65,
+        "blue": 5
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": 228.467,
+        "blue": -79.372
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 30,
+        "block_steps": 0,
+        "base_rush_steps": 127,
+        "interference_steps": 0
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate",
+          "BlueBaseTarget"
+        ],
+        "blue": [
+          "T06_EastBelowGate"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 7,
+      "seed": 3307,
+      "winner": "blue",
+      "elapsed_s": 31.1,
+      "steps": 311,
+      "scores": {
+        "yellow": 5,
+        "blue": 65
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": -2.172,
+        "blue": 299.138
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 1,
+        "robot_contacts": 28,
+        "block_steps": 5,
+        "base_rush_steps": 329,
+        "interference_steps": 5
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate"
+        ],
+        "blue": [
+          "T06_EastBelowGate",
+          "YellowBaseTarget"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 8,
+      "seed": 3308,
+      "winner": "yellow",
+      "elapsed_s": 20.3,
+      "steps": 203,
+      "scores": {
+        "yellow": 65,
+        "blue": 5
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": 202.428,
+        "blue": -99.367
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 30,
+        "block_steps": 2,
+        "base_rush_steps": 95,
+        "interference_steps": 2
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate",
+          "BlueBaseTarget"
+        ],
+        "blue": [
+          "T06_EastBelowGate"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 9,
+      "seed": 3309,
+      "winner": "yellow",
+      "elapsed_s": 22.2,
+      "steps": 222,
+      "scores": {
+        "yellow": 65,
+        "blue": 5
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": 229.332,
+        "blue": -90.435
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 28,
+        "block_steps": 1,
+        "base_rush_steps": 100,
+        "interference_steps": 1
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate",
+          "BlueBaseTarget"
+        ],
+        "blue": [
+          "T06_EastBelowGate"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 10,
+      "seed": 3310,
+      "winner": "blue",
+      "elapsed_s": 20.7,
+      "steps": 207,
+      "scores": {
+        "yellow": 5,
+        "blue": 65
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": -84.168,
+        "blue": 213.917
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 30,
+        "block_steps": 0,
+        "base_rush_steps": 70,
+        "interference_steps": 0
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate"
+        ],
+        "blue": [
+          "T06_EastBelowGate",
+          "YellowBaseTarget"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 11,
+      "seed": 3311,
+      "winner": "yellow",
+      "elapsed_s": 20.5,
+      "steps": 205,
+      "scores": {
+        "yellow": 65,
+        "blue": 5
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": 212.853,
+        "blue": -102.118
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 28,
+        "block_steps": 1,
+        "base_rush_steps": 89,
+        "interference_steps": 1
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate",
+          "BlueBaseTarget"
+        ],
+        "blue": [
+          "T06_EastBelowGate"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 12,
+      "seed": 3312,
+      "winner": "blue",
+      "elapsed_s": 22.3,
+      "steps": 223,
+      "scores": {
+        "yellow": 5,
+        "blue": 65
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": -83.682,
+        "blue": 222.544
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 28,
+        "block_steps": 1,
+        "base_rush_steps": 87,
+        "interference_steps": 1
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate"
+        ],
+        "blue": [
+          "T06_EastBelowGate",
+          "YellowBaseTarget"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 13,
+      "seed": 3313,
+      "winner": "yellow",
+      "elapsed_s": 18.9,
+      "steps": 189,
+      "scores": {
+        "yellow": 65,
+        "blue": 5
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": 219.456,
+        "blue": -112.658
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 30,
+        "block_steps": 0,
+        "base_rush_steps": 91,
+        "interference_steps": 0
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate",
+          "BlueBaseTarget"
+        ],
+        "blue": [
+          "T06_EastBelowGate"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 14,
+      "seed": 3314,
+      "winner": "blue",
+      "elapsed_s": 26.2,
+      "steps": 262,
+      "scores": {
+        "yellow": 5,
+        "blue": 65
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": -72.536,
+        "blue": 250.799
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 1,
+        "robot_contacts": 30,
+        "block_steps": 1,
+        "base_rush_steps": 174,
+        "interference_steps": 1
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate"
+        ],
+        "blue": [
+          "T06_EastBelowGate",
+          "YellowBaseTarget"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    },
+    {
+      "episode": 15,
+      "seed": 3315,
+      "winner": "blue",
+      "elapsed_s": 23.9,
+      "steps": 239,
+      "scores": {
+        "yellow": 5,
+        "blue": 65
+      },
+      "armor": {
+        "yellow": 3,
+        "blue": 3
+      },
+      "rewards": {
+        "yellow": -79.091,
+        "blue": 225.613
+      },
+      "events": {
+        "normal_hits": 2,
+        "base_hit_wins": 1,
+        "own_target_penalties": 0,
+        "blocked_steps": 0,
+        "target_contact_events": 0,
+        "collision_recovery_events": 0,
+        "robot_contacts": 30,
+        "block_steps": 2,
+        "base_rush_steps": 116,
+        "interference_steps": 2
+      },
+      "target_order": {
+        "yellow": [
+          "T03_WestAboveGate"
+        ],
+        "blue": [
+          "T06_EastBelowGate",
+          "YellowBaseTarget"
+        ]
+      },
+      "violations": 0,
+      "warnings": 0
+    }
+  ],
+  "violations": [],
+  "warnings": [],
+  "output_files": {
+    "summary_json": "isaaclab_sim/output/replay/mappo_drshield_recessed_base_seed419_strict16/strict_replay_summary.json",
+    "trace_csv": "isaaclab_sim/output/replay/mappo_drshield_recessed_base_seed419_strict16/strict_replay_trace.csv",
+    "events_jsonl": "isaaclab_sim/output/replay/mappo_drshield_recessed_base_seed419_strict16/strict_replay_events.jsonl"
+  }
+}

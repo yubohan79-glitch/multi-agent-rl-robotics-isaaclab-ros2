@@ -1,9 +1,9 @@
 # GitHub Submission Notes
 
-Recommended repository name:
+Recommended repository URL:
 
 ```text
-robocup-visionrl-isaaclab-ros2
+https://github.com/yubohan79-glitch/RoboCupVisionRL_IsaacLab_ROS2
 ```
 
 Submission contents:
@@ -24,14 +24,18 @@ Create the GitHub repository as an empty repository:
 - Add .gitignore: `No .gitignore`
 - Add license: `No license`
 
-Before pushing:
+Before pushing, use these exact commands from the repository root. The
+`.gitignore` is configured so `git add -A` keeps runtime outputs, checkpoints,
+official PDF extracts and debug frame dumps out of the commit while preserving
+source code, ROS2 packages, RL scripts, reproducibility data, figures and compact
+README media.
 
 ```bash
-git add .
+git remote set-url origin https://github.com/yubohan79-glitch/RoboCupVisionRL_IsaacLab_ROS2.git
+git add -A
 git status --short
-git commit -m "Initial RoboCup VisionRL IsaacLab ROS2 portfolio"
+git commit -m "Publish RoboCup VisionRL IsaacLab ROS2 project"
 git branch -M main
-git remote add origin <your-github-repo-url>
 git push -u origin main
 ```
 
@@ -41,3 +45,4 @@ Do not commit local runtime artifacts:
 - IsaacLab `output/`, `runs/`, `wandb/`
 - rosbags and camera captures
 - `.env` or machine-specific hardware configuration
+- official competition PDFs, extracted official rule text or local DOC/DOCX submissions

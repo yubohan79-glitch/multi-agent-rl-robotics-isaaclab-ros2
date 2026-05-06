@@ -1,0 +1,12 @@
+motion_drift_recorder:
+  ros__parameters:
+    output_csv: motion_drift_log.csv
+    cmd_vel_topic: /cmd_vel
+    wheel_odom_topic: /wheel/odom
+    filtered_odom_topic: /odometry/filtered
+    imu_topic: /imu/data_raw
+    scan_topic: /scan
+    sample_period_s: 0.10
+    linear_accel_warn: 1.05
+    angular_accel_warn: 4.20
+    scan_front_window_rad: 0.52

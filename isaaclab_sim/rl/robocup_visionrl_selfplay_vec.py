@@ -13,10 +13,12 @@ class RoboCupVisionRLSelfPlayVector:
     and replay buffers are finalized.
     """
 
-    def __init__(self, num_envs: int = 16, seed: int = 7):
-        self.envs = [RoboCupVisionRLSelfPlayEnv() for _ in range(num_envs)]
+    def __init__(self, num_envs: int = 16, seed: int = 7, env_kwargs: dict | None = None):
+        kwargs = dict(env_kwargs or {})
+        self.envs = [RoboCupVisionRLSelfPlayEnv(**kwargs) for _ in range(num_envs)]
         self.num_envs = num_envs
         self.seed = seed
+        self.env_kwargs = kwargs
 
     def reset(self):
         observations = []

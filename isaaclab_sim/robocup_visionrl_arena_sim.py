@@ -11,6 +11,8 @@ ROS2 description in rcvrl_description/urdf/robocup_visionrl_robot.urdf.xacro.
 """
 
 import argparse
+import csv
+import json
 import math
 import os
 import sys
@@ -29,10 +31,13 @@ parser.add_argument(
     action="store_true",
     help="Run a deterministic full-match portfolio replay with target falls, armor removal, recovery, and base hit.",
 )
+parser.add_argument("--replay_trace", type=str, default="", help="CSV trace produced by replay_mappo_policy_strict.py.")
+parser.add_argument("--replay_events", type=str, default="", help="JSONL events produced by replay_mappo_policy_strict.py.")
+parser.add_argument("--replay_episode", type=int, default=0, help="Episode index to replay from --replay_trace.")
 parser.add_argument("--record_video", type=str, default="", help="Optional MP4 output path recorded from an IsaacLab RGB camera.")
 parser.add_argument(
     "--record_view",
-    choices=["overview", "yellow_pov", "blue_pov"],
+    choices=["overview", "top", "yellow_pov", "blue_pov"],
     default="overview",
     help="Camera view for --record_video.",
 )
@@ -93,7 +98,9 @@ WHEEL_WIDTH = 0.025
 BASE_LINK_Z = WHEEL_RADIUS
 LIDAR_POSE = (0.06, 0.0, BASE_LINK_Z + 0.19)
 CAMERA_POSE = (0.18, 0.0, BASE_LINK_Z + 0.18)
+RECORDING_POV_CAMERA_POSE = (-0.04, 0.0, BASE_LINK_Z + 0.38)
 SHOOTER_POSE = (0.20, 0.0, BASE_LINK_Z + 0.14)
+SHOOTER_FORWARD_OFFSET = SHOOTER_POSE[0]
 IMU_POSE = (-0.02, 0.0, BASE_LINK_Z + 0.11)
 DEPTH_CAMERA_POSE = (0.165, 0.045, BASE_LINK_Z + 0.17)
 TOF_FRONT_POSE = (0.185, 0.0, BASE_LINK_Z + 0.075)
@@ -102,9 +109,14 @@ COLLISION_PRIMS: list[str] = []
 RAYCAST_BOXES: list[tuple[tuple[float, float, float], tuple[float, float, float], tuple[float, float, float, float]]] = []
 NAV_BLOCKERS: list[tuple[str, tuple[float, float], tuple[float, float]]] = []
 LASER_BLOCKERS: list[tuple[str, tuple[float, float], tuple[float, float]]] = []
+PUSHABLE_OBSTACLES: dict[str, dict[str, object]] = {}
 TARGET_REGISTRY: dict[str, dict[str, object]] = {}
 BASE_ARMOR: dict[str, list[str]] = {"yellow": [], "blue": []}
 LAST_FIRE_TIME: dict[str, float] = {"yellow": -99.0, "blue": -99.0}
+LASER_LOCKS: dict[str, dict[str, float | str]] = {
+    "yellow": {"target_path": "", "start_time": -99.0},
+    "blue": {"target_path": "", "start_time": -99.0},
+}
 ARMOR_REMOVALS: list[dict[str, object]] = []
 TARGET_FALLS: list[dict[str, object]] = []
 MATCH_STATE: dict[str, object] = {
@@ -127,14 +139,40 @@ BLUE_BASE_XY = (-1.25, 1.25)
 BLUE_START_XY = (-0.25, 1.25)
 YELLOW_START_XY = (0.25, -1.25)
 YELLOW_BASE_XY = (1.25, -1.25)
+BLUE_BASE_TARGET_XY = (-1.36, 1.36)
+YELLOW_BASE_TARGET_XY = (1.36, -1.36)
+BLUE_BASE_TARGET_YAW = -math.pi / 4.0
+YELLOW_BASE_TARGET_YAW = 3.0 * math.pi / 4.0
+YELLOW_ATTACK_BLUE_BASE_XY = (-0.72, 1.32)
+BLUE_ATTACK_YELLOW_BASE_XY = (0.72, -1.32)
 YELLOW_DEMO_START_XY = (0.38, -1.18)
 BLUE_DEMO_START_XY = (-0.38, 1.18)
 ROUTE_CLEARANCE = ROBOT_WIDTH * 0.5 + 0.04
 ROBOT_COLLISION_RADIUS = math.hypot(ROBOT_LENGTH * 0.5, ROBOT_WIDTH * 0.5)
-SHOOT_RANGE = 1.65
-SHOOT_HIT_RADIUS = 0.15
-BASE_HIT_RADIUS = 0.20
+ROBOT_PUSHABLE_CLEARANCE_RADIUS = ROBOT_COLLISION_RADIUS + 0.030
+ROBOT_PUSHABLE_RENDER_CLEARANCE_RADIUS = ROBOT_PUSHABLE_CLEARANCE_RADIUS + 0.065
+ROBOT_PUSHABLE_VISUAL_HALF_EXTENTS = (ROBOT_LENGTH * 0.5 + 0.110, ROBOT_WIDTH * 0.5 + WHEEL_WIDTH + 0.062)
+NORMAL_SHOOT_MIN_RANGE = 0.05
+NORMAL_SHOOT_RANGE = 0.50
+NORMAL_SHOOT_IDEAL_DISTANCE = 0.30
+BASE_SHOOT_MIN_RANGE = 0.20
+BASE_SHOOT_RANGE = 0.80
+BASE_SHOOT_IDEAL_DISTANCE = 0.48
+SHOOT_MIN_RANGE = NORMAL_SHOOT_MIN_RANGE
+SHOOT_RANGE = NORMAL_SHOOT_RANGE
+SHOOT_HIT_RADIUS = 0.028
+BASE_HIT_RADIUS = 0.018
+SHOOT_IDEAL_DISTANCE = NORMAL_SHOOT_IDEAL_DISTANCE
 FIRE_COOLDOWN = 1.4
+LASER_DWELL_REQUIRED_S = 0.80
+LASER_DWELL_FULL_CONFIDENCE_S = 2.00
+TARGET_WALL_INSET = 0.240
+TARGET_WALL_ANGLE_RAD = math.radians(45.0)
+NORTH_MIDDLE_TARGET_X = 0.18
+SOUTH_MIDDLE_TARGET_X = -0.18
+SIDE_GATE_TARGET_Y = 0.24
+BASE_HIT_SUCCESS_BY_NORMAL_HITS = {0: 0.0, 1: 0.40, 2: 0.55, 3: 0.80, 4: 0.95}
+BASE_ARMOR_LIFT_CLEARANCE_Z = WALL_HEIGHT + 0.24
 MATCH_DRIVE_SPEED = 0.72
 MATCH_AIM_TIME = 0.45
 MATCH_DURATION_S = 180.0
@@ -148,8 +186,8 @@ LOCALIZATION_RECOVERY_ROTATION_RAD = math.tau * 1.08
 LOCALIZATION_CONTACT_LOSS = 0.42
 LOCALIZATION_STUCK_LOSS = 0.20
 LOCALIZATION_SPIN_GAIN = 0.38
-TARGET_CONTACT_RADIUS = 0.115
-BASE_TARGET_CONTACT_RADIUS = 0.180
+TARGET_CONTACT_RADIUS = 0.035
+BASE_TARGET_CONTACT_RADIUS = 0.045
 LINEAR_ACCEL_LIMIT = 1.10
 ANGULAR_ACCEL_LIMIT = 4.80
 WHEEL_SPEED_LIMIT = 0.54
@@ -161,6 +199,16 @@ COSTMAP_HARD_MARGIN = 0.018
 COSTMAP_MAX_REPULSE_STEP = 0.025
 COSTMAP_WARN_INTERVAL_S = 0.80
 COSTMAP_LAST_WARN: dict[str, float] = {}
+PUSHABLE_OBSTACLE_HALF = OBSTACLE_SIZE * 0.5
+PUSHABLE_OBSTACLE_MASS_KG = 1.8
+PUSHABLE_OBSTACLE_STATIC_FRICTION = 0.86
+PUSHABLE_OBSTACLE_DYNAMIC_FRICTION = 0.68
+PUSH_OBSTACLE_STEP_M = 0.060
+PUSH_OBSTACLE_CLEARANCE = 0.025
+PUSHABLE_OBSTACLE_STARTS = {
+    "box_ne": (0.80, 0.80),
+    "box_sw": (-0.80, -0.80),
+}
 OPPONENT_TRACK_RANGE = 3.25
 OPPONENT_THREAT_RADIUS = 1.10
 OPPONENT_THREAT_BLOCK_THRESHOLD = 0.42
@@ -189,48 +237,48 @@ BLUE_ROUTE = [
 
 MATCH_TASKS = {
     "yellow": [
-        ("T01_NorthMiddle", (-0.25, 0.78)),
+        ("T01_NorthMiddle", (0.42, 1.02)),
         ("T03_WestAboveGate", (-1.20, 0.22)),
         ("T05_EastAboveGate", (1.20, 0.22)),
         ("T02_NorthEast", (1.18, 1.18)),
-        ("BlueBaseTarget", (-0.70, 0.78)),
+        ("BlueBaseTarget", YELLOW_ATTACK_BLUE_BASE_XY),
     ],
     "blue": [
-        ("T08_SouthMiddle", (0.25, -0.78)),
+        ("T08_SouthMiddle", (-0.42, -1.02)),
         ("T04_WestBelowGate", (-1.20, -0.22)),
         ("T06_EastBelowGate", (1.20, -0.22)),
         ("T07_SouthWest", (-1.18, -1.18)),
-        ("YellowBaseTarget", (0.70, -0.78)),
+        ("YellowBaseTarget", BLUE_ATTACK_YELLOW_BASE_XY),
     ],
 }
 
 DEMO_POLICY_TASKS = {
     "yellow": [
         ("T03_WestAboveGate", (-1.16, 0.34)),
-        ("T01_NorthMiddle", (-0.38, 0.98)),
+        ("T01_NorthMiddle", (0.42, 1.02)),
+        ("BlueBaseTarget", YELLOW_ATTACK_BLUE_BASE_XY),
         ("T02_NorthEast", (1.18, 1.05)),
-        ("BlueBaseTarget", (-0.66, 0.82)),
         ("T05_EastAboveGate", (1.16, 0.34)),
     ],
     "blue": [
         ("T06_EastBelowGate", (1.16, -0.34)),
-        ("T08_SouthMiddle", (0.38, -0.98)),
+        ("T08_SouthMiddle", (-0.42, -1.02)),
+        ("YellowBaseTarget", BLUE_ATTACK_YELLOW_BASE_XY),
         ("T04_WestBelowGate", (-1.16, -0.34)),
-        ("YellowBaseTarget", (0.66, -0.82)),
         ("T07_SouthWest", (-1.18, -1.05)),
     ],
 }
 
 DEMO_FLOW_FIRE_EVENTS: list[tuple[float, str, str]] = [
-    (6.20, "yellow", "T05_EastAboveGate"),
-    (7.10, "blue", "T04_WestBelowGate"),
+    (6.25, "yellow", "T05_EastAboveGate"),
+    (6.50, "blue", "T04_WestBelowGate"),
     (10.10, "yellow", "T02_NorthEast"),
-    (11.10, "blue", "T07_SouthWest"),
-    (19.40, "yellow", "T03_WestAboveGate"),
-    (21.70, "blue", "T06_EastBelowGate"),
+    (11.05, "blue", "T07_SouthWest"),
+    (19.60, "yellow", "T03_WestAboveGate"),
+    (21.75, "blue", "T06_EastBelowGate"),
     (25.30, "yellow", "T01_NorthMiddle"),
-    (28.40, "blue", "T08_SouthMiddle"),
-    (34.00, "yellow", "BlueBaseTarget"),
+    (28.45, "blue", "T08_SouthMiddle"),
+    (34.80, "yellow", "BlueBaseTarget"),
 ]
 
 DEMO_FLOW_POSES: dict[str, list[tuple[float, tuple[float, float], str | None]]] = {
@@ -245,10 +293,10 @@ DEMO_FLOW_POSES: dict[str, list[tuple[float, tuple[float, float], str | None]]] 
         (16.70, (0.10, 0.07), None),
         (18.75, (-0.88, 0.28), "T03_WestAboveGate"),
         (20.00, (-0.88, 0.28), "T03_WestAboveGate"),
-        (24.50, (-0.25, 0.78), "T01_NorthMiddle"),
-        (25.70, (-0.25, 0.78), "T01_NorthMiddle"),
-        (32.55, (-0.70, 0.78), "BlueBaseTarget"),
-        (36.50, (-0.70, 0.78), "BlueBaseTarget"),
+        (24.50, (0.42, 1.02), "T01_NorthMiddle"),
+        (25.70, (0.42, 1.02), "T01_NorthMiddle"),
+        (32.55, YELLOW_ATTACK_BLUE_BASE_XY, "BlueBaseTarget"),
+        (36.50, YELLOW_ATTACK_BLUE_BASE_XY, "BlueBaseTarget"),
         (42.00, (-0.35, 0.42), "BlueBaseTarget"),
     ],
     "blue": [
@@ -262,24 +310,52 @@ DEMO_FLOW_POSES: dict[str, list[tuple[float, tuple[float, float], str | None]]] 
         (16.70, (-0.10, -0.07), None),
         (20.90, (0.88, -0.28), "T06_EastBelowGate"),
         (22.10, (0.88, -0.28), "T06_EastBelowGate"),
-        (27.60, (0.25, -0.78), "T08_SouthMiddle"),
-        (28.80, (0.25, -0.78), "T08_SouthMiddle"),
-        (33.30, (0.35, -0.42), "YellowBaseTarget"),
-        (42.00, (0.35, -0.42), "YellowBaseTarget"),
+        (27.60, (-0.42, -1.02), "T08_SouthMiddle"),
+        (28.80, (-0.42, -1.02), "T08_SouthMiddle"),
+        (33.30, BLUE_ATTACK_YELLOW_BASE_XY, "YellowBaseTarget"),
+        (42.00, BLUE_ATTACK_YELLOW_BASE_XY, "YellowBaseTarget"),
     ],
 }
 
 DEMO_FLOW_RECOVERY_WINDOWS = ((13.00, 16.70),)
 DEMO_FLOW_TRIGGERED_EVENTS: set[int] = set()
 DEMO_FLOW_PATH_CACHE: dict[tuple[str, int], list[tuple[float, float]]] = {}
+TRAINED_REPLAY: dict[str, object] = {
+    "loaded": False,
+    "rows": {"yellow": [], "blue": []},
+    "events": [],
+    "applied_events": set(),
+    "last_time": 0.0,
+    "render_poses": {"yellow": None, "blue": None},
+    "last_box_trace_xy": {},
+}
 
 
 def opponent_team(team: str) -> str:
     return "blue" if team == "yellow" else "yellow"
 
 
+def angled_wall_target_yaw(wall_normal_yaw: float, sign: float) -> float:
+    return wrap_angle(wall_normal_yaw + sign * TARGET_WALL_ANGLE_RAD)
+
+
 def target_name_from_path(target_path: str) -> str:
     return target_path.rsplit("/", 1)[-1]
+
+
+def inward_45deg_target_yaws() -> dict[str, float]:
+    # yaw is the target face normal. The visible target plane is yaw + 90 deg,
+    # which puts each corner target at 45 deg to both adjacent wall planes.
+    return {
+        "T01_NorthMiddle": -math.pi / 4.0,
+        "T02_NorthEast": -3.0 * math.pi / 4.0,
+        "T03_WestAboveGate": math.pi / 4.0,
+        "T04_WestBelowGate": -math.pi / 4.0,
+        "T05_EastAboveGate": 3.0 * math.pi / 4.0,
+        "T06_EastBelowGate": -3.0 * math.pi / 4.0,
+        "T07_SouthWest": math.pi / 4.0,
+        "T08_SouthMiddle": 3.0 * math.pi / 4.0,
+    }
 
 
 def team_base_xy(team: str) -> tuple[float, float]:
@@ -288,6 +364,101 @@ def team_base_xy(team: str) -> tuple[float, float]:
 
 def team_score(team: str) -> int:
     return int(MATCH_STATE[f"score_{team}"])
+
+
+def normal_hits_against(team: str) -> int:
+    opponent = opponent_team(team)
+    return max(0, 4 - len(BASE_ARMOR[opponent]))
+
+
+def base_hit_success_cap(team: str) -> float:
+    return float(BASE_HIT_SUCCESS_BY_NORMAL_HITS[max(0, min(4, normal_hits_against(team)))])
+
+
+def base_removed_side_lane_quality(team: str, target_path: str, fire_xy: tuple[float, float]) -> float:
+    target = TARGET_REGISTRY[target_path]
+    hits = max(0, min(4, normal_hits_against(team)))
+    if hits <= 0:
+        return 0.0
+    if hits >= 4:
+        return 1.0
+    base_xy = team_base_xy(str(target["owner"]))
+    rel_x = fire_xy[0] - base_xy[0]
+    rel_y = fire_xy[1] - base_xy[1]
+    distance = math.hypot(rel_x, rel_y)
+    if distance < 0.20:
+        return 0.0
+    unit = (rel_x / max(distance, 1e-6), rel_y / max(distance, 1e-6))
+    if base_xy[0] < 0.0:
+        opened_dirs = (
+            (1.0, 0.0),
+            (0.0, -1.0),
+            (1.0 / math.sqrt(2.0), -1.0 / math.sqrt(2.0)),
+        )
+    else:
+        opened_dirs = (
+            (-1.0, 0.0),
+            (0.0, 1.0),
+            (-1.0 / math.sqrt(2.0), 1.0 / math.sqrt(2.0)),
+        )
+    allowed = opened_dirs[:1] if hits == 1 else opened_dirs[:2] if hits == 2 else opened_dirs
+    best_alignment = max(unit[0] * direction[0] + unit[1] * direction[1] for direction in allowed)
+    threshold = {1: 0.90, 2: 0.84, 3: 0.58}[hits]
+    if best_alignment < threshold:
+        return 0.0
+    return max(0.0, min(1.0, 0.25 + 0.75 * (best_alignment - threshold) / max(1e-6, 1.0 - threshold)))
+
+
+def shooting_range_limits(base_target: bool) -> tuple[float, float]:
+    if base_target:
+        return BASE_SHOOT_MIN_RANGE, BASE_SHOOT_RANGE
+    return NORMAL_SHOOT_MIN_RANGE, NORMAL_SHOOT_RANGE
+
+
+def laser_dwell_success_probability(dwell_s: float) -> float:
+    if dwell_s + 1e-9 < LASER_DWELL_REQUIRED_S:
+        return 0.0
+    alpha = max(
+        0.0,
+        min(1.0, (dwell_s - LASER_DWELL_REQUIRED_S) / (LASER_DWELL_FULL_CONFIDENCE_S - LASER_DWELL_REQUIRED_S)),
+    )
+    not_fall_probability = 0.20 - 0.10 * alpha
+    return max(0.0, min(0.90, 1.0 - not_fall_probability))
+
+
+def normalized_laser_dwell_factor(dwell_s: float) -> float:
+    return laser_dwell_success_probability(dwell_s) / 0.90
+
+
+def base_attack_pose_quality(team: str, target_path: str, fire_xy: tuple[float, float]) -> float:
+    target = TARGET_REGISTRY[target_path]
+    if not str(target["kind"]).startswith("base_"):
+        return 1.0
+    hits = normal_hits_against(team)
+    if hits <= 0:
+        return 0.0
+    side_quality = base_removed_side_lane_quality(team, target_path, fire_xy)
+    if side_quality <= 0.0:
+        return 0.0
+    x, y = fire_xy
+    target_xy = target["xy"]
+    assert isinstance(target_xy, tuple)
+    approach_yaw = math.atan2(y - target_xy[1], x - target_xy[0])
+    off_axis = abs(wrap_angle(approach_yaw - float(target["yaw"])))
+    min_off_axis = {1: 0.62, 2: 0.42, 3: 0.18, 4: 0.0}[max(1, min(4, hits))]
+    max_off_axis = 2.55
+    if off_axis < min_off_axis or off_axis > max_off_axis:
+        return 0.0
+    base_xy = team_base_xy(str(target["owner"]))
+    base_distance = math.hypot(base_xy[0] - x, base_xy[1] - y)
+    corner_radius = {1: 0.95, 2: 1.05, 3: 1.22, 4: 1.45}[max(1, min(4, hits))]
+    if base_distance > corner_radius:
+        return 0.0
+    angle_quality = (off_axis - min_off_axis) / max(max_off_axis - min_off_axis, 1e-6)
+    corner_quality = 1.0 - base_distance / max(corner_radius, 1e-6)
+    # Early base rushes are allowed, but only through narrow off-axis lanes
+    # around the grounded armor. More removed armor widens the acceptable angle.
+    return max(0.0, min(1.0, (0.38 + 0.37 * angle_quality + 0.25 * corner_quality) * side_quality))
 
 
 def static_fire_pose(team: str, target_name: str, tasks: list[tuple[str, tuple[float, float]]] | None = None) -> tuple[float, float] | None:
@@ -501,6 +672,20 @@ def material(
     )
 
 
+def rigid_physics_material(
+    static_friction: float,
+    dynamic_friction: float,
+    restitution: float = 0.0,
+) -> sim_utils.RigidBodyMaterialCfg:
+    return sim_utils.RigidBodyMaterialCfg(
+        static_friction=static_friction,
+        dynamic_friction=dynamic_friction,
+        restitution=restitution,
+        friction_combine_mode="max",
+        restitution_combine_mode="min",
+    )
+
+
 def spawn_box(
     path: str,
     size: tuple[float, float, float],
@@ -517,15 +702,30 @@ def spawn_box(
     kinematic: bool = False,
     mass: float | None = None,
     disable_gravity: bool = False,
+    physics_material: sim_utils.RigidBodyMaterialCfg | None = None,
+    contact_offset: float | None = None,
+    rest_offset: float | None = None,
 ):
     cfg = sim_utils.CuboidCfg(
         size=size,
         visual_material=material(color, opacity=opacity, emissive=emissive),
-        collision_props=sim_utils.CollisionPropertiesCfg() if collision or rigid_body else None,
+        physics_material=physics_material,
+        collision_props=sim_utils.CollisionPropertiesCfg(
+            collision_enabled=True,
+            contact_offset=contact_offset,
+            rest_offset=rest_offset,
+        )
+        if collision or rigid_body
+        else None,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
+            rigid_body_enabled=True,
             kinematic_enabled=kinematic,
             disable_gravity=disable_gravity,
+            linear_damping=0.18 if not kinematic else None,
+            angular_damping=0.75 if not kinematic else None,
             max_depenetration_velocity=1.2,
+            solver_position_iteration_count=8 if not kinematic else None,
+            solver_velocity_iteration_count=2 if not kinematic else None,
         )
         if rigid_body
         else None,
@@ -835,11 +1035,14 @@ def spawn_target(
     face_color = (0.86, 0.87, 0.80)
     dark_frame = (0.035, 0.038, 0.040)
     warning_color = (0.98, 0.70, 0.12) if tag_id == 1 else frame_color
-    board_center = (xy[0], xy[1], 0.138 if base_target else 0.124)
-    board_size = (0.018, 0.245, 0.245) if base_target else (0.014, 0.205, 0.215)
+    board_center = (xy[0], xy[1], 0.116 if base_target else 0.116)
+    board_size = (0.012, 0.095, 0.115) if base_target else (0.012, 0.180, 0.190)
     front_x = board_size[0] * 0.5 + 0.006
-    edge = 0.014 if base_target else 0.012
-    tag_local_z = 0.012 if base_target else 0.006
+    edge = 0.010 if base_target else 0.010
+    # The rules put the bottom of the 5 cm AprilTag at 6.5-7.5 cm above
+    # the floor. Keep the visual tag anchored to that physical height instead
+    # of drifting upward with the decorative board.
+    tag_local_z = TAG_CENTER_Z - board_center[2]
 
     spawn_box(
         f"{path}/target_board",
@@ -918,10 +1121,10 @@ def spawn_target(
     reticle_color = (0.92, 0.08, 0.08) if not base_target else (0.98, 0.18, 0.18)
     for index, (local_y, local_z, size_y, size_z) in enumerate(
         (
-            (-0.060, tag_local_z, 0.030, 0.004),
-            (0.060, tag_local_z, 0.030, 0.004),
-            (0.0, tag_local_z - 0.060, 0.004, 0.030),
-            (0.0, tag_local_z + 0.060, 0.004, 0.030),
+            (-board_size[1] * 0.26, tag_local_z, 0.022, 0.004),
+            (board_size[1] * 0.26, tag_local_z, 0.022, 0.004),
+            (0.0, tag_local_z - board_size[2] * 0.26, 0.004, 0.022),
+            (0.0, tag_local_z + board_size[2] * 0.26, 0.004, 0.022),
         )
     ):
         spawn_local_box(
@@ -939,8 +1142,8 @@ def spawn_target(
 
     spawn_target_id_badge(path, board_center, tag_id, board_size, roll, pitch, yaw, accent_color)
 
-    lens_y = board_size[1] * 0.5 - 0.040
-    lens_z = board_size[2] * 0.5 - 0.035
+    lens_y = board_size[1] * 0.5 - (0.030 if base_target else 0.035)
+    lens_z = board_size[2] * 0.5 - (0.028 if base_target else 0.032)
     spawn_local_box(
         f"{path}/hit_indicator_lens",
         board_center,
@@ -954,11 +1157,16 @@ def spawn_target(
         emissive=(0.25, 0.0, 0.0),
     )
 
-    support_height = 0.185 if base_target else 0.165
-    support_center = local_to_world(board_center, (-0.040, 0.0, -support_height * 0.18), roll, pitch, yaw)
+    support_height = 0.115 if base_target else 0.120
+    # Base targets sit behind armor in a tight corner. Their low stand must
+    # remain on the arena-facing side so it does not visually or physically
+    # clip the grounded armor plates.
+    support_offset_x = 0.034 if base_target else -0.034
+    foot_offset_x = 0.045 if base_target else -0.045
+    support_center = local_to_world(board_center, (support_offset_x, 0.0, -board_size[2] * 0.5 + support_height * 0.5), roll, pitch, yaw)
     spawn_box(
         f"{path}/rear_support_post",
-        (0.026, 0.026, support_height),
+        (0.018, 0.018, support_height),
         support_center,
         frame_color,
         orientation=quat_from_euler(0.0, 0.0, yaw),
@@ -969,7 +1177,7 @@ def spawn_target(
     spawn_local_cylinder(
         f"{path}/bottom_hinge",
         board_center,
-        (-0.034, 0.0, -board_size[2] * 0.5 - 0.004),
+        (support_offset_x, 0.0, -board_size[2] * 0.5 - 0.004),
         0.010,
         board_size[1] * 0.88,
         "Y",
@@ -979,8 +1187,8 @@ def spawn_target(
         yaw,
         semantic="target_hinge",
     )
-    foot_center = local_to_world(board_center, (-0.045, 0.0, -board_center[2] + 0.014), roll, pitch, yaw)
-    foot_size = (0.150, 0.255, 0.020) if base_target else (0.130, 0.230, 0.018)
+    foot_center = local_to_world(board_center, (foot_offset_x, 0.0, -board_center[2] + 0.014), roll, pitch, yaw)
+    foot_size = (0.075, 0.115, 0.018) if base_target else (0.110, 0.205, 0.016)
     spawn_box(
         f"{path}/weighted_base_plate",
         foot_size,
@@ -1140,13 +1348,18 @@ def spawn_target(
 
 
 def register_nav_blocker(path: str, pos: tuple[float, float, float], size: tuple[float, float, float]):
+    margin = ROUTE_CLEARANCE + (0.045 if "BaseArmor" in path else 0.0)
     NAV_BLOCKERS.append(
         (
             path,
             (pos[0], pos[1]),
-            (size[0] * 0.5 + ROUTE_CLEARANCE, size[1] * 0.5 + ROUTE_CLEARANCE),
+            (size[0] * 0.5 + margin, size[1] * 0.5 + margin),
         )
     )
+    LASER_BLOCKERS.append((path, (pos[0], pos[1]), (size[0] * 0.5, size[1] * 0.5)))
+
+
+def register_laser_blocker(path: str, pos: tuple[float, float, float], size: tuple[float, float, float]):
     LASER_BLOCKERS.append((path, (pos[0], pos[1]), (size[0] * 0.5, size[1] * 0.5)))
 
 
@@ -1165,6 +1378,50 @@ def spawn_nav_blocker(
 ):
     spawn_box(path, size, pos, color, collision=True, raycast=True, semantic=semantic)
     register_nav_blocker(path, pos, size)
+
+
+def register_pushable_obstacle(path: str, pos: tuple[float, float, float], size: tuple[float, float, float]):
+    PUSHABLE_OBSTACLES[path] = {
+        "xy": [float(pos[0]), float(pos[1])],
+        "z": float(pos[2]),
+        "size": size,
+        "half": (size[0] * 0.5, size[1] * 0.5),
+        "start_xy": (float(pos[0]), float(pos[1])),
+        "last_push_t": -99.0,
+        "rigid_body": True,
+        "kinematic": False,
+        "mass_kg": PUSHABLE_OBSTACLE_MASS_KG,
+    }
+
+
+def spawn_pushable_obstacle(
+    path: str,
+    size: tuple[float, float, float],
+    pos: tuple[float, float, float],
+    color: tuple[float, float, float],
+    *,
+    semantic: str,
+):
+    spawn_box(
+        path,
+        size,
+        pos,
+        color,
+        collision=True,
+        raycast=True,
+        semantic=semantic,
+        rigid_body=True,
+        kinematic=False,
+        mass=PUSHABLE_OBSTACLE_MASS_KG,
+        disable_gravity=False,
+        physics_material=rigid_physics_material(
+            PUSHABLE_OBSTACLE_STATIC_FRICTION,
+            PUSHABLE_OBSTACLE_DYNAMIC_FRICTION,
+        ),
+        contact_offset=0.010,
+        rest_offset=0.001,
+    )
+    register_pushable_obstacle(path, pos, size)
 
 
 def segment_intersects_aabb(
@@ -1228,31 +1485,31 @@ def spawn_route_markers(name: str, route: list[tuple[float, float]], color: tupl
 
 def spawn_base_armor(base_team: str, base_xy: tuple[float, float], color: tuple[float, float, float]):
     create_xform(f"/World/Arena/{base_team.capitalize()}BaseArmor")
-    z = 0.105
-    armor_height = 0.18
-    armor_thickness = 0.026
-    armor_length = 0.17
+    armor_height = 0.300
+    z = armor_height * 0.5
+    armor_thickness = 0.050
+    armor_length = 0.250
+    shield_color = (0.05, 0.22, 0.78)
 
     if base_team == "blue":
-        # Order follows the rule diagram around the blue base: 1, 2, 3, 4.
+        # Four grounded armor plates segment the two open edges of the
+        # 50cm base square: right edge plates 1/3 and lower edge plates 2/4.
+        # This matches the national-rule numbering diagram and the archived
+        # final_training_replay_overview reference.
         specs = [
-            ("armor_1", (-0.985, 1.405, z), (armor_thickness, armor_length, armor_height)),
-            ("armor_2", (-1.405, 0.985, z), (armor_length, armor_thickness, armor_height)),
-            ("armor_3", (-0.985, 1.155, z), (armor_thickness, armor_length, armor_height)),
-            ("armor_4", (-1.155, 0.985, z), (armor_length, armor_thickness, armor_height)),
+            ("armor_1", (-1.025, 1.375, z), (armor_thickness, armor_length, armor_height)),
+            ("armor_2", (-1.375, 1.025, z), (armor_length, armor_thickness, armor_height)),
+            ("armor_3", (-1.025, 1.125, z), (armor_thickness, armor_length, armor_height)),
+            ("armor_4", (-1.125, 1.025, z), (armor_length, armor_thickness, armor_height)),
         ]
-        rack_x = base_xy[0] - 0.18
-        rack_y = base_xy[1] - 0.62
     else:
-        # Order follows the rule diagram around the yellow base: 1, 2, 3, 4.
+        # Yellow mirrors the same base-edge armor layout.
         specs = [
-            ("armor_1", (1.155, -1.485, z), (armor_length, armor_thickness, armor_height)),
-            ("armor_2", (1.405, -0.985, z), (armor_length, armor_thickness, armor_height)),
-            ("armor_3", (0.985, -1.155, z), (armor_thickness, armor_length, armor_height)),
-            ("armor_4", (1.155, -0.985, z), (armor_length, armor_thickness, armor_height)),
+            ("armor_1", (1.025, -1.375, z), (armor_thickness, armor_length, armor_height)),
+            ("armor_2", (1.375, -1.025, z), (armor_length, armor_thickness, armor_height)),
+            ("armor_3", (1.025, -1.125, z), (armor_thickness, armor_length, armor_height)),
+            ("armor_4", (1.125, -1.025, z), (armor_length, armor_thickness, armor_height)),
         ]
-        rack_x = base_xy[0] + 0.18
-        rack_y = base_xy[1] + 0.62
 
     BASE_ARMOR[base_team] = []
     for index, (name, pos, size) in enumerate(specs):
@@ -1261,7 +1518,7 @@ def spawn_base_armor(base_team: str, base_xy: tuple[float, float], color: tuple[
             armor_path,
             size,
             pos,
-            color,
+            shield_color,
             collision=True,
             raycast=True,
             semantic=f"{base_team}_base_armor_{index + 1}",
@@ -1269,19 +1526,297 @@ def spawn_base_armor(base_team: str, base_xy: tuple[float, float], color: tuple[
         register_nav_blocker(armor_path, pos, size)
         BASE_ARMOR[base_team].append(armor_path)
 
-        rack_path = f"/World/Arena/{base_team.capitalize()}BaseArmor/removed_slot_{index + 1}"
-        spawn_box(
-            rack_path,
-            (0.030, 0.030, 0.006),
-            (rack_x + 0.055 * index, rack_y, 0.010),
-            color,
-            opacity=0.35,
-            semantic="removed_armor_slot",
-        )
-
 
 def target_path_from_name(name: str) -> str:
     return f"/World/Targets/{name}"
+
+
+def load_trained_replay():
+    if TRAINED_REPLAY["loaded"]:
+        return
+    if not args_cli.replay_trace:
+        TRAINED_REPLAY["loaded"] = True
+        return
+
+    trace_path = Path(args_cli.replay_trace)
+    if not trace_path.exists():
+        raise FileNotFoundError(f"Replay trace not found: {trace_path}")
+
+    rows: dict[str, list[dict[str, object]]] = {"yellow": [], "blue": []}
+    last_time = 0.0
+    with trace_path.open("r", newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            if int(row["episode"]) != int(args_cli.replay_episode):
+                continue
+            team = str(row["team"])
+            if team not in rows:
+                continue
+            item = {
+                "t": float(row["elapsed_s"]),
+                "x": float(row["x"]),
+                "y": float(row["y"]),
+                "yaw": float(row["yaw"]),
+                "selected_target": str(row.get("selected_target", "")),
+                "tactic": str(row.get("tactic", "")),
+                "fire_ready": str(row.get("fire_ready", "")).lower() == "true",
+                "score_yellow": int(float(row.get("score_yellow", 0) or 0)),
+                "score_blue": int(float(row.get("score_blue", 0) or 0)),
+                "armor_yellow": int(float(row.get("armor_yellow", 4) or 4)),
+                "armor_blue": int(float(row.get("armor_blue", 4) or 4)),
+                "localization_confidence": float(row.get("localization_confidence", 1.0) or 1.0),
+                "box_ne": (
+                    float(row["box_ne_x"]),
+                    float(row["box_ne_y"]),
+                )
+                if row.get("box_ne_x") not in (None, "")
+                else None,
+                "box_sw": (
+                    float(row["box_sw_x"]),
+                    float(row["box_sw_y"]),
+                )
+                if row.get("box_sw_x") not in (None, "")
+                else None,
+            }
+            rows[team].append(item)
+            last_time = max(last_time, float(item["t"]))
+
+    for team_rows in rows.values():
+        team_rows.sort(key=lambda item: float(item["t"]))
+    if not rows["yellow"] or not rows["blue"]:
+        raise RuntimeError(f"No replay rows found for episode {args_cli.replay_episode} in {trace_path}")
+
+    events: list[dict[str, object]] = []
+    events_path = Path(args_cli.replay_events) if args_cli.replay_events else None
+    if events_path is not None and events_path.exists():
+        with events_path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                if not line.strip():
+                    continue
+                payload = json.loads(line)
+                if int(payload.get("episode", -1)) != int(args_cli.replay_episode):
+                    continue
+                event_time = float(payload.get("elapsed_s", 0.0))
+                for team in ("yellow", "blue"):
+                    info = payload.get(f"{team}_info", {})
+                    if not isinstance(info, dict):
+                        continue
+                    hit_target = info.get("hit")
+                    if isinstance(hit_target, str) and hit_target:
+                        events.append({"t": event_time, "team": team, "target": hit_target, "kind": "hit"})
+                    winner = info.get("winner")
+                    selected = info.get("selected_target")
+                    if winner == team and isinstance(selected, str) and selected.endswith("BaseTarget"):
+                        events.append({"t": event_time, "team": team, "target": selected, "kind": "base_win"})
+
+    seen: set[tuple[float, str, str, str]] = set()
+    unique_events = []
+    for event in sorted(events, key=lambda item: (float(item["t"]), str(item["team"]), str(item["target"]))):
+        key = (round(float(event["t"]), 3), str(event["team"]), str(event["target"]), str(event["kind"]))
+        if key in seen:
+            continue
+        seen.add(key)
+        unique_events.append(event)
+
+    TRAINED_REPLAY["rows"] = rows
+    TRAINED_REPLAY["events"] = unique_events
+    TRAINED_REPLAY["applied_events"] = set()
+    TRAINED_REPLAY["last_time"] = last_time
+    TRAINED_REPLAY["render_poses"] = {"yellow": None, "blue": None}
+    TRAINED_REPLAY["last_box_trace_xy"] = {}
+    reset_pushable_obstacles()
+    TRAINED_REPLAY["loaded"] = True
+    print(
+        f"[REPLAY]: loaded trained policy trace episode={args_cli.replay_episode} "
+        f"duration={last_time:.1f}s events={len(unique_events)} from {trace_path}"
+    )
+
+
+def replay_row_at(team: str, t: float) -> dict[str, object]:
+    load_trained_replay()
+    rows = TRAINED_REPLAY["rows"]
+    assert isinstance(rows, dict)
+    team_rows = rows[team]
+    assert isinstance(team_rows, list)
+    if t <= float(team_rows[0]["t"]):
+        return team_rows[0]
+    for index in range(len(team_rows) - 1):
+        row0 = team_rows[index]
+        row1 = team_rows[index + 1]
+        t0 = float(row0["t"])
+        t1 = float(row1["t"])
+        if t <= t1:
+            alpha = 0.0 if t1 <= t0 else max(0.0, min(1.0, (t - t0) / (t1 - t0)))
+            yaw0 = float(row0["yaw"])
+            yaw1 = yaw0 + wrap_angle(float(row1["yaw"]) - yaw0)
+
+            def interp_box(name: str):
+                box0 = row0.get(name)
+                box1 = row1.get(name)
+                if not isinstance(box0, tuple) or not isinstance(box1, tuple):
+                    return box1
+                return (
+                    float(box0[0]) + (float(box1[0]) - float(box0[0])) * alpha,
+                    float(box0[1]) + (float(box1[1]) - float(box0[1])) * alpha,
+                )
+
+            return {
+                "t": t,
+                "x": float(row0["x"]) + (float(row1["x"]) - float(row0["x"])) * alpha,
+                "y": float(row0["y"]) + (float(row1["y"]) - float(row0["y"])) * alpha,
+                "yaw": wrap_angle(yaw0 + (yaw1 - yaw0) * alpha),
+                "selected_target": row1.get("selected_target", ""),
+                "tactic": row1.get("tactic", ""),
+                "fire_ready": bool(row1.get("fire_ready", False)),
+                "score_yellow": row1.get("score_yellow", MATCH_STATE["score_yellow"]),
+                "score_blue": row1.get("score_blue", MATCH_STATE["score_blue"]),
+                "armor_yellow": row1.get("armor_yellow", len(BASE_ARMOR["yellow"])),
+                "armor_blue": row1.get("armor_blue", len(BASE_ARMOR["blue"])),
+                "localization_confidence": row1.get("localization_confidence", 1.0),
+                "box_ne": interp_box("box_ne"),
+                "box_sw": interp_box("box_sw"),
+            }
+    return team_rows[-1]
+
+
+def apply_trained_replay_events(t: float):
+    load_trained_replay()
+    applied = TRAINED_REPLAY["applied_events"]
+    events = TRAINED_REPLAY["events"]
+    assert isinstance(applied, set)
+    assert isinstance(events, list)
+    for index, event in enumerate(events):
+        if index in applied or float(event["t"]) > t:
+            continue
+        target_path = target_path_from_name(str(event["target"]))
+        target = TARGET_REGISTRY.get(target_path)
+        if target is None:
+            raise RuntimeError(f"Replay event target not found: {event['target']}")
+        if not bool(target["knocked"]):
+            apply_fire_rule(str(event["team"]), target_path)
+        applied.add(index)
+
+
+def trained_replay_pushable_pose(
+    team: str,
+    proposed_pos: tuple[float, float, float],
+    yaw: float,
+) -> tuple[float, float, float]:
+    render_poses = TRAINED_REPLAY["render_poses"]
+    assert isinstance(render_poses, dict)
+    previous = render_poses.get(team)
+    if isinstance(previous, tuple):
+        prev_xy = (float(previous[0]), float(previous[1]))
+    else:
+        prev_xy = (proposed_pos[0], proposed_pos[1])
+
+    motion = (proposed_pos[0] - prev_xy[0], proposed_pos[1] - prev_xy[1])
+    motion_norm = math.hypot(motion[0], motion[1])
+    if motion_norm > 1e-5:
+        motion_dir = (motion[0] / motion_norm, motion[1] / motion_norm)
+    else:
+        motion_dir = (math.cos(yaw), math.sin(yaw))
+
+    corrected = (proposed_pos[0], proposed_pos[1])
+    for _pass in range(8):
+        changed = False
+        for path, obstacle in PUSHABLE_OBSTACLES.items():
+            xy = obstacle["xy"]
+            half = obstacle["half"]
+            z = float(obstacle["z"])
+            assert isinstance(xy, list)
+            assert isinstance(half, tuple)
+            center = (float(xy[0]), float(xy[1]))
+            collided, normal, penetration = robot_pushable_collision(corrected, yaw, center, half)
+            if not collided:
+                continue
+
+            away_from_robot = (-normal[0], -normal[1])
+            push_dir = motion_dir if motion_dir[0] * away_from_robot[0] + motion_dir[1] * away_from_robot[1] > 0.20 else away_from_robot
+            push_norm = math.hypot(push_dir[0], push_dir[1])
+            if push_norm <= 1e-8:
+                push_dir = away_from_robot
+                push_norm = max(1e-8, math.hypot(push_dir[0], push_dir[1]))
+            push_dir = (push_dir[0] / push_norm, push_dir[1] / push_norm)
+            push_step = min(0.090, max(0.020, penetration + 0.012))
+            candidate = (center[0] + push_dir[0] * push_step, center[1] + push_dir[1] * push_step)
+
+            if pushable_position_valid(path, candidate):
+                xy[0], xy[1] = candidate
+                set_xform(path, (candidate[0], candidate[1], z), quat_from_euler(0.0, 0.0, 0.0))
+                warn_costmap("trained_replay", f"robot pushed {path.rsplit('/', 1)[-1]} to ({candidate[0]:.2f}, {candidate[1]:.2f})")
+                changed = True
+                continue
+
+            # Jammed box: keep the rendered robot on the near side of the box
+            # instead of letting the trace visually pass through it.
+            corrected = (
+                corrected[0] + normal[0] * (penetration + 0.010),
+                corrected[1] + normal[1] * (penetration + 0.010),
+            )
+            corrected = clamp_to_arena(corrected)
+            warn_costmap("trained_replay", f"{path.rsplit('/', 1)[-1]} jammed; robot held outside box")
+            changed = True
+        if not changed:
+            break
+    for _pass in range(4):
+        separated = True
+        for path, obstacle in PUSHABLE_OBSTACLES.items():
+            xy = obstacle["xy"]
+            half = obstacle["half"]
+            assert isinstance(xy, list)
+            assert isinstance(half, tuple)
+            collided, normal, penetration = robot_pushable_collision(corrected, yaw, (float(xy[0]), float(xy[1])), half)
+            if not collided:
+                continue
+            corrected = (
+                corrected[0] + normal[0] * (penetration + 0.014),
+                corrected[1] + normal[1] * (penetration + 0.014),
+            )
+            corrected = clamp_to_arena(corrected)
+            warn_costmap("trained_replay", f"{path.rsplit('/', 1)[-1]} visual hull separated after trace correction")
+            separated = False
+        if separated:
+            break
+    render_poses[team] = (corrected[0], corrected[1], proposed_pos[2])
+    return (corrected[0], corrected[1], proposed_pos[2])
+
+
+def apply_replay_box_positions(row: dict[str, object]) -> bool:
+    aliases = {
+        "box_ne": "RandomObstacleNorthEast",
+        "box_sw": "RandomObstacleSouthWest",
+    }
+    applied = False
+    last_trace_xy = TRAINED_REPLAY.setdefault("last_box_trace_xy", {})
+    assert isinstance(last_trace_xy, dict)
+    for column_name, prim_suffix in aliases.items():
+        xy = row.get(column_name)
+        if not isinstance(xy, tuple):
+            continue
+        previous_xy = last_trace_xy.get(column_name)
+        trace_changed = (
+            not isinstance(previous_xy, tuple)
+            or math.hypot(float(xy[0]) - float(previous_xy[0]), float(xy[1]) - float(previous_xy[1])) > 1e-5
+        )
+        last_trace_xy[column_name] = (float(xy[0]), float(xy[1]))
+        if not trace_changed:
+            continue
+        target_path = ""
+        for path in PUSHABLE_OBSTACLES:
+            if path.rsplit("/", 1)[-1] == prim_suffix:
+                target_path = path
+                break
+        if not target_path:
+            continue
+        obstacle = PUSHABLE_OBSTACLES[target_path]
+        stored_xy = obstacle["xy"]
+        z = float(obstacle["z"])
+        assert isinstance(stored_xy, list)
+        stored_xy[0], stored_xy[1] = float(xy[0]), float(xy[1])
+        set_xform(target_path, (stored_xy[0], stored_xy[1], z), quat_from_euler(0.0, 0.0, 0.0))
+        applied = True
+    return applied
 
 
 def point_blocked(point: tuple[float, float]) -> bool:
@@ -1297,6 +1832,167 @@ def segment_blocked(p0: tuple[float, float], p1: tuple[float, float]) -> bool:
         if segment_intersects_aabb(p0, p1, center, half_size):
             return True
     return False
+
+
+def pushable_collision_path(point: tuple[float, float]) -> str | None:
+    for path, center, half_size in dynamic_pushable_costmap():
+        if abs(point[0] - center[0]) <= half_size[0] and abs(point[1] - center[1]) <= half_size[1]:
+            return path
+    return None
+
+
+def pushable_position_valid(path: str, xy: tuple[float, float]) -> bool:
+    limit = ARENA_SIZE * 0.5 - PUSHABLE_OBSTACLE_HALF - PUSH_OBSTACLE_CLEARANCE
+    if not (-limit <= xy[0] <= limit and -limit <= xy[1] <= limit):
+        return False
+    inflated = PUSHABLE_OBSTACLE_HALF + PUSH_OBSTACLE_CLEARANCE
+    for _blocker_path, center, half_size in NAV_BLOCKERS:
+        if abs(xy[0] - center[0]) <= half_size[0] + inflated and abs(xy[1] - center[1]) <= half_size[1] + inflated:
+            return False
+    for target_path, center, radius in dynamic_target_costmap():
+        if math.hypot(xy[0] - center[0], xy[1] - center[1]) < radius + inflated:
+            return False
+    for other_path, center, half_size in dynamic_pushable_costmap():
+        if other_path == path:
+            continue
+        if abs(xy[0] - center[0]) <= half_size[0] + inflated and abs(xy[1] - center[1]) <= half_size[1] + inflated:
+            return False
+    return True
+
+
+def reset_pushable_obstacles():
+    for path, obstacle in PUSHABLE_OBSTACLES.items():
+        start_xy = obstacle.get("start_xy")
+        if not isinstance(start_xy, tuple):
+            continue
+        xy = obstacle["xy"]
+        z = float(obstacle["z"])
+        assert isinstance(xy, list)
+        xy[0], xy[1] = float(start_xy[0]), float(start_xy[1])
+        set_xform(path, (xy[0], xy[1], z), quat_from_euler(0.0, 0.0, 0.0))
+
+
+def sync_pushable_obstacles_from_stage():
+    for path, obstacle in PUSHABLE_OBSTACLES.items():
+        xy = obstacle["xy"]
+        assert isinstance(xy, list)
+        try:
+            translation, _orientation = get_xform(path)
+        except RuntimeError:
+            continue
+        if not (math.isfinite(translation[0]) and math.isfinite(translation[1])):
+            continue
+        if abs(translation[0]) > ARENA_SIZE or abs(translation[1]) > ARENA_SIZE:
+            continue
+        xy[0], xy[1] = float(translation[0]), float(translation[1])
+
+
+def circle_aabb_collision(
+    point: tuple[float, float],
+    center: tuple[float, float],
+    half_size: tuple[float, float],
+    radius: float,
+) -> tuple[bool, tuple[float, float], float]:
+    dx = point[0] - center[0]
+    dy = point[1] - center[1]
+    closest_x = max(center[0] - half_size[0], min(point[0], center[0] + half_size[0]))
+    closest_y = max(center[1] - half_size[1], min(point[1], center[1] + half_size[1]))
+    vx = point[0] - closest_x
+    vy = point[1] - closest_y
+    distance = math.hypot(vx, vy)
+    if distance > 1e-8:
+        penetration = radius - distance
+        if penetration <= 0.0:
+            return False, (0.0, 0.0), 0.0
+        return True, (vx / distance, vy / distance), penetration
+
+    inside_x = half_size[0] - abs(dx)
+    inside_y = half_size[1] - abs(dy)
+    if inside_x < 0.0 or inside_y < 0.0:
+        return False, (0.0, 0.0), 0.0
+    if inside_x <= inside_y:
+        normal = (1.0 if dx >= 0.0 else -1.0, 0.0)
+        penetration = inside_x + radius
+    else:
+        normal = (0.0, 1.0 if dy >= 0.0 else -1.0)
+        penetration = inside_y + radius
+    return True, normal, penetration
+
+
+def oriented_rect_aabb_collision(
+    rect_center: tuple[float, float],
+    yaw: float,
+    rect_half: tuple[float, float],
+    box_center: tuple[float, float],
+    box_half: tuple[float, float],
+) -> tuple[bool, tuple[float, float], float]:
+    ux = (math.cos(yaw), math.sin(yaw))
+    uy = (-math.sin(yaw), math.cos(yaw))
+    delta = (rect_center[0] - box_center[0], rect_center[1] - box_center[1])
+    axes = (ux, uy, (1.0, 0.0), (0.0, 1.0))
+    best_axis = (1.0, 0.0)
+    best_overlap = math.inf
+
+    for axis in axes:
+        rect_radius = rect_half[0] * abs(ux[0] * axis[0] + ux[1] * axis[1]) + rect_half[1] * abs(
+            uy[0] * axis[0] + uy[1] * axis[1]
+        )
+        box_radius = box_half[0] * abs(axis[0]) + box_half[1] * abs(axis[1])
+        distance = abs(delta[0] * axis[0] + delta[1] * axis[1])
+        overlap = rect_radius + box_radius - distance
+        if overlap <= 0.0:
+            return False, (0.0, 0.0), 0.0
+        if overlap < best_overlap:
+            best_overlap = overlap
+            sign = 1.0 if delta[0] * axis[0] + delta[1] * axis[1] >= 0.0 else -1.0
+            best_axis = (axis[0] * sign, axis[1] * sign)
+
+    norm = math.hypot(best_axis[0], best_axis[1])
+    if norm <= 1e-8:
+        return True, (1.0, 0.0), float(best_overlap)
+    return True, (best_axis[0] / norm, best_axis[1] / norm), float(best_overlap)
+
+
+def robot_pushable_collision(
+    robot_xy: tuple[float, float],
+    yaw: float,
+    box_center: tuple[float, float],
+    box_half: tuple[float, float],
+) -> tuple[bool, tuple[float, float], float]:
+    return oriented_rect_aabb_collision(
+        robot_xy,
+        yaw,
+        ROBOT_PUSHABLE_VISUAL_HALF_EXTENTS,
+        box_center,
+        box_half,
+    )
+
+
+def push_pushable_obstacle(path: str, yaw: float, source: str) -> bool:
+    obstacle = PUSHABLE_OBSTACLES.get(path)
+    if obstacle is None:
+        return False
+    xy = obstacle["xy"]
+    z = float(obstacle["z"])
+    size = obstacle["size"]
+    assert isinstance(xy, list)
+    assert isinstance(size, tuple)
+    direction = (math.cos(yaw), math.sin(yaw))
+    accepted = None
+    for multiplier in (1.0, 1.7, 2.4, 3.1, 4.0, 5.0):
+        candidate = (
+            float(xy[0]) + direction[0] * PUSH_OBSTACLE_STEP_M * multiplier,
+            float(xy[1]) + direction[1] * PUSH_OBSTACLE_STEP_M * multiplier,
+        )
+        if pushable_position_valid(path, candidate):
+            accepted = candidate
+            break
+    if accepted is None:
+        return False
+    xy[0], xy[1] = accepted
+    set_xform(path, (accepted[0], accepted[1], z), quat_from_euler(0.0, 0.0, 0.0))
+    warn_costmap(source, f"pushable box {path.rsplit('/', 1)[-1]} moved to ({accepted[0]:.2f}, {accepted[1]:.2f})")
+    return True
 
 
 def snap_to_grid(point: tuple[float, float]) -> tuple[int, int]:
@@ -1404,6 +2100,26 @@ def dynamic_target_costmap() -> list[tuple[str, tuple[float, float], float]]:
     return blockers
 
 
+def dynamic_pushable_costmap() -> list[tuple[str, tuple[float, float], tuple[float, float]]]:
+    blockers = []
+    for path, obstacle in PUSHABLE_OBSTACLES.items():
+        xy = obstacle["xy"]
+        half = obstacle["half"]
+        assert isinstance(xy, list)
+        assert isinstance(half, tuple)
+        blockers.append(
+            (
+                path,
+                (float(xy[0]), float(xy[1])),
+                (
+                    float(half[0]) + ROBOT_PUSHABLE_RENDER_CLEARANCE_RADIUS,
+                    float(half[1]) + ROBOT_PUSHABLE_RENDER_CLEARANCE_RADIUS,
+                ),
+            )
+        )
+    return blockers
+
+
 def aabb_clearance(point: tuple[float, float], center: tuple[float, float], half_size: tuple[float, float]) -> float:
     dx = max(abs(point[0] - center[0]) - half_size[0], 0.0)
     dy = max(abs(point[1] - center[1]) - half_size[1], 0.0)
@@ -1430,6 +2146,14 @@ def costmap_potential(point: tuple[float, float]) -> float:
         if clearance < COSTMAP_SOFT_INFLATION:
             strength = (COSTMAP_SOFT_INFLATION - clearance) / COSTMAP_SOFT_INFLATION
             potential += 6.0 * strength * strength
+
+    for _obstacle_path, center, half_size in dynamic_pushable_costmap():
+        clearance = aabb_clearance(point, center, half_size)
+        if clearance < 0.0:
+            potential += 2.0
+        elif clearance < COSTMAP_SOFT_INFLATION:
+            strength = (COSTMAP_SOFT_INFLATION - clearance) / COSTMAP_SOFT_INFLATION
+            potential += 1.5 * strength * strength
     return potential
 
 
@@ -1467,6 +2191,16 @@ def apply_costmap_recovery(
                 if hard or strength > strongest:
                     strongest = max(strength, strongest)
                     touched_name = target_path.rsplit("/", 1)[-1]
+                    hard_touch = hard_touch or hard
+
+        for obstacle_path, center, half_size in dynamic_pushable_costmap():
+            push, hard, strength = aabb_costmap_repel(corrected, center, half_size)
+            if hard or strength > 0.0:
+                total_x += push[0]
+                total_y += push[1]
+                if hard or strength > strongest:
+                    strongest = max(strength, strongest)
+                    touched_name = obstacle_path.rsplit("/", 1)[-1]
                     hard_touch = hard_touch or hard
 
         if abs(total_x) < 1e-7 and abs(total_y) < 1e-7:
@@ -1620,11 +2354,11 @@ def demo_policy_corridor(team: str, start_xy: tuple[float, float], goal_xy: tupl
         if sy < -0.84:
             staging.append((max(0.36, sx), -0.78))
         if sy < -0.42:
-            staging.append((0.24, -0.58))
+            staging.append((0.30, -0.58))
         if sy < 0.24:
-            staging.append((0.20, -0.26))
+            staging.append((0.30, -0.26))
         if gy >= 0.24:
-            staging.append((0.20, 0.42))
+            staging.append((0.30, 0.42))
             staging.append((0.0 if gx < 0.0 else 0.34, max(0.42, gy)))
         if gx < -0.34:
             staging.append((-0.34, max(0.40, gy)))
@@ -1635,11 +2369,11 @@ def demo_policy_corridor(team: str, start_xy: tuple[float, float], goal_xy: tupl
         if sy > 0.84:
             staging.append((min(-0.36, sx), 0.78))
         if sy > 0.42:
-            staging.append((-0.24, 0.58))
+            staging.append((-0.30, 0.58))
         if sy > -0.24:
-            staging.append((-0.20, 0.26))
+            staging.append((-0.30, 0.26))
         if gy <= -0.24:
-            staging.append((-0.20, -0.42))
+            staging.append((-0.30, -0.42))
             staging.append((0.0 if gx > 0.0 else -0.34, min(-0.42, gy)))
         if gx > 0.34:
             staging.append((0.34, min(-0.40, gy)))
@@ -1708,6 +2442,8 @@ class StrategyTeamController:
         self.last_contact_t = -99.0
         self.start_delay = 0.0
         self.opponent_estimate = empty_opponent_estimate()
+        self.target_fail_counts: dict[str, int] = {}
+        self.target_cooldowns: dict[str, float] = {}
 
     def set_pose(self, pose: tuple[tuple[float, float, float], float]):
         self.pose = pose
@@ -1716,10 +2452,18 @@ class StrategyTeamController:
         if t - self.last_contact_t < 0.35:
             return
         self.last_contact_t = t
-        self.localization_confidence = max(0.05, self.localization_confidence - LOCALIZATION_CONTACT_LOSS)
-        self.state = "relocalize"
-        self.relocalize_rotation = 0.0
-        self._print_strategy(t, f"collision disturbed localization confidence={self.localization_confidence:.2f}; spinning to rebuild map")
+        self.localization_confidence = max(0.05, self.localization_confidence - LOCALIZATION_CONTACT_LOSS * 0.25)
+        self.recover_until = t + 0.55
+        self.recover_spin_direction = -1.0 if self.team == "yellow" else 1.0
+        if self.state != "relocalize":
+            self.state = "recover"
+        self._print_strategy(t, f"collision contact; backing off before replanning confidence={self.localization_confidence:.2f}")
+
+    def notify_robot_contact(self, t: float):
+        if t - self.last_contact_t < 0.35:
+            return
+        self.last_contact_t = t
+        self._print_strategy(t, "tactical robot contact; opponent pose known, localization unchanged")
 
     def update(self, t: float) -> tuple[tuple[float, float, float], float]:
         dt = max(0.0, min(0.05, t - self.last_update_t)) if self.last_update_t > 0.0 else 0.0
@@ -1745,7 +2489,7 @@ class StrategyTeamController:
             return self.pose
 
         if self.state == "recover":
-            self._integrate_differential(-0.045, self.recover_spin_direction * 1.25, dt)
+            self._integrate_differential(-0.070, self.recover_spin_direction * 0.32, dt)
             if t >= self.recover_until:
                 self.state = "plan"
                 self.blocked_since = 0.0
@@ -1824,16 +2568,20 @@ class StrategyTeamController:
             assert isinstance(target_xy, tuple)
             aligned = self._aim_differential(target_xy, dt)
             if aligned and t - self.aim_start_time >= MATCH_AIM_TIME and t - LAST_FIRE_TIME[self.team] >= FIRE_COOLDOWN:
-                LAST_FIRE_TIME[self.team] = t
-                hit_path = detect_laser_hit(self.team, self.pose)
+                hit_path = update_laser_lock(self.team, self.pose, t)
                 if hit_path == self.current_target_path:
+                    LAST_FIRE_TIME[self.team] = t
                     knocked = apply_fire_rule(self.team, self.current_target_path)
+                    reset_laser_lock(self.team)
                     if knocked or target["knocked"]:
                         self.task_index += 1
                         self.state = "plan"
-                else:
-                    self._print_strategy(t, f"shot withheld; no clean line to {target_name_from_path(self.current_target_path)}")
+                elif t - self.aim_start_time >= MATCH_AIM_TIME + LASER_DWELL_REQUIRED_S + 0.70:
+                    reset_laser_lock(self.team)
+                    self._mark_target_failed(self.current_target_path, t, "no clean laser dwell")
                     self.state = "plan"
+            elif not aligned:
+                reset_laser_lock(self.team)
 
         return self.pose
 
@@ -1843,7 +2591,7 @@ class StrategyTeamController:
             if block_xy is not None:
                 return {"mode": "block", "fire_xy": block_xy}
 
-        candidates = self._attack_candidates()
+        candidates = self._attack_candidates(t)
         if not candidates:
             return {"mode": "wait"}
 
@@ -1858,11 +2606,13 @@ class StrategyTeamController:
     def _plan_path(self, start_xy: tuple[float, float], goal_xy: tuple[float, float]) -> list[tuple[float, float]]:
         return plan_safe_path(start_xy, goal_xy)
 
-    def _attack_candidates(self) -> list[dict[str, object]]:
+    def _attack_candidates(self, t: float) -> list[dict[str, object]]:
         candidates: list[dict[str, object]] = []
         start_xy = (self.pose[0][0], self.pose[0][1])
         for target_path, target in TARGET_REGISTRY.items():
             if target["knocked"] or target["owner"] == self.team:
+                continue
+            if self._target_on_cooldown(target_path, t):
                 continue
             kind = str(target["kind"])
             if kind != "normal" and kind != f"base_{opponent_team(self.team)}":
@@ -1882,6 +2632,17 @@ class StrategyTeamController:
             )
         return candidates
 
+    def _target_on_cooldown(self, target_path: str, t: float) -> bool:
+        return t < self.target_cooldowns.get(target_path, -99.0)
+
+    def _mark_target_failed(self, target_path: str, t: float, reason: str):
+        count = self.target_fail_counts.get(target_path, 0) + 1
+        self.target_fail_counts[target_path] = count
+        cooldown = 4.0 + 3.0 * min(count, 3)
+        self.target_cooldowns[target_path] = t + cooldown
+        target_name = target_name_from_path(target_path)
+        self._print_strategy(t, f"shot withheld on {target_name}; {reason}, cooldown {cooldown:.1f}s")
+
     def _best_fire_solution(
         self,
         start_xy: tuple[float, float],
@@ -1891,6 +2652,7 @@ class StrategyTeamController:
         target_xy = target["xy"]
         assert isinstance(target_xy, tuple)
         yaw = float(target["yaw"])
+        kind = str(target["kind"])
         target_name = target_name_from_path(target_path)
         front = (math.cos(yaw), math.sin(yaw))
         tangent = (-front[1], front[0])
@@ -1898,8 +2660,73 @@ class StrategyTeamController:
         fixed = static_fire_pose(self.team, target_name, self.tasks)
         if fixed is not None:
             fire_candidates.append(fixed)
-        for distance in (0.46, 0.58, 0.72, 0.90):
-            for side_offset in (0.0, -0.16, 0.16, -0.28, 0.28):
+        if kind.startswith("base_"):
+            base_xy = team_base_xy(str(target["owner"]))
+            hits = max(1, min(4, normal_hits_against(self.team)))
+            if kind == "base_blue":
+                opened_dirs = (
+                    (1.0, 0.0),
+                    (0.0, -1.0),
+                    (1.0 / math.sqrt(2.0), -1.0 / math.sqrt(2.0)),
+                )
+            else:
+                opened_dirs = (
+                    (-1.0, 0.0),
+                    (0.0, 1.0),
+                    (-1.0 / math.sqrt(2.0), 1.0 / math.sqrt(2.0)),
+                )
+            allowed_dirs = opened_dirs[:1] if hits == 1 else opened_dirs[:2] if hits == 2 else opened_dirs
+            for direction in allowed_dirs:
+                side_tangent = (-direction[1], direction[0])
+                for radius in (0.48, 0.62, 0.78, 0.94):
+                    for lateral in (-0.10, -0.04, 0.0, 0.04, 0.10):
+                        fire_candidates.append(
+                            (
+                                base_xy[0] + direction[0] * radius + side_tangent[0] * lateral,
+                                base_xy[1] + direction[1] * radius + side_tangent[1] * lateral,
+                            )
+                        )
+            wall_limit = ARENA_SIZE * 0.5 - ROBOT_COLLISION_RADIUS - 0.045
+            for offset in (-0.16, -0.08, 0.0, 0.08, 0.16):
+                if kind == "base_blue":
+                    fire_candidates.append((-wall_limit, target_xy[1] + offset))
+                    fire_candidates.append((target_xy[0] + offset, wall_limit))
+                else:
+                    fire_candidates.append((wall_limit, target_xy[1] + offset))
+                    fire_candidates.append((target_xy[0] + offset, -wall_limit))
+            angle_offsets = {
+                1: (-1.12, 1.12, -0.86, 0.86),
+                2: (-0.96, 0.96, -0.70, 0.70),
+                3: (-0.78, 0.78, -0.44, 0.44, -0.26, 0.26),
+                4: (-0.62, 0.62, -0.34, 0.34, -0.16, 0.16, 0.0),
+            }[hits]
+            for distance in (
+                SHOOTER_FORWARD_OFFSET + BASE_SHOOT_MIN_RANGE + 0.02,
+                SHOOTER_FORWARD_OFFSET + 0.34,
+                SHOOTER_FORWARD_OFFSET + BASE_SHOOT_IDEAL_DISTANCE,
+                SHOOTER_FORWARD_OFFSET + BASE_SHOOT_RANGE - 0.04,
+            ):
+                for angle_offset in angle_offsets:
+                    direction = (
+                        math.cos(yaw + angle_offset),
+                        math.sin(yaw + angle_offset),
+                    )
+                    fire_candidates.append(
+                        (
+                            target_xy[0] + direction[0] * distance,
+                            target_xy[1] + direction[1] * distance,
+                        )
+                    )
+        for distance in (
+            SHOOTER_FORWARD_OFFSET + (BASE_SHOOT_MIN_RANGE + 0.02 if kind.startswith("base_") else 0.14),
+            SHOOTER_FORWARD_OFFSET + (0.36 if kind.startswith("base_") else 0.24),
+            SHOOTER_FORWARD_OFFSET + (BASE_SHOOT_IDEAL_DISTANCE if kind.startswith("base_") else SHOOT_IDEAL_DISTANCE),
+            SHOOTER_FORWARD_OFFSET + ((BASE_SHOOT_RANGE if kind.startswith("base_") else SHOOT_RANGE) - 0.03),
+        ):
+            lateral_offsets = (0.0, -0.08, 0.08, -0.14, 0.14)
+            if kind.startswith("base_"):
+                lateral_offsets = (0.0, -0.10, 0.10, -0.18, 0.18)
+            for side_offset in lateral_offsets:
                 fire_candidates.append(
                     (
                         target_xy[0] + front[0] * distance + tangent[0] * side_offset,
@@ -1915,15 +2742,22 @@ class StrategyTeamController:
             if key in seen:
                 continue
             seen.add(key)
-            if self._fire_pose_rejected(fire_xy, target_xy):
+            if self._fire_pose_rejected(fire_xy, target_xy, kind.startswith("base_")):
                 continue
+            if kind.startswith("base_"):
+                pose_quality = base_attack_pose_quality(self.team, target_path, fire_xy)
+                if pose_quality <= 0.0:
+                    continue
             try:
                 route = plan_safe_path(start_xy, fire_xy)
             except RuntimeError:
                 continue
             route_len = path_length(route)
-            shot_distance = math.hypot(target_xy[0] - fire_xy[0], target_xy[1] - fire_xy[1])
-            quality = max(0.0, 1.0 - abs(shot_distance - 0.58) / 1.10)
+            center_distance = math.hypot(target_xy[0] - fire_xy[0], target_xy[1] - fire_xy[1])
+            shot_distance = max(0.0, center_distance - SHOOTER_FORWARD_OFFSET)
+            quality = laser_accuracy_from_geometry(shot_distance, 0.0, kind.startswith("base_"))
+            if kind.startswith("base_"):
+                quality = min(base_hit_success_cap(self.team), quality * base_attack_pose_quality(self.team, target_path, fire_xy))
             quality += 0.15 if not line_blocked_by_wall(fire_xy, target_xy) else -0.45
             score = quality - route_len * 0.10 - costmap_potential(fire_xy) * 0.18
             if score > best_score:
@@ -1931,7 +2765,7 @@ class StrategyTeamController:
                 best = (fire_xy, route_len, max(0.0, min(1.0, quality)))
         return best
 
-    def _fire_pose_rejected(self, fire_xy: tuple[float, float], target_xy: tuple[float, float]) -> bool:
+    def _fire_pose_rejected(self, fire_xy: tuple[float, float], target_xy: tuple[float, float], base_target: bool) -> bool:
         if not (-ARENA_SIZE * 0.5 + ROUTE_CLEARANCE <= fire_xy[0] <= ARENA_SIZE * 0.5 - ROUTE_CLEARANCE):
             return True
         if not (-ARENA_SIZE * 0.5 + ROUTE_CLEARANCE <= fire_xy[1] <= ARENA_SIZE * 0.5 - ROUTE_CLEARANCE):
@@ -1940,8 +2774,10 @@ class StrategyTeamController:
             return True
         if costmap_potential(fire_xy) > 3.0:
             return True
-        shot_distance = math.hypot(target_xy[0] - fire_xy[0], target_xy[1] - fire_xy[1])
-        if shot_distance > SHOOT_RANGE:
+        center_distance = math.hypot(target_xy[0] - fire_xy[0], target_xy[1] - fire_xy[1])
+        shot_distance = max(0.0, center_distance - SHOOTER_FORWARD_OFFSET)
+        min_range, max_range = shooting_range_limits(base_target)
+        if shot_distance < min_range or shot_distance > max_range:
             return True
         if line_blocked_by_wall(fire_xy, target_xy):
             return True
@@ -2076,6 +2912,27 @@ class StrategyTeamController:
             right_speed = 0.0
             self.motion_blocked = True
 
+        pushable_path = None if self.motion_blocked else pushable_collision_path((candidate[0], candidate[1]))
+        if pushable_path is not None:
+            if linear_velocity > 0.035 and push_pushable_obstacle(pushable_path, mid_yaw, self.team):
+                if pushable_collision_path((candidate[0], candidate[1])) is not None:
+                    candidate = (pos[0], pos[1], 0.0)
+                    linear_velocity = 0.0
+                    left_speed = 0.0
+                    right_speed = 0.0
+                    self.motion_blocked = True
+                else:
+                    linear_velocity *= 0.62
+                    left_speed *= 0.62
+                    right_speed *= 0.62
+            else:
+                warn_costmap(self.team, f"pushable box {pushable_path.rsplit('/', 1)[-1]} cannot move; backing off")
+                candidate = (pos[0], pos[1], 0.0)
+                linear_velocity = 0.0
+                left_speed = 0.0
+                right_speed = 0.0
+                self.motion_blocked = True
+
         corrected_xy, costmap_touch, hard_costmap_touch = apply_costmap_recovery((candidate[0], candidate[1]), self.team)
         if costmap_touch:
             correction_dx = corrected_xy[0] - candidate[0]
@@ -2206,6 +3063,11 @@ class PolicyReplayController(StrategyTeamController):
                     self.task_index += 1
                 cursor += 1
                 continue
+            if self._target_on_cooldown(target_path, t):
+                if cursor == self.task_index and self.target_fail_counts.get(target_path, 0) >= 2:
+                    self.task_index += 1
+                cursor += 1
+                continue
             if target["knocked"]:
                 if cursor == self.task_index:
                     self.task_index += 1
@@ -2220,7 +3082,7 @@ class PolicyReplayController(StrategyTeamController):
                     self.task_index += 1
                 cursor += 1
                 continue
-            if kind == f"base_{opponent}" and len(BASE_ARMOR[opponent]) > 2:
+            if kind == f"base_{opponent}" and len(BASE_ARMOR[opponent]) > 3:
                 first_deferred_base = target_name
                 cursor += 1
                 continue
@@ -2313,7 +3175,6 @@ def initialize_demo_flow_controllers():
         DEMO_POLICY_TASKS["blue"],
         MATCH_DRIVE_SPEED * 0.56,
     )
-    MATCH_CONTROLLERS["blue"].start_delay = 8.0
 
 
 def design_arena():
@@ -2336,6 +3197,9 @@ def design_arena():
         collision=True,
         raycast=True,
         semantic="arena_floor",
+        physics_material=rigid_physics_material(0.92, 0.74),
+        contact_offset=0.004,
+        rest_offset=0.0,
     )
 
     for idx, p in enumerate([-1.0, -0.5, 0.0, 0.5, 1.0]):
@@ -2393,11 +3257,8 @@ def design_arena():
     internal_specs = [
         ("MidWallWest", (-1.00, 0.0, wall_z), (1.00, WALL_THICKNESS, WALL_HEIGHT)),
         ("MidWallEast", (1.00, 0.0, wall_z), (1.00, WALL_THICKNESS, WALL_HEIGHT)),
-        ("BlueBaseEastRail", (-1.00, 1.25, wall_z), (WALL_THICKNESS, 0.50, WALL_HEIGHT)),
-        ("BlueBaseSouthRail", (-1.25, 1.00, wall_z), (0.50, WALL_THICKNESS, WALL_HEIGHT)),
         ("BlueStartEastRail", (0.00, 1.25, wall_z), (WALL_THICKNESS, 0.50, WALL_HEIGHT)),
         ("YellowStartWestRail", (0.00, -1.25, wall_z), (WALL_THICKNESS, 0.50, WALL_HEIGHT)),
-        ("YellowBaseWestRail", (1.00, -1.25, wall_z), (WALL_THICKNESS, 0.50, WALL_HEIGHT)),
     ]
     for name, pos, size in internal_specs:
         spawn_nav_blocker(
@@ -2409,11 +3270,11 @@ def design_arena():
         )
 
     obstacles = [
-        ("RandomObstacleNorthEast", (0.76, 0.68, OBSTACLE_SIZE * 0.5)),
-        ("RandomObstacleSouthWest", (-0.74, -0.78, OBSTACLE_SIZE * 0.5)),
+        ("RandomObstacleNorthEast", (*PUSHABLE_OBSTACLE_STARTS["box_ne"], OBSTACLE_SIZE * 0.5)),
+        ("RandomObstacleSouthWest", (*PUSHABLE_OBSTACLE_STARTS["box_sw"], OBSTACLE_SIZE * 0.5)),
     ]
     for name, pos in obstacles:
-        spawn_nav_blocker(
+        spawn_pushable_obstacle(
             f"/World/Arena/{name}",
             (OBSTACLE_SIZE, OBSTACLE_SIZE, OBSTACLE_SIZE),
             pos,
@@ -2421,34 +3282,34 @@ def design_arena():
             semantic="random_obstacle_30cm",
         )
 
+    target_edge = ARENA_SIZE * 0.5 - TARGET_WALL_INSET
+    target_yaws = inward_45deg_target_yaws()
     normal_targets = [
-        ("T01_NorthMiddle", (0.00, 1.455), -math.pi * 0.5),
-        ("T02_NorthEast", (1.455, 1.455), -math.pi * 0.5),
-        ("T03_WestAboveGate", (-1.455, 0.12), 0.0),
-        ("T04_WestBelowGate", (-1.455, -0.12), 0.0),
-        ("T05_EastAboveGate", (1.455, 0.12), math.pi),
-        ("T06_EastBelowGate", (1.455, -0.12), math.pi),
-        ("T07_SouthWest", (-1.455, -1.455), math.pi * 0.5),
-        ("T08_SouthMiddle", (0.00, -1.455), math.pi * 0.5),
+        ("T01_NorthMiddle", (NORTH_MIDDLE_TARGET_X, target_edge), target_yaws["T01_NorthMiddle"]),
+        ("T02_NorthEast", (target_edge, target_edge), target_yaws["T02_NorthEast"]),
+        ("T03_WestAboveGate", (-target_edge, SIDE_GATE_TARGET_Y), target_yaws["T03_WestAboveGate"]),
+        ("T04_WestBelowGate", (-target_edge, -SIDE_GATE_TARGET_Y), target_yaws["T04_WestBelowGate"]),
+        ("T05_EastAboveGate", (target_edge, SIDE_GATE_TARGET_Y), target_yaws["T05_EastAboveGate"]),
+        ("T06_EastBelowGate", (target_edge, -SIDE_GATE_TARGET_Y), target_yaws["T06_EastBelowGate"]),
+        ("T07_SouthWest", (-target_edge, -target_edge), target_yaws["T07_SouthWest"]),
+        ("T08_SouthMiddle", (SOUTH_MIDDLE_TARGET_X, -target_edge), target_yaws["T08_SouthMiddle"]),
     ]
     for name, xy, yaw in normal_targets:
         spawn_target(f"/World/Targets/{name}", xy, yaw, tag_id=1, frame_color=(0.25, 0.26, 0.25))
 
     spawn_target(
         "/World/Targets/BlueBaseTarget",
-        BLUE_BASE_XY,
-        -math.pi * 0.25,
+        BLUE_BASE_TARGET_XY,
+        BLUE_BASE_TARGET_YAW,
         tag_id=3,
-        pitch=math.radians(-45.0),
         frame_color=(0.08, 0.20, 0.56),
         base_target=True,
     )
     spawn_target(
         "/World/Targets/YellowBaseTarget",
-        YELLOW_BASE_XY,
-        math.pi * 0.75,
+        YELLOW_BASE_TARGET_XY,
+        YELLOW_BASE_TARGET_YAW,
         tag_id=2,
-        pitch=math.radians(-45.0),
         frame_color=(0.64, 0.48, 0.10),
         base_target=True,
     )
@@ -2951,23 +3812,28 @@ def trigger_demo_flow_events(t: float):
         if target_path not in TARGET_REGISTRY:
             raise RuntimeError(f"Demo flow target not found: {target_name}")
         LAST_FIRE_TIME[team] = t
-        apply_fire_rule(team, target_path)
+        scripted_fire_after_dwell(team, target_path)
         DEMO_FLOW_TRIGGERED_EVENTS.add(event_index)
 
 
 def update_demo_flow_animation(t: float) -> dict[str, tuple[tuple[float, float, float], float]]:
     initialize_demo_flow_controllers()
-    yellow_pose = MATCH_CONTROLLERS["yellow"].update(t)
-    blue_pose = MATCH_CONTROLLERS["blue"].update(t)
+    yellow_pose = demo_flow_pose("yellow", t)
+    blue_pose = demo_flow_pose("blue", t)
     yellow_pose, blue_pose = resolve_robot_contact(yellow_pose, blue_pose, t)
     MATCH_CONTROLLERS["yellow"].set_pose(yellow_pose)
     MATCH_CONTROLLERS["blue"].set_pose(blue_pose)
     poses = {"yellow": yellow_pose, "blue": blue_pose}
 
     for robot_path, team in ((YELLOW_ROBOT_PATH, "yellow"), (BLUE_ROBOT_PATH, "blue")):
+        controller = MATCH_CONTROLLERS[team]
+        spin_sign = 1.0 if team == "yellow" else -1.0
+        controller.left_wheel_spin = spin_sign * t * 8.0
+        controller.right_wheel_spin = spin_sign * t * 8.4
         pos, yaw = poses[team]
         set_xform(robot_path, pos, quat_from_euler(0.0, 0.0, yaw))
         update_robot_parts(robot_path, team, t)
+    trigger_demo_flow_events(t)
     return poses
 
 
@@ -3018,16 +3884,45 @@ def resolve_robot_contact(
     blue_pos = (blue_pos[0] + nx * push, blue_pos[1] + ny * push, blue_pos[2])
     MATCH_STATE["robot_contact"] = True
     if "yellow" in MATCH_CONTROLLERS:
-        MATCH_CONTROLLERS["yellow"].notify_contact(t)
+        MATCH_CONTROLLERS["yellow"].notify_robot_contact(t)
     if "blue" in MATCH_CONTROLLERS:
-        MATCH_CONTROLLERS["blue"].notify_contact(t)
+        MATCH_CONTROLLERS["blue"].notify_robot_contact(t)
     if t - float(MATCH_STATE["last_contact_print"]) > 2.0:
         MATCH_STATE["last_contact_print"] = t
         print("[RULE]: Robot contact resolved: yellow and blue collision hulls separated.")
     return (yellow_pos, yellow_yaw), (blue_pos, blue_yaw)
 
 
+def update_trained_replay_animation(t: float) -> dict[str, tuple[tuple[float, float, float], float]]:
+    yellow_row = replay_row_at("yellow", t)
+    blue_row = replay_row_at("blue", t)
+    apply_replay_box_positions(yellow_row)
+    yellow_pos = (float(yellow_row["x"]), float(yellow_row["y"]), 0.0)
+    blue_pos = (float(blue_row["x"]), float(blue_row["y"]), 0.0)
+    yellow_pos = trained_replay_pushable_pose("yellow", yellow_pos, float(yellow_row["yaw"]))
+    blue_pos = trained_replay_pushable_pose("blue", blue_pos, float(blue_row["yaw"]))
+
+    poses = {
+        "yellow": (yellow_pos, float(yellow_row["yaw"])),
+        "blue": (blue_pos, float(blue_row["yaw"])),
+    }
+
+    for robot_path, team in ((YELLOW_ROBOT_PATH, "yellow"), (BLUE_ROBOT_PATH, "blue")):
+        pos, yaw = poses[team]
+        set_xform(robot_path, pos, quat_from_euler(0.0, 0.0, yaw))
+        controller = MATCH_CONTROLLERS.get(team)
+        if controller is not None:
+            controller.set_pose((pos, yaw))
+        update_robot_parts(robot_path, team, t)
+
+    apply_trained_replay_events(t)
+    return poses
+
+
 def update_robot_animation(t: float) -> dict[str, tuple[tuple[float, float, float], float]]:
+    if args_cli.replay_trace:
+        return update_trained_replay_animation(t)
+
     if args_cli.demo_flow:
         return update_demo_flow_animation(t)
 
@@ -3056,27 +3951,70 @@ def line_blocked_by_wall(origin_xy: tuple[float, float], target_xy: tuple[float,
     for blocker_path, center, half_size in LASER_BLOCKERS:
         if segment_intersects_aabb(origin_xy, target_xy, center, half_size):
             return True
+    for obstacle in PUSHABLE_OBSTACLES.values():
+        xy = obstacle["xy"]
+        half = obstacle["half"]
+        assert isinstance(xy, list)
+        assert isinstance(half, tuple)
+        if segment_intersects_aabb(origin_xy, target_xy, (float(xy[0]), float(xy[1])), half):
+            return True
     return False
 
 
-def detect_laser_hit(team: str, pose: tuple[tuple[float, float, float], float]) -> str | None:
+def laser_accuracy_from_geometry(distance: float, lateral_error: float, base_target: bool) -> float:
+    min_range, max_range = shooting_range_limits(base_target)
+    if distance < min_range or distance > max_range:
+        return 0.0
+    hit_radius = BASE_HIT_RADIUS if base_target else SHOOT_HIT_RADIUS
+    if lateral_error > hit_radius:
+        return 0.0
+    distance_quality = (max_range - distance) / max(1e-6, max_range - min_range)
+    lateral_quality = 1.0 - lateral_error / max(hit_radius, 1e-6)
+    accuracy = 0.18 + 0.64 * distance_quality + 0.18 * lateral_quality
+    if base_target:
+        accuracy -= 0.10
+    return max(0.05, min(0.98, accuracy))
+
+
+def deterministic_laser_draw(team: str, target_path: str, distance: float, dwell_s: float = 0.0) -> float:
+    phase = float(MATCH_STATE["current_time"]) * 7.131 + len(target_path) * 0.173 + (0.37 if team == "yellow" else 0.71)
+    phase += distance * 11.0 + dwell_s * 2.337
+    return abs(math.sin(phase) * 43758.5453) % 1.0
+
+
+def reset_laser_lock(team: str):
+    LASER_LOCKS[team]["target_path"] = ""
+    LASER_LOCKS[team]["start_time"] = -99.0
+
+
+def detect_laser_candidate(
+    team: str,
+    pose: tuple[tuple[float, float, float], float],
+) -> tuple[str, float, float, float] | None:
     robot_pos, yaw = pose
     shooter_origin = local_to_world(robot_pos, SHOOTER_POSE, 0.0, 0.0, yaw)
     origin_xy = (shooter_origin[0], shooter_origin[1])
     forward = (math.cos(yaw), math.sin(yaw))
     best_path = None
-    best_projection = SHOOT_RANGE + 1.0
+    best_projection = max(SHOOT_RANGE, BASE_SHOOT_RANGE) + 1.0
+    best_accuracy = 0.0
+    best_lateral = 0.0
+    own_candidate_projection = max(SHOOT_RANGE, BASE_SHOOT_RANGE) + 1.0
 
     for target_path, target in TARGET_REGISTRY.items():
         if target["knocked"]:
             continue
         kind = str(target["kind"])
+        owner = str(target["owner"])
+        if kind.startswith("base_") and owner != team and normal_hits_against(team) <= 0:
+            continue
         target_xy = target["xy"]
         assert isinstance(target_xy, tuple)
         dx = target_xy[0] - origin_xy[0]
         dy = target_xy[1] - origin_xy[1]
         projection = dx * forward[0] + dy * forward[1]
-        if projection <= 0.05 or projection > SHOOT_RANGE:
+        min_range, max_range = shooting_range_limits(kind.startswith("base_"))
+        if projection < min_range or projection > max_range:
             continue
         perpendicular = abs(dx * forward[1] - dy * forward[0])
         hit_radius = BASE_HIT_RADIUS if kind.startswith("base_") else SHOOT_HIT_RADIUS
@@ -3084,10 +4022,96 @@ def detect_laser_hit(team: str, pose: tuple[tuple[float, float, float], float]) 
             continue
         if line_blocked_by_wall(origin_xy, target_xy):
             continue
+        if owner == team:
+            own_candidate_projection = min(own_candidate_projection, projection)
+            continue
+        accuracy = laser_accuracy_from_geometry(projection, perpendicular, kind.startswith("base_"))
+        if kind.startswith("base_"):
+            pose_quality = base_attack_pose_quality(team, target_path, (robot_pos[0], robot_pos[1]))
+            if pose_quality <= 0.0:
+                continue
+            accuracy = min(base_hit_success_cap(team), accuracy * pose_quality)
         if projection < best_projection:
             best_projection = projection
             best_path = target_path
+            best_accuracy = accuracy
+            best_lateral = perpendicular
+    if own_candidate_projection <= best_projection:
+        reset_laser_lock(team)
+        MATCH_STATE["last_event"] = f"{team} own-target safety gate blocked laser"
+        return None
+    if best_path is None:
+        reset_laser_lock(team)
+        return None
+    return best_path, best_projection, best_lateral, best_accuracy
+
+
+def detect_laser_hit(team: str, pose: tuple[tuple[float, float, float], float]) -> str | None:
+    candidate = detect_laser_candidate(team, pose)
+    if candidate is None:
+        return None
+    best_path, best_projection, best_lateral, best_accuracy = candidate
+    draw = deterministic_laser_draw(team, best_path, best_projection, LASER_DWELL_FULL_CONFIDENCE_S)
+    if draw > best_accuracy:
+        MATCH_STATE["last_event"] = (
+            f"{team} laser miss: d={best_projection:.2f}m lateral={best_lateral:.3f} "
+            f"p={best_accuracy:.2f}"
+        )
+        return None
     return best_path
+
+
+def update_laser_lock(team: str, pose: tuple[tuple[float, float, float], float], t: float) -> str | None:
+    candidate = detect_laser_candidate(team, pose)
+    if candidate is None:
+        return None
+    target_path, distance, lateral, accuracy = candidate
+    lock = LASER_LOCKS[team]
+    if lock["target_path"] != target_path:
+        lock["target_path"] = target_path
+        lock["start_time"] = t
+        MATCH_STATE["last_event"] = f"{team} laser locked {target_name_from_path(target_path)}; dwell 0.00/{LASER_DWELL_REQUIRED_S:.2f}s"
+        return None
+    dwell_s = max(0.0, t - float(lock["start_time"]))
+    if dwell_s + 1e-9 < LASER_DWELL_REQUIRED_S:
+        MATCH_STATE["last_event"] = (
+            f"{team} laser dwell {target_name_from_path(target_path)} "
+            f"{dwell_s:.2f}/{LASER_DWELL_REQUIRED_S:.2f}s d={distance:.2f}m"
+        )
+        return None
+    dwell_factor = normalized_laser_dwell_factor(dwell_s)
+    final_accuracy = max(0.0, min(0.95, accuracy * dwell_factor))
+    draw = deterministic_laser_draw(team, target_path, distance, dwell_s)
+    reset_laser_lock(team)
+    if draw > final_accuracy:
+        MATCH_STATE["last_event"] = (
+            f"{team} laser miss after dwell: d={distance:.2f}m lateral={lateral:.3f} "
+            f"p={final_accuracy:.2f}"
+        )
+        return None
+    MATCH_STATE["last_event"] = (
+        f"{team} laser dwell satisfied on {target_name_from_path(target_path)} "
+        f"p={final_accuracy:.2f}"
+    )
+    return target_path
+
+
+def scripted_fire_after_dwell(team: str, target_path: str) -> bool:
+    controller = MATCH_CONTROLLERS.get(team)
+    if controller is None:
+        return False
+    candidate = detect_laser_candidate(team, controller.pose)
+    if candidate is None or candidate[0] != target_path:
+        MATCH_STATE["last_event"] = f"{team} scripted shot blocked by range/line safety"
+        return False
+    LASER_LOCKS[team]["target_path"] = target_path
+    LASER_LOCKS[team]["start_time"] = float(MATCH_STATE["current_time"]) - LASER_DWELL_FULL_CONFIDENCE_S
+    hit_path = update_laser_lock(team, controller.pose, float(MATCH_STATE["current_time"]))
+    if hit_path != target_path:
+        return False
+    result = apply_fire_rule(team, target_path)
+    reset_laser_lock(team)
+    return result
 
 
 def remove_next_armor(base_team: str):
@@ -3097,15 +4121,18 @@ def remove_next_armor(base_team: str):
     unregister_blocker(armor_path)
     start_pos, start_orient = get_xform(armor_path)
     removed_index = 4 - len(BASE_ARMOR[base_team])
-    if base_team == "blue":
-        end_pos = (BLUE_BASE_XY[0] - 0.18 + 0.055 * (removed_index - 1), BLUE_BASE_XY[1] - 0.62, 0.075)
-    else:
-        end_pos = (YELLOW_BASE_XY[0] + 0.18 + 0.055 * (removed_index - 1), YELLOW_BASE_XY[1] + 0.62, 0.075)
+    # Removed armor is lifted out above the wall instead of being dropped onto
+    # the floor, so it never becomes a post-hit route obstacle.
+    end_pos = (
+        start_pos[0],
+        start_pos[1],
+        BASE_ARMOR_LIFT_CLEARANCE_Z + 0.040 * (removed_index - 1),
+    )
     ARMOR_REMOVALS.append(
         {
             "path": armor_path,
             "start_time": float(MATCH_STATE["current_time"]),
-            "duration": 0.70,
+            "duration": 0.58,
             "start_pos": start_pos,
             "end_pos": end_pos,
             "orientation": start_orient,
@@ -3178,9 +4205,9 @@ def apply_fire_rule(team: str, target_path: str) -> bool:
     owner = str(target["owner"])
     opponent = "blue" if team == "yellow" else "yellow"
 
-    if owner == team and kind == "normal":
+    if owner == team:
         MATCH_STATE["last_event"] = f"{team} own-target shot blocked"
-        print(f"[RULE]: {team} attempted to shoot own normal target {target_path.rsplit('/', 1)[-1]}; ignored.")
+        print(f"[RULE]: {team} attempted to shoot own target {target_path.rsplit('/', 1)[-1]}; ignored by safety gate.")
         return False
 
     if kind == "normal":
@@ -3198,12 +4225,6 @@ def apply_fire_rule(team: str, target_path: str) -> bool:
         MATCH_STATE["last_event"] = f"{team} hit {opponent} base target -> win"
         print(f"[RULE]: {team} knocked {opponent} base target. Match winner={team}.")
         return True
-    if kind == f"base_{team}":
-        knock_down_target(target_path)
-        MATCH_STATE["winner"] = opponent
-        MATCH_STATE["last_event"] = f"{team} hit own base target -> lose"
-        print(f"[RULE]: {team} knocked its own base target. Match winner={opponent}.")
-        return True
     return False
 
 
@@ -3211,25 +4232,12 @@ def apply_target_contact_rule(team: str, target_path: str):
     target = TARGET_REGISTRY[target_path]
     if target["knocked"]:
         return
-    opponent = opponent_team(team)
-    kind = str(target["kind"])
     target_name = target_path.rsplit("/", 1)[-1]
-    knock_down_target(target_path)
-
-    if kind == f"base_{team}":
-        MATCH_STATE["winner"] = opponent
-        MATCH_STATE["last_event"] = f"{team} collided with own base -> lose"
-        print(f"[RULE]: {team} collided with own base target {target_name}. Match winner={opponent}.")
-        return
-    if kind.startswith("base_"):
-        MATCH_STATE[f"score_{opponent}"] = int(MATCH_STATE[f"score_{opponent}"]) + 60
-        MATCH_STATE["last_event"] = f"{team} collision knocked base; {opponent} scores"
-        print(f"[RULE]: {team} collision knocked base target {target_name}; {opponent} receives 60 points.")
-        return
-
-    MATCH_STATE[f"score_{opponent}"] = int(MATCH_STATE[f"score_{opponent}"]) + 5
-    MATCH_STATE["last_event"] = f"{team} collision knocked normal; {opponent} scores"
-    print(f"[RULE]: {team} collision knocked normal target {target_name}; {opponent} receives 5 points.")
+    MATCH_STATE["last_event"] = f"{team} brushed target {target_name}; target remains standing"
+    controller = MATCH_CONTROLLERS.get(team)
+    if controller is not None:
+        controller.notify_contact(float(MATCH_STATE["current_time"]))
+    print(f"[RULE]: {team} contacted target {target_name}; no knockdown, retreat/relocalize required.")
 
 
 def update_target_contacts(robot_poses: dict[str, tuple[tuple[float, float, float], float]]):
@@ -3258,8 +4266,9 @@ def update_match_rules(t: float, robot_poses: dict[str, tuple[tuple[float, float
         return
     for team, pose in robot_poses.items():
         if t - LAST_FIRE_TIME[team] < FIRE_COOLDOWN:
+            reset_laser_lock(team)
             continue
-        target_path = detect_laser_hit(team, pose)
+        target_path = update_laser_lock(team, pose, t)
         if target_path is None:
             continue
         LAST_FIRE_TIME[team] = t
@@ -3299,13 +4308,13 @@ class MatchVideoRecorder:
             robot_path = YELLOW_ROBOT_PATH if self.view == "yellow_pov" else BLUE_ROBOT_PATH
             camera_prim_path = f"{robot_path}/PovRecordingCamera"
             camera_spawn = sim_utils.PinholeCameraCfg(
-                focal_length=3.6,
+                focal_length=2.6,
                 focus_distance=2.0,
-                horizontal_aperture=4.8,
-                clipping_range=(0.04, 6.0),
+                horizontal_aperture=7.2,
+                clipping_range=(0.02, 6.0),
             )
             camera_offset = CameraCfg.OffsetCfg(
-                pos=CAMERA_POSE,
+                pos=RECORDING_POV_CAMERA_POSE,
                 rot=(0.5, -0.5, 0.5, -0.5),
                 convention="ros",
             )
@@ -3326,10 +4335,14 @@ class MatchVideoRecorder:
             raise RuntimeError(f"Could not open video writer: {self.output_path}")
 
     def initialize_view(self):
-        if self.view != "overview":
+        if self.view not in ("overview", "top"):
             return
-        eye = torch.tensor([[2.15, -2.55, 2.28]], dtype=torch.float32, device=self.camera.device)
-        target = torch.tensor([[0.0, 0.0, 0.12]], dtype=torch.float32, device=self.camera.device)
+        if self.view == "top":
+            eye = torch.tensor([[0.0, 0.0, 4.85]], dtype=torch.float32, device=self.camera.device)
+            target = torch.tensor([[0.0, 0.0, 0.0]], dtype=torch.float32, device=self.camera.device)
+        else:
+            eye = torch.tensor([[2.15, -2.55, 2.28]], dtype=torch.float32, device=self.camera.device)
+            target = torch.tensor([[0.0, 0.0, 0.12]], dtype=torch.float32, device=self.camera.device)
         self.camera.set_world_poses_from_view(eye, target)
 
     def capture(self, sim_dt: float, match_time: float):
@@ -3383,6 +4396,8 @@ class MatchVideoRecorder:
             return "Yellow Robot POV"
         if self.view == "blue_pov":
             return "Blue Robot POV"
+        if self.view == "top":
+            return "Top View"
         return "Complete Arena View"
 
     def _opponent_summary(self, team: str) -> str:
@@ -3464,7 +4479,8 @@ def run_simulator(sim: sim_utils.SimulationContext, sensors: dict[str, object], 
             elapsed = time.perf_counter() - start
             MATCH_STATE["current_time"] = elapsed
             robot_poses = update_robot_animation(elapsed)
-            update_target_contacts(robot_poses)
+            if not args_cli.replay_trace:
+                update_target_contacts(robot_poses)
             update_armor_removals(elapsed)
             update_target_falls(elapsed)
 
@@ -3481,6 +4497,7 @@ def run_simulator(sim: sim_utils.SimulationContext, sensors: dict[str, object], 
                 print(f"[RULE]: 3 minute time limit reached. winner={MATCH_STATE['winner']}.")
 
             sim.step()
+            sync_pushable_obstacles_from_stage()
 
             if "camera" in sensors:
                 sensors["camera"].update(dt=sim_dt)

@@ -1,6 +1,7 @@
 * text=auto eol=lf
 
 *.png binary
+*.mp4 binary
 *.svg text eol=lf
 *.jpg binary
 *.jpeg binary

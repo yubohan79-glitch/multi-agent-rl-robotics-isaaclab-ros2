@@ -10,6 +10,9 @@ This page separates measured smoke-test evidence from final hardware metrics. Va
 | Self-play rule env | `evaluate_selfplay.py --episodes 16` | Simulated steps per second | 5233.7 steps/s |
 | Self-play rule env | scripted line-of-sight baseline | Own-target penalties | 0.0 per episode |
 | Self-play rule env | scripted line-of-sight baseline | Mean episode horizon | 180.0 s |
+| MAPPO self-play | side-gated rigid-blocker run, 64 stochastic episodes | Yellow / blue / draw | 51.56% / 46.88% / 1.56% |
+| MAPPO strict replay | 16 audited episodes | Hard violations / own-target penalties / base wins | 0 / 0.0 / 0.9375 per episode |
+| IsaacLab replay | three MP4 views from strict episode 8 | Duration / FPS / resolution | 39.67-40.04 s / 24 / 1280x720 |
 | GitHub CI | `.github/workflows/ros2-ci.yml` | ROS2 Jazzy build + Python smoke tests | Configured |
 
 The scripted baseline is intentionally conservative and is used as a regression harness, not as the final policy. It verifies environment stepping, rule-event logging, and own-target safety before MAPPO training.

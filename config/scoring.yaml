@@ -20,6 +20,9 @@ rule_events:
 rl_reward_model:
   opponent_normal_hit: 6.0
   opponent_base_hit: 70.0
+  own_target_blocked: -8.0
+  own_base_blocked: -80.0
+  # Legacy aliases kept for old replay summaries.
   own_target_hit: -8.0
   own_base_hit: -80.0
   blocked_motion: -0.35

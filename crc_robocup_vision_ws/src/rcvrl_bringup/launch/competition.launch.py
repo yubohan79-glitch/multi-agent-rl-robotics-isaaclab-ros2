@@ -1,5 +1,5 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
@@ -8,14 +8,51 @@ from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 
 
+def behavior_node_for_team(context):
+    auto_start = LaunchConfiguration("auto_start")
+    team_color = LaunchConfiguration("team_color")
+    target_file = LaunchConfiguration("target_file").perform(context)
+
+    behavior_params = PathJoinSubstitution([
+        FindPackageShare("rcvrl_behavior"),
+        "config",
+        "behavior.yaml",
+    ])
+    if target_file == "auto":
+        target_name = (
+            "targets.elimination.blue.yaml"
+            if team_color.perform(context).lower() == "blue"
+            else "targets.elimination.yellow.yaml"
+        )
+        target_file = PathJoinSubstitution([
+            FindPackageShare("rcvrl_navigation"),
+            "config",
+            target_name,
+        ])
+
+    return [
+        Node(
+            package="rcvrl_behavior",
+            executable="competition_behavior",
+            name="competition_behavior",
+            output="screen",
+            parameters=[
+                behavior_params,
+                target_file,
+                {"auto_start": ParameterValue(auto_start, value_type=bool)},
+                {"team_color": team_color},
+            ],
+        )
+    ]
+
+
 def generate_launch_description():
     use_sim_time = LaunchConfiguration("use_sim_time")
     start_navigation = LaunchConfiguration("start_navigation")
     start_sensor_fusion = LaunchConfiguration("start_sensor_fusion")
+    start_motion_drift_recorder = LaunchConfiguration("start_motion_drift_recorder")
     shooter_dry_run = LaunchConfiguration("shooter_dry_run")
-    auto_start = LaunchConfiguration("auto_start")
-    team_color = LaunchConfiguration("team_color")
-    target_file = LaunchConfiguration("target_file")
+    motion_drift_output = LaunchConfiguration("motion_drift_output")
 
     description_launch = PathJoinSubstitution([
         FindPackageShare("rcvrl_description"),
@@ -28,11 +65,6 @@ def generate_launch_description():
         "navigation.launch.py",
     ])
 
-    behavior_params = PathJoinSubstitution([
-        FindPackageShare("rcvrl_behavior"),
-        "config",
-        "behavior.yaml",
-    ])
     shooter_params = PathJoinSubstitution([
         FindPackageShare("rcvrl_shooter"),
         "config",
@@ -48,20 +80,21 @@ def generate_launch_description():
         "config",
         "sensor_fusion.yaml",
     ])
-    default_targets = PathJoinSubstitution([
-        FindPackageShare("rcvrl_navigation"),
+    motion_drift_params = PathJoinSubstitution([
+        FindPackageShare("rcvrl_motion"),
         "config",
-        "targets.elimination.yellow.yaml",
+        "motion_drift.yaml",
     ])
-
     return LaunchDescription([
         DeclareLaunchArgument("use_sim_time", default_value="false"),
         DeclareLaunchArgument("start_navigation", default_value="true"),
         DeclareLaunchArgument("start_sensor_fusion", default_value="true"),
+        DeclareLaunchArgument("start_motion_drift_recorder", default_value="false"),
         DeclareLaunchArgument("shooter_dry_run", default_value="false"),
+        DeclareLaunchArgument("motion_drift_output", default_value="motion_drift_log.csv"),
         DeclareLaunchArgument("auto_start", default_value="true"),
         DeclareLaunchArgument("team_color", default_value="yellow"),
-        DeclareLaunchArgument("target_file", default_value=default_targets),
+        DeclareLaunchArgument("target_file", default_value="auto"),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(description_launch),
@@ -88,6 +121,21 @@ def generate_launch_description():
         ),
 
         Node(
+            package="rcvrl_motion",
+            executable="motion_drift_recorder",
+            name="motion_drift_recorder",
+            output="screen",
+            condition=IfCondition(start_motion_drift_recorder),
+            parameters=[
+                motion_drift_params,
+                {
+                    "output_csv": motion_drift_output,
+                    "use_sim_time": ParameterValue(use_sim_time, value_type=bool),
+                },
+            ],
+        ),
+
+        Node(
             package="rcvrl_shooter",
             executable="shooter_controller",
             name="shooter_controller",
@@ -106,16 +154,5 @@ def generate_launch_description():
             parameters=[vision_params],
         ),
 
-        Node(
-            package="rcvrl_behavior",
-            executable="competition_behavior",
-            name="competition_behavior",
-            output="screen",
-            parameters=[
-                behavior_params,
-                target_file,
-                {"auto_start": ParameterValue(auto_start, value_type=bool)},
-                {"team_color": team_color},
-            ],
-        ),
+        OpaqueFunction(function=behavior_node_for_team),
     ])

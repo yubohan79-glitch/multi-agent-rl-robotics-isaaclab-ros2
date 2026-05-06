@@ -9,6 +9,7 @@
 
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "geometry_msgs/msg/twist.hpp"
+#include "nav_msgs/msg/odometry.hpp"
 #include "nav2_msgs/action/navigate_to_pose.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
@@ -86,6 +87,20 @@ public:
     load_parameters();
 
     cmd_vel_pub_ = create_publisher<geometry_msgs::msg::Twist>(cmd_vel_topic_, 10);
+    filtered_odom_sub_ = create_subscription<nav_msgs::msg::Odometry>(
+      filtered_odom_topic_, 10,
+      [this](const nav_msgs::msg::Odometry::SharedPtr msg) {
+        const double xy_cov = std::max(0.0, msg->pose.covariance[0]) +
+          std::max(0.0, msg->pose.covariance[7]);
+        const double yaw_cov = std::max(0.0, msg->pose.covariance[35]);
+        const double xy_score = 1.0 - std::clamp(xy_cov / filtered_odom_xy_cov_warn_, 0.0, 1.0);
+        const double yaw_score = 1.0 - std::clamp(yaw_cov / filtered_odom_yaw_cov_warn_, 0.0, 1.0);
+        filtered_odom_confidence_ = std::clamp(0.65 * xy_score + 0.35 * yaw_score, 0.0, 1.0);
+        last_filtered_odom_time_ = now();
+        if (filtered_odom_confidence_ < filtered_odom_min_confidence_) {
+          request_localization_recovery("ekf covariance confidence low");
+        }
+      });
     imu_sub_ = create_subscription<sensor_msgs::msg::Imu>(
       imu_topic_, rclcpp::SensorDataQoS(),
       [this](const sensor_msgs::msg::Imu::SharedPtr msg) {
@@ -93,21 +108,21 @@ public:
           std::hypot(msg->linear_acceleration.x, msg->linear_acceleration.y);
         const double yaw_rate = std::fabs(msg->angular_velocity.z);
         if (lateral_accel >= collision_accel_threshold_ || yaw_rate >= collision_yaw_rate_threshold_) {
-          request_localization_recovery("imu collision impulse");
+          handle_contact_impulse("imu collision impulse");
         }
       });
     bumper_left_sub_ = create_subscription<std_msgs::msg::Bool>(
       bumper_left_topic_, 10,
       [this](const std_msgs::msg::Bool::SharedPtr msg) {
         if (msg->data) {
-          request_localization_recovery("left bumper contact");
+          handle_contact_impulse("left bumper contact");
         }
       });
     bumper_right_sub_ = create_subscription<std_msgs::msg::Bool>(
       bumper_right_topic_, 10,
       [this](const std_msgs::msg::Bool::SharedPtr msg) {
         if (msg->data) {
-          request_localization_recovery("right bumper contact");
+          handle_contact_impulse("right bumper contact");
         }
       });
     detection_sub_ = create_subscription<rcvrl_interfaces::msg::TargetDetection>(
@@ -151,12 +166,17 @@ private:
     target_center_tolerance_ = declare_parameter<double>("target_center_tolerance", 0.08);
     target_distance_m_ = declare_parameter<double>("target_distance_m", 0.52);
     target_distance_tolerance_m_ = declare_parameter<double>("target_distance_tolerance_m", 0.06);
+    laser_dwell_required_s_ = declare_parameter<double>("laser_dwell_required_s", 0.80);
     localization_recovery_spin_s_ = declare_parameter<double>("localization_recovery_spin_s", 5.8);
     localization_recovery_angular_speed_ = declare_parameter<double>("localization_recovery_angular_speed", 0.55);
     localization_recovery_limit_ = declare_parameter<int>("localization_recovery_limit", 2);
     collision_recovery_cooldown_s_ = declare_parameter<double>("collision_recovery_cooldown_s", 2.0);
     collision_accel_threshold_ = declare_parameter<double>("collision_accel_threshold", 4.0);
     collision_yaw_rate_threshold_ = declare_parameter<double>("collision_yaw_rate_threshold", 2.4);
+    filtered_odom_topic_ = declare_parameter<std::string>("filtered_odom_topic", "/odometry/filtered");
+    filtered_odom_min_confidence_ = declare_parameter<double>("filtered_odom_min_confidence", 0.35);
+    filtered_odom_xy_cov_warn_ = declare_parameter<double>("filtered_odom_xy_cov_warn", 0.18);
+    filtered_odom_yaw_cov_warn_ = declare_parameter<double>("filtered_odom_yaw_cov_warn", 0.16);
     imu_topic_ = declare_parameter<std::string>("imu_topic", "/imu/data_raw");
     bumper_left_topic_ = declare_parameter<std::string>("bumper_left_topic", "/bumper/front_left");
     bumper_right_topic_ = declare_parameter<std::string>("bumper_right_topic", "/bumper/front_right");
@@ -167,15 +187,18 @@ private:
     home_.yaw = declare_parameter<double>("home_yaw", 0.0);
 
     const auto xs = declare_parameter<std::vector<double>>(
-      "target_x", {1.09, 2.56, 2.57, 2.56, 2.63, 1.86, 1.07, 0.05, 0.03});
+      "target_x", {1.92, 0.30, 2.70, 2.68, 0.23});
     const auto ys = declare_parameter<std::vector<double>>(
-      "target_y", {0.08, -0.08, 0.90, 1.60, 2.43, 2.49, 2.53, 2.53, 1.63});
+      "target_y", {2.52, 1.84, 1.84, 2.68, 2.31});
     const auto yaws = declare_parameter<std::vector<double>>(
-      "target_yaw", {-0.70, -0.77, 0.77, -0.76, 0.76, 2.36, 0.75, 2.28, 3.92});
+      "target_yaw", {2.36, -2.36, -0.79, 0.79, 1.73});
     const auto tag_ids = declare_parameter<std::vector<int64_t>>(
-      "target_tag_id", {1, 1, 1, 1, 1, 1, 1, 1, 2});
-    const auto owners = declare_parameter<std::vector<std::string>>("target_owner", std::vector<std::string>{});
-    const auto names = declare_parameter<std::vector<std::string>>("target_name", std::vector<std::string>{});
+      "target_tag_id", {1, 1, 1, 1, 3});
+    const auto owners = declare_parameter<std::vector<std::string>>(
+      "target_owner", std::vector<std::string>{"blue", "blue", "blue", "blue", "blue"});
+    const auto names = declare_parameter<std::vector<std::string>>(
+      "target_name",
+      std::vector<std::string>{"T01_NorthMiddle", "T03_WestAboveGate", "T05_EastAboveGate", "T02_NorthEast", "BlueBaseTarget"});
 
     const size_t count = std::min({xs.size(), ys.size(), yaws.size(), tag_ids.size()});
     targets_.reserve(count);
@@ -257,11 +280,30 @@ private:
 
       case State::FIRE:
         stop_robot();
-        if (fire_is_allowed()) {
-          call_trigger(fire_client_, "fire shooter");
-        } else {
+        if (!fire_is_allowed()) {
           RCLCPP_WARN(get_logger(), "Fire command blocked by opponent-target safety gate");
+          call_trigger(disable_client_, "disable shooter");
+          shooter_dwell_active_ = false;
+          enter_state(State::NEXT_TARGET);
+          break;
         }
+        if (!shooter_dwell_active_) {
+          if (!call_trigger(enable_client_, "enable shooter dwell")) {
+            return;
+          }
+          shooter_dwell_active_ = true;
+          shooter_dwell_start_time_ = now();
+          RCLCPP_INFO(get_logger(), "Laser dwell started for %.2f s before fire", laser_dwell_required_s_);
+          return;
+        }
+        if (elapsed_since(shooter_dwell_start_time_) < laser_dwell_required_s_) {
+          return;
+        }
+        if (!call_trigger(fire_client_, "fire shooter")) {
+          return;
+        }
+        call_trigger(disable_client_, "disable shooter");
+        shooter_dwell_active_ = false;
         enter_state(State::NEXT_TARGET);
         break;
 
@@ -540,6 +582,24 @@ private:
     RCLCPP_WARN(get_logger(), "Localization recovery requested: %s", reason.c_str());
   }
 
+  void handle_contact_impulse(const std::string & reason)
+  {
+    if (filtered_odom_confidence_ < filtered_odom_min_confidence_) {
+      request_localization_recovery(reason + " with low filtered odom confidence");
+      return;
+    }
+    stop_robot();
+    if (state_ == State::NAVIGATE || state_ == State::RETURN_HOME) {
+      nav_goal_sent_ = false;
+      nav_done_ = false;
+      nav_success_ = false;
+    }
+    RCLCPP_WARN_THROTTLE(
+      get_logger(), *get_clock(), 1500,
+      "Contact handled without full relocalization: %s (filtered odom confidence %.2f)",
+      reason.c_str(), filtered_odom_confidence_);
+  }
+
   void enter_state(const State next_state)
   {
     if (state_ == next_state) {
@@ -554,6 +614,9 @@ private:
       nav_goal_sent_ = false;
       nav_done_ = false;
       nav_success_ = false;
+    }
+    if (state_ != State::FIRE) {
+      shooter_dwell_active_ = false;
     }
   }
 
@@ -570,6 +633,7 @@ private:
   bool auto_start_ {true};
   std::string map_frame_ {"map"};
   std::string cmd_vel_topic_ {"/cmd_vel"};
+  std::string filtered_odom_topic_ {"/odometry/filtered"};
   std::string imu_topic_ {"/imu/data_raw"};
   std::string bumper_left_topic_ {"/bumper/front_left"};
   std::string bumper_right_topic_ {"/bumper/front_right"};
@@ -589,11 +653,16 @@ private:
   double target_center_tolerance_ {0.08};
   double target_distance_m_ {0.52};
   double target_distance_tolerance_m_ {0.06};
+  double laser_dwell_required_s_ {0.80};
   double localization_recovery_spin_s_ {5.8};
   double localization_recovery_angular_speed_ {0.55};
   double collision_recovery_cooldown_s_ {2.0};
   double collision_accel_threshold_ {4.0};
   double collision_yaw_rate_threshold_ {2.4};
+  double filtered_odom_min_confidence_ {0.35};
+  double filtered_odom_xy_cov_warn_ {0.18};
+  double filtered_odom_yaw_cov_warn_ {0.16};
+  double filtered_odom_confidence_ {1.0};
   int localization_recovery_limit_ {2};
   int localization_recovery_count_ {0};
   bool localization_recovery_requested_ {false};
@@ -610,7 +679,10 @@ private:
   rclcpp::Time last_detection_time_;
   rclcpp::Time match_start_time_;
   rclcpp::Time state_enter_time_;
+  rclcpp::Time shooter_dwell_start_time_;
   rclcpp::Time last_collision_recovery_time_ {0, 0, RCL_ROS_TIME};
+  rclcpp::Time last_filtered_odom_time_;
+  bool shooter_dwell_active_ {false};
 
   bool nav_goal_sent_ {false};
   bool nav_done_ {false};
@@ -618,6 +690,7 @@ private:
 
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
+  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr filtered_odom_sub_;
   rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_sub_;
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr bumper_left_sub_;
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr bumper_right_sub_;

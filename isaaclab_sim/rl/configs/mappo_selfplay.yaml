@@ -1,25 +1,50 @@
 algorithm: mappo_selfplay
 seed: 7
-num_envs: 16
+num_envs: 32
 rollout_steps: 256
 timesteps: 500000
+update_epochs: 4
+minibatch_size: 2048
+hidden_dim: 256
 learning_rate: 0.0003
-gamma: 0.99
+gamma: 0.995
 gae_lambda: 0.95
 clip_coef: 0.20
-entropy_coef: 0.01
+entropy_coef: 0.001
 value_coef: 0.50
 max_grad_norm: 0.50
+device: cuda
+output: ../output/rl/mappo_selfplay_full_gpu
+policy_mode: residual_expert
+residual_scale: 0.04
+residual_l2_coef: 0.0015
+actor_mode: dual
+domain_randomization: true
+action_shield: true
 ctde:
   centralized_critic: true
   actor_observation: local_only
-  critic_observation: global_rule_state
+  critic_observation: local_observation_pair
 deployment:
   policy_role: high_level_tactical_actor
+  action_contract:
+    - target_selector
+    - base_rush_gate
+    - block_interference_gate
+    - recovery_gate
+    - fire_gate
+    - risk_preference
   ros2_contract:
     - /target_detection
     - /cmd_vel
     - /scan
     - /imu/data_raw
     - /wheel/odom
+    - /odometry/filtered
+    - /range/front_left
+    - /range/front_right
+    - /bumper/front_left
+    - /bumper/front_right
+    - /shooter/enable
     - /shooter/fire
+    - /shooter/disable

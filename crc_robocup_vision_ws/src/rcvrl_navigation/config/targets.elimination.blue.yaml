@@ -9,11 +9,13 @@ competition_behavior:
       - T07_SouthWest
       - YellowBaseTarget
     target_owner: ["yellow", "yellow", "yellow", "yellow", "yellow"]
-    target_x: [1.75, 0.30, 2.70, 0.55, 2.20]
-    target_y: [0.72, 1.28, 1.28, 0.45, 0.80]
-    target_yaw: [1.57, 0.00, 3.14, 0.78, 2.30]
+    # Nav2 standoff poses in the 3 m map frame. They mirror the current
+    # IsaacLab target layout: target_x/y are not target centers; yaw faces the
+    # target before camera alignment starts.
+    target_x: [1.08, 0.30, 2.70, 0.32, 2.77]
+    target_y: [0.48, 1.16, 1.16, 0.32, 0.69]
+    target_yaw: [-0.79, 2.36, 0.79, -2.36, -1.41]
     target_tag_id: [1, 1, 1, 1, 2]
     home_x: 2.75
     home_y: 2.75
     home_yaw: -1.57
-

@@ -11,6 +11,7 @@
   <exec_depend>rcvrl_behavior</exec_depend>
   <exec_depend>rcvrl_description</exec_depend>
   <exec_depend>rcvrl_navigation</exec_depend>
+  <exec_depend>rcvrl_motion</exec_depend>
   <exec_depend>rcvrl_shooter</exec_depend>
   <exec_depend>rcvrl_vision</exec_depend>
   <exec_depend>robot_localization</exec_depend>

@@ -9,6 +9,8 @@ from pathlib import Path
 import numpy as np
 
 from robocup_visionrl_selfplay_env import AGENTS, RoboCupVisionRLSelfPlayEnv
+from robocup_visionrl_selfplay_env import TACTICAL_ACTION_DIM
+from expert_policy import scripted_action as expert_scripted_action
 
 
 def wrap_angle(angle: float) -> float:
@@ -32,6 +34,8 @@ def select_target(env: RoboCupVisionRLSelfPlayEnv, team: str):
         for target in env.targets
         if target.kind == f"base_{other}" and not target.knocked
     ]
+    if env.armor[other] <= 2 and base_targets:
+        return base_targets[0]
     candidates = active_normals + base_targets
     if not candidates:
         return None
@@ -43,12 +47,12 @@ def select_target(env: RoboCupVisionRLSelfPlayEnv, team: str):
 
 def scripted_action(env: RoboCupVisionRLSelfPlayEnv, team: str) -> np.ndarray:
     pose = env.poses[team]
-    if env.localization_confidence[team] < 0.62:
-        return np.array([0.0, 0.85, -1.0], dtype=np.float32)
+    if env.localization_confidence[team] < 0.35:
+        return np.array([0.0, -0.5, -0.8, 1.0, -1.0, -0.2], dtype=np.float32)
 
     target = select_target(env, team)
     if target is None:
-        return np.zeros(3, dtype=np.float32)
+        return np.zeros(TACTICAL_ACTION_DIM, dtype=np.float32)
 
     dx = target.xy[0] - float(pose[0])
     dy = target.xy[1] - float(pose[1])
@@ -56,12 +60,17 @@ def scripted_action(env: RoboCupVisionRLSelfPlayEnv, team: str) -> np.ndarray:
     yaw_error = wrap_angle(bearing - float(pose[2]))
     distance = math.hypot(dx, dy)
 
-    angular = float(np.clip(yaw_error / 1.10, -1.0, 1.0))
-    linear = 0.72 if abs(yaw_error) < 0.45 else 0.08
-    if distance < 0.35:
-        linear = -0.15
-    fire = 1.0 if abs(yaw_error) < 0.17 and distance < 1.55 else -1.0
-    return np.array([linear, angular, fire], dtype=np.float32)
+    other = opponent(team)
+    score_delta = env.scores[team] - env.scores[other]
+    own_base = np.array([1.25, -1.25], dtype=np.float32) if team == "yellow" else np.array([-1.25, 1.25], dtype=np.float32)
+    opponent_to_own_base = float(np.linalg.norm(env.poses[other][:2] - own_base))
+    target_selector = -0.75 if target.kind == "normal" else 0.90
+    base_rush_gate = 0.85 if target.kind.startswith("base_") or env.armor[other] <= 2 or score_delta < 0 else -0.35
+    block_gate = 0.75 if (score_delta >= 5 and env.elapsed > env.max_time_s * 0.58) or opponent_to_own_base < 0.85 else -0.65
+    recovery_gate = -0.55
+    fire_gate = 0.90 if abs(yaw_error) < 0.12 and 0.32 < distance < 0.72 else 0.20
+    risk = 0.45 if score_delta < 0 or env.elapsed > env.max_time_s * 0.72 else 0.05
+    return np.array([target_selector, base_rush_gate, block_gate, recovery_gate, fire_gate, risk], dtype=np.float32)
 
 
 def run_episode(seed: int, max_steps: int):
@@ -74,11 +83,13 @@ def run_episode(seed: int, max_steps: int):
         "own_target_penalties": 0,
         "collision_recovery_events": 0,
         "robot_contacts": 0,
+        "block_steps": 0,
+        "base_rush_steps": 0,
     }
 
     steps = 0
     for steps in range(1, max_steps + 1):
-        actions = {team: scripted_action(env, team) for team in AGENTS}
+        actions = {team: expert_scripted_action(env, team) for team in AGENTS}
         _obs, rewards, terminations, truncations, infos = env.step(actions)
         for team in AGENTS:
             rewards_total[team] += float(rewards[team])
@@ -87,12 +98,19 @@ def run_episode(seed: int, max_steps: int):
                 event_counts["normal_hits"] += 1
             if "winner" in info:
                 event_counts["base_hit_wins"] += 1
-            if "own_target_hit" in info or "own_base_hit" in info:
+            if any(
+                key in info
+                for key in ("own_target_hit", "own_base_hit", "own_target_blocked", "own_base_blocked", "own_base_collision")
+            ):
                 event_counts["own_target_penalties"] += 1
             if info.get("relocalizing"):
                 event_counts["collision_recovery_events"] += 1
             if info.get("robot_contact"):
                 event_counts["robot_contacts"] += 1
+            if info.get("tactic") == "block":
+                event_counts["block_steps"] += 1
+            if info.get("base_rush"):
+                event_counts["base_rush_steps"] += 1
         if any(terminations.values()) or any(truncations.values()):
             break
 
@@ -104,6 +122,8 @@ def run_episode(seed: int, max_steps: int):
         "armor": dict(env.armor),
         "rewards": {team: round(value, 3) for team, value in rewards_total.items()},
         "events": event_counts,
+        "target_order": {team: list(env.target_order[team]) for team in AGENTS},
+        "strategy_counts": {team: dict(env.strategy_counts[team]) for team in AGENTS},
     }
 
 
@@ -127,6 +147,8 @@ def summarize(episodes: list[dict], wall_time_s: float):
         "own_target_penalties_per_episode": round(totals["own_target_penalties"] / count, 3),
         "collision_recovery_events_per_episode": round(totals["collision_recovery_events"] / count, 3),
         "robot_contacts_per_episode": round(totals["robot_contacts"] / count, 3),
+        "block_steps_per_episode": round(totals["block_steps"] / count, 3),
+        "base_rush_steps_per_episode": round(totals["base_rush_steps"] / count, 3),
         "simulated_steps_per_second": round(total_steps / max(wall_time_s, 1e-9), 1),
     }
 

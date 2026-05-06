@@ -4,36 +4,173 @@ import argparse
 import json
 from pathlib import Path
 
+import torch
+from torch import nn
+
+from robocup_visionrl_selfplay_env import TACTICAL_ACTION_LABELS
+from train_mappo_selfplay_parallel_torch import SharedActorCentralCritic
+
+
+class ActorOnly(nn.Module):
+    """Deployment wrapper that exposes only the decentralized local actor.
+
+    Older checkpoints use one shared actor. Current checkpoints may use two
+    team-specific actors. For dual-actor checkpoints, export either a fixed
+    team actor or an auto-dispatch actor that reads the team id feature from
+    the final observation column.
+    """
+
+    def __init__(self, policy: SharedActorCentralCritic, export_team: str = "auto"):
+        super().__init__()
+        self.actor_mode = policy.actor_mode
+        self.export_team = export_team
+        if policy.actor_mode == "shared":
+            self.shared_actor = policy.actor
+        else:
+            self.yellow_actor = policy.yellow_actor
+            self.blue_actor = policy.blue_actor
+
+    def forward(self, observation: torch.Tensor) -> torch.Tensor:
+        if self.actor_mode == "shared":
+            return torch.tanh(self.shared_actor(observation))
+        if self.export_team == "yellow":
+            return torch.tanh(self.yellow_actor(observation))
+        if self.export_team == "blue":
+            return torch.tanh(self.blue_actor(observation))
+
+        blue_rows = (observation[:, -1] < 0.0).reshape(-1, 1)
+        yellow_action = self.yellow_actor(observation)
+        blue_action = self.blue_actor(observation)
+        return torch.tanh(torch.where(blue_rows, blue_action, yellow_action))
+
+
+def load_actor(checkpoint_path: Path, device: torch.device, export_team: str) -> tuple[ActorOnly, dict]:
+    checkpoint = torch.load(checkpoint_path, map_location=device)
+    config = checkpoint.get("config", {})
+    actor_mode = str(checkpoint.get("actor_mode", config.get("actor_mode", "shared")))
+    model = SharedActorCentralCritic(
+        int(checkpoint["obs_dim"]),
+        int(checkpoint["central_obs_dim"]),
+        int(checkpoint["action_dim"]),
+        int(config["hidden_dim"]),
+        actor_mode,
+    ).to(device)
+    model.load_state_dict(checkpoint["model_state_dict"])
+    model.eval()
+    actor = ActorOnly(model, export_team).to(device)
+    actor.eval()
+    return actor, checkpoint
+
+
+def export_suffix(checkpoint: dict, export_team: str) -> str:
+    actor_mode = str(checkpoint.get("actor_mode", checkpoint.get("config", {}).get("actor_mode", "shared")))
+    if actor_mode != "dual" or export_team == "auto":
+        return ""
+    return f"_{export_team}"
+
+
+def export_torchscript(actor: ActorOnly, checkpoint: dict, output_dir: Path, device: torch.device) -> Path:
+    example = torch.zeros(1, int(checkpoint["obs_dim"]), dtype=torch.float32, device=device)
+    traced = torch.jit.trace(actor, example)
+    output_path = output_dir / f"mappo_tactical_actor{export_suffix(checkpoint, actor.export_team)}.ts"
+    traced.save(str(output_path))
+    return output_path
+
+
+def export_onnx(actor: ActorOnly, checkpoint: dict, output_dir: Path, device: torch.device) -> Path:
+    example = torch.zeros(1, int(checkpoint["obs_dim"]), dtype=torch.float32, device=device)
+    output_path = output_dir / f"mappo_tactical_actor{export_suffix(checkpoint, actor.export_team)}.onnx"
+    torch.onnx.export(
+        actor,
+        example,
+        output_path,
+        input_names=["local_observation"],
+        output_names=["tactical_action"],
+        dynamic_axes={"local_observation": {0: "batch"}, "tactical_action": {0: "batch"}},
+        opset_version=17,
+    )
+    return output_path
+
+
+def build_manifest(
+    *,
+    checkpoint_path: Path,
+    export_format: str,
+    exported_path: Path | None,
+    checkpoint: dict,
+    device: torch.device,
+    export_team: str,
+) -> dict[str, object]:
+    return {
+        "project": "RoboCup VisionRL",
+        "source_checkpoint": str(checkpoint_path),
+        "export_format": export_format,
+        "actor_mode": str(checkpoint.get("actor_mode", checkpoint.get("config", {}).get("actor_mode", "shared"))),
+        "export_team": export_team,
+        "exported_actor": str(exported_path) if exported_path is not None else None,
+        "device": str(device),
+        "obs_dim": int(checkpoint["obs_dim"]),
+        "central_obs_dim": int(checkpoint["central_obs_dim"]),
+        "action_dim": int(checkpoint["action_dim"]),
+        "action_labels": list(TACTICAL_ACTION_LABELS),
+        "agents": list(checkpoint.get("agents", [])),
+        "deployment_contract": {
+            "input": f"local_observation[{int(checkpoint['obs_dim'])}]",
+            "output": "tactical_action[6] in [-1, 1]",
+            "runtime_owner": "rcvrl_behavior",
+            "safety_gate": "opponent-target fire gate remains outside the learned actor",
+            "ros2_runtime": [
+                "rcvrl_behavior",
+                "Nav2 NavigateToPose",
+                "rcvrl_vision target_detection",
+                "rcvrl_shooter services",
+                "robot_localization EKF",
+            ],
+        },
+        "training_config": checkpoint.get("config", {}),
+    }
+
 
 def main():
-    parser = argparse.ArgumentParser(description="Record a deployable-policy export manifest.")
+    parser = argparse.ArgumentParser(description="Export a trained MAPPO tactical actor for Sim2Real deployment.")
     parser.add_argument("--checkpoint", type=Path, required=True)
-    parser.add_argument("--output", type=Path, default=Path("../output/policy_export/manifest.json"))
-    parser.add_argument("--format", choices=["torchscript", "onnx", "checkpoint"], default="checkpoint")
+    parser.add_argument("--output-dir", type=Path, default=Path("../output/policy_export"))
+    parser.add_argument("--format", choices=["torchscript", "onnx", "manifest"], default="torchscript")
+    parser.add_argument(
+        "--team",
+        choices=["auto", "yellow", "blue"],
+        default="auto",
+        help="For dual-actor checkpoints, export an auto-dispatch actor or a fixed team actor.",
+    )
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     args = parser.parse_args()
 
     if not args.checkpoint.exists():
         raise FileNotFoundError(args.checkpoint)
 
-    manifest = {
-        "project": "RoboCup VisionRL",
-        "source_checkpoint": str(args.checkpoint),
-        "export_format": args.format,
-        "deployment_contract": {
-            "inputs": [
-                "local_robot_observation",
-                "target_status",
-                "armor_status",
-                "time_remaining",
-                "localization_confidence",
-            ],
-            "outputs": ["target_selection", "route_mode", "recover_gate", "fire_gate"],
-            "ros2_runtime": "rcvrl_behavior + Nav2 + rcvrl_shooter",
-        },
-    }
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-    print(f"[INFO] wrote {args.output}")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu") if args.device == "auto" else torch.device(args.device)
+    if device.type == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("CUDA device requested, but torch.cuda.is_available() is false.")
+
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    actor, checkpoint = load_actor(args.checkpoint, device, args.team)
+    exported_path = None
+    if args.format == "torchscript":
+        exported_path = export_torchscript(actor, checkpoint, args.output_dir, device)
+    elif args.format == "onnx":
+        exported_path = export_onnx(actor, checkpoint, args.output_dir, device)
+
+    manifest = build_manifest(
+        checkpoint_path=args.checkpoint,
+        export_format=args.format,
+        exported_path=exported_path,
+        checkpoint=checkpoint,
+        device=device,
+        export_team=args.team,
+    )
+    manifest_path = args.output_dir / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    print(json.dumps({"manifest": str(manifest_path), "exported_actor": str(exported_path) if exported_path else None}, indent=2))
 
 
 if __name__ == "__main__":
