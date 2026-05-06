@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <marker id="arrowGray" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#7A869A"/></marker>
+    <marker id="arrowBlue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#0072B2"/></marker>
+    <marker id="arrowGreen" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#009E73"/></marker>
+
+    <style>
+      text{font-family:Inter,Arial,Helvetica,sans-serif}
+      .title{font-size:34px;font-weight:700;fill:#1B1F23}
+      .subtitle{font-size:15px;font-weight:400;fill:#5B6472}
+      .label{font-size:15px;font-weight:650;fill:#1B1F23}
+      .body{font-size:13px;font-weight:400;fill:#5B6472}
+      .small{font-size:11px;font-weight:400;fill:#5B6472}
+      .tiny{font-size:9px;font-weight:500;fill:#5B6472}
+      .panel{fill:#fff;stroke:#C9D1D9;stroke-width:1.2}
+      .soft{fill:#F7F9FB;stroke:#C9D1D9;stroke-width:1}
+      .grid{stroke:#E6EBF0;stroke-width:1}
+      .axis{stroke:#1B1F23;stroke-width:1.1}
+      .wire{fill:none;stroke:#7A869A;stroke-width:1.8;marker-end:url(#arrowGray)}
+      .wireBlue{fill:none;stroke:#0072B2;stroke-width:2;marker-end:url(#arrowBlue)}
+      .wireGreen{fill:none;stroke:#009E73;stroke-width:2;marker-end:url(#arrowGreen)}
+      .dash{stroke-dasharray:6 6}
+    </style>
+
+  </defs>
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+  <text class="title" x="64" y="58">Rule-Checked Arena Geometry</text>
+  <text class="subtitle" x="66" y="86">All target positions, target yaw probes, base blockers and pushable obstacles are audited before training.</text>
+
+  <rect class="soft" x="62.0" y="122.0" width="1476.0" height="690.0" rx="10.0"/>
+  <rect x="96" y="146" width="700" height="700" fill="#FFFFFF" stroke="#1B1F23" stroke-width="2.2"/>
+  <line x1="96" y1="496.0" x2="796" y2="496.0" stroke="#E6EBF0" stroke-width="4"/>
+  <line x1="446.0" y1="146" x2="446.0" y2="846" stroke="#E6EBF0" stroke-width="1.2" stroke-dasharray="6 6"/>
+  <rect x="131.0" y="181.0" width="126.0" height="126.0" fill="#EAF4FB" stroke="#0072B2" stroke-width="2"/>
+  <rect x="635.0" y="685.0" width="126.0" height="126.0" fill="#FFF5DA" stroke="#E69F00" stroke-width="2"/>
+  <rect x="523.0" y="440.0" width="56.0" height="112.0" fill="#FDEAD7" stroke="#D55E00" stroke-width="2"/>
+  <rect x="313.0" y="440.0" width="56.0" height="112.0" fill="#FDEAD7" stroke="#D55E00" stroke-width="2"/>
+  <circle cx="488.0" cy="202.0" r="10" fill="#fff" stroke="#0072B2" stroke-width="2.5"/><line x1="488.0" y1="202.0" x2="510.6" y2="224.6" stroke="#0072B2" stroke-width="2"/><circle cx="740.0" cy="202.0" r="10" fill="#fff" stroke="#0072B2" stroke-width="2.5"/><line x1="740.0" y1="202.0" x2="717.4" y2="224.6" stroke="#0072B2" stroke-width="2"/><circle cx="152.0" cy="440.0" r="10" fill="#fff" stroke="#0072B2" stroke-width="2.5"/><line x1="152.0" y1="440.0" x2="174.6" y2="417.4" stroke="#0072B2" stroke-width="2"/><circle cx="152.0" cy="552.0" r="10" fill="#fff" stroke="#E69F00" stroke-width="2.5"/><line x1="152.0" y1="552.0" x2="174.6" y2="574.6" stroke="#E69F00" stroke-width="2"/><circle cx="740.0" cy="440.0" r="10" fill="#fff" stroke="#0072B2" stroke-width="2.5"/><line x1="740.0" y1="440.0" x2="717.4" y2="417.4" stroke="#0072B2" stroke-width="2"/><circle cx="740.0" cy="552.0" r="10" fill="#fff" stroke="#E69F00" stroke-width="2.5"/><line x1="740.0" y1="552.0" x2="717.4" y2="574.6" stroke="#E69F00" stroke-width="2"/><circle cx="152.0" cy="790.0" r="10" fill="#fff" stroke="#E69F00" stroke-width="2.5"/><line x1="152.0" y1="790.0" x2="174.6" y2="767.4" stroke="#E69F00" stroke-width="2"/><circle cx="404.0" cy="790.0" r="10" fill="#fff" stroke="#E69F00" stroke-width="2.5"/><line x1="404.0" y1="790.0" x2="381.4" y2="767.4" stroke="#E69F00" stroke-width="2"/><circle cx="128.7" cy="178.7" r="15" fill="#fff" stroke="#0072B2" stroke-width="2.5"/><line x1="128.7" y1="178.7" x2="151.3" y2="201.3" stroke="#0072B2" stroke-width="2"/><circle cx="763.3" cy="813.3" r="15" fill="#fff" stroke="#E69F00" stroke-width="2.5"/><line x1="763.3" y1="813.3" x2="740.7" y2="790.7" stroke="#E69F00" stroke-width="2"/>
+  <rect class="panel" x="880.0" y="172.0" width="520.0" height="490.0" rx="6.0"/>
+  <text class="label" x="920.0" y="220.0" text-anchor="start">Rule geometry audit</text>
+  <text class="body" x="920.0" y="270.0" text-anchor="start">10 targets detected: 8 normal + 2 base</text>
+<text class="body" x="920.0" y="292.0" text-anchor="start">target faces oriented at 45 degrees</text>
+<text class="body" x="920.0" y="314.0" text-anchor="start">base targets are recessed behind armor</text>
+<text class="body" x="920.0" y="336.0" text-anchor="start">red boxes are pushable rigid bodies</text>
+<text class="body" x="920.0" y="358.0" text-anchor="start">laser line of sight includes blockers</text>
+  <line x1="920" y1="430" x2="1350" y2="430" stroke="#C9D1D9"/>
+  <text class="label" x="920.0" y="482.0" text-anchor="start">Visual encoding</text>
+  <circle cx="940" cy="525" r="10" fill="#fff" stroke="#0072B2" stroke-width="2.5"/><text class="body" x="965.0" y="530.0" text-anchor="start">blue-owned target</text>
+  <circle cx="940" cy="565" r="10" fill="#fff" stroke="#E69F00" stroke-width="2.5"/><text class="body" x="965.0" y="570.0" text-anchor="start">yellow-owned target</text>
+  <rect x="930" y="600" width="22" height="22" fill="#FDEAD7" stroke="#D55E00" stroke-width="2"/><text class="body" x="965.0" y="618.0" text-anchor="start">pushable obstacle</text>
+
+</svg>

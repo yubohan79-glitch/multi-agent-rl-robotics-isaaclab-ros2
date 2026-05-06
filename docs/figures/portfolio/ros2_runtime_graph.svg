@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <marker id="arrowGray" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#7A869A"/></marker>
+    <marker id="arrowBlue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#0072B2"/></marker>
+    <marker id="arrowGreen" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#009E73"/></marker>
+
+    <style>
+      text{font-family:Inter,Arial,Helvetica,sans-serif}
+      .title{font-size:34px;font-weight:700;fill:#1B1F23}
+      .subtitle{font-size:15px;font-weight:400;fill:#5B6472}
+      .label{font-size:15px;font-weight:650;fill:#1B1F23}
+      .body{font-size:13px;font-weight:400;fill:#5B6472}
+      .small{font-size:11px;font-weight:400;fill:#5B6472}
+      .tiny{font-size:9px;font-weight:500;fill:#5B6472}
+      .panel{fill:#fff;stroke:#C9D1D9;stroke-width:1.2}
+      .soft{fill:#F7F9FB;stroke:#C9D1D9;stroke-width:1}
+      .grid{stroke:#E6EBF0;stroke-width:1}
+      .axis{stroke:#1B1F23;stroke-width:1.1}
+      .wire{fill:none;stroke:#7A869A;stroke-width:1.8;marker-end:url(#arrowGray)}
+      .wireBlue{fill:none;stroke:#0072B2;stroke-width:2;marker-end:url(#arrowBlue)}
+      .wireGreen{fill:none;stroke:#009E73;stroke-width:2;marker-end:url(#arrowGreen)}
+      .dash{stroke-dasharray:6 6}
+    </style>
+
+  </defs>
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+  <text class="title" x="64" y="58">ROS2 Runtime Graph</text>
+  <text class="subtitle" x="66" y="86">A small, inspectable deployment graph links perception, EKF, Nav2, behavior logic and shooter services.</text>
+<rect class="soft" x="64.0" y="128.0" width="1468.0" height="640.0" rx="10.0"/><rect class="panel" x="110.0" y="210.0" width="230.0" height="118.0" rx="6.0"/><text class="label" x="132.0" y="253.0" text-anchor="start">Camera</text><text class="body" x="132.0" y="286.0" text-anchor="start">/image_raw</text><rect class="panel" x="360.0" y="210.0" width="230.0" height="118.0" rx="6.0"/><text class="label" x="382.0" y="253.0" text-anchor="start">rcvrl_vision</text><text class="body" x="382.0" y="286.0" text-anchor="start">/target_detection</text><rect class="panel" x="680.0" y="320.0" width="230.0" height="118.0" rx="6.0"/><text class="label" x="702.0" y="363.0" text-anchor="start">rcvrl_behavior</text><text class="body" x="702.0" y="396.0" text-anchor="start">competition FSM</text><rect class="panel" x="1030.0" y="210.0" width="230.0" height="118.0" rx="6.0"/><text class="label" x="1052.0" y="253.0" text-anchor="start">Nav2</text><text class="body" x="1052.0" y="286.0" text-anchor="start">NavigateToPose</text><rect class="panel" x="1030.0" y="460.0" width="230.0" height="118.0" rx="6.0"/><text class="label" x="1052.0" y="503.0" text-anchor="start">rcvrl_shooter</text><text class="body" x="1052.0" y="536.0" text-anchor="start">/fire service</text><rect class="panel" x="360.0" y="460.0" width="230.0" height="118.0" rx="6.0"/><text class="label" x="382.0" y="503.0" text-anchor="start">robot_localization</text><text class="body" x="382.0" y="536.0" text-anchor="start">EKF</text><rect class="panel" x="110.0" y="460.0" width="230.0" height="118.0" rx="6.0"/><text class="label" x="132.0" y="503.0" text-anchor="start">wheel/IMU/lidar</text><text class="body" x="132.0" y="536.0" text-anchor="start">sensor stack</text><rect class="panel" x="680.0" y="610.0" width="230.0" height="118.0" rx="6.0"/><text class="label" x="702.0" y="653.0" text-anchor="start">rcvrl_motion</text><text class="body" x="702.0" y="686.0" text-anchor="start">telemetry recorder</text><path class="wireBlue" d="M340.0 269.0 L360.0 269.0"/>
+<path class="wireBlue" d="M590.0 269.0 L680.0 335.0"/>
+<path class="wireGreen" d="M910.0 335.0 L1030.0 269.0"/>
+<path class="wireGreen" d="M910.0 390.0 L1030.0 515.0"/>
+<path class="wire" d="M340.0 519.0 L360.0 519.0"/>
+<path class="wire" d="M590.0 519.0 L680.0 390.0"/>
+<path class="wire" d="M590.0 519.0 L680.0 645.0"/>
+<path class="wire" d="M910.0 645.0 L1030.0 560.0"/>
+<path class="wire dash" d="M1180 328 C1180 720 720 760 300 580"/><text class="body" x="108.0" y="720.0" text-anchor="start">Runtime contract: perception, localization, navigation and shooter services are explicit ROS2 interfaces for Sim2Real testing.</text>
+</svg>

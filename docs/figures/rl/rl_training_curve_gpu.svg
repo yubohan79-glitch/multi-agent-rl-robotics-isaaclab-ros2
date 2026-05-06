@@ -1,102 +1,90 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000">
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="850" viewBox="0 0 1600 850">
   <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L8,3 z" fill="#111827"/>
-    </marker>
-    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0F172A" flood-opacity="0.10"/>
-    </filter>
+    <marker id="arrowGray" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#7A869A"/></marker>
+    <marker id="arrowBlue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#0072B2"/></marker>
+    <marker id="arrowGreen" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#009E73"/></marker>
+
     <style>
-      .title{font:700 34px Arial,Inter,sans-serif;fill:#111827}
-      .subtitle{font:400 17px Arial,Inter,sans-serif;fill:#64748B}
-      .h{font:700 21px Arial,Inter,sans-serif;fill:#111827}
-      .txt{font:400 16px Arial,Inter,sans-serif;fill:#334155}
-      .small{font:400 13px Arial,Inter,sans-serif;fill:#475569}
-      .tiny{font:400 11px Arial,Inter,sans-serif;fill:#64748B}
-      .panel{fill:#F8FAFC;stroke:#CBD5E1;stroke-width:1.4;rx:12;filter:url(#softShadow)}
-      .card{fill:#FFFFFF;stroke:#CBD5E1;stroke-width:1.2;rx:8}
-      .grid{stroke:#E2E8F0;stroke-width:1}
-      .axis{stroke:#475569;stroke-width:1.4}
+      text{font-family:Inter,Arial,Helvetica,sans-serif}
+      .title{font-size:34px;font-weight:700;fill:#1B1F23}
+      .subtitle{font-size:15px;font-weight:400;fill:#5B6472}
+      .label{font-size:15px;font-weight:650;fill:#1B1F23}
+      .body{font-size:13px;font-weight:400;fill:#5B6472}
+      .small{font-size:11px;font-weight:400;fill:#5B6472}
+      .tiny{font-size:9px;font-weight:500;fill:#5B6472}
+      .panel{fill:#fff;stroke:#C9D1D9;stroke-width:1.2}
+      .soft{fill:#F7F9FB;stroke:#C9D1D9;stroke-width:1}
+      .grid{stroke:#E6EBF0;stroke-width:1}
+      .axis{stroke:#1B1F23;stroke-width:1.1}
+      .wire{fill:none;stroke:#7A869A;stroke-width:1.8;marker-end:url(#arrowGray)}
+      .wireBlue{fill:none;stroke:#0072B2;stroke-width:2;marker-end:url(#arrowBlue)}
+      .wireGreen{fill:none;stroke:#009E73;stroke-width:2;marker-end:url(#arrowGreen)}
       .dash{stroke-dasharray:6 6}
     </style>
-  </defs>
-  <rect width="1800" height="1000" fill="#FFFFFF"/>
 
-  <text class="title" x="70" y="62">GPU MAPPO Self-Play Training</text>
-  <text class="subtitle" x="72" y="94">507,904 agent steps on NVIDIA GeForce RTX 4090 | CTDE critic, decentralized tactical actors</text>
-  <rect class="panel" x="70" y="126" width="1040" height="560"/>
-  <text class="h" x="105" y="170">A. Reward and convergence signals</text>
-  
-      <line class="grid" x1="120" y1="215.0" x2="1030" y2="215.0"/><line class="grid" x1="120" y1="257.5" x2="1030" y2="257.5"/><line class="grid" x1="120" y1="300.0" x2="1030" y2="300.0"/><line class="grid" x1="120" y1="342.5" x2="1030" y2="342.5"/><line class="grid" x1="120" y1="385.0" x2="1030" y2="385.0"/>
-      <line class="axis" x1="120" y1="385" x2="1030" y2="385"/>
-      <line class="axis" x1="120" y1="215" x2="120" y2="385"/>
-      <polyline fill="none" stroke="#2563EB" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" points="120.0,385.0 150.3,355.3 180.7,306.6 211.0,322.3 241.3,318.1 271.7,310.7 302.0,308.4 332.3,260.8 362.7,326.0 393.0,317.9 423.3,287.0 453.7,278.0 484.0,278.0 514.3,308.4 544.7,231.8 575.0,275.0 605.3,281.1 635.7,270.3 666.0,281.3 696.3,278.0 726.7,258.1 757.0,271.0 787.3,287.0 817.7,280.1 848.0,257.0 878.3,254.5 908.7,215.0 939.0,256.8 969.3,278.2 999.7,252.8 1030.0,242.2"/>
-      <circle cx="1030.0" cy="242.2" r="5" fill="#2563EB"/>
-      <text class="small" x="120" y="203">mean reward / rollout</text>
-      <text class="tiny" x="120" y="413">16,384 steps</text>
-      <text class="tiny" x="956" y="413">507,904 steps</text>
-      <text class="tiny" x="128" y="229">0.0188</text>
-      <text class="tiny" x="128" y="377">0.00374</text>
-    
-  
-      <line class="grid" x1="120" y1="465.0" x2="510" y2="465.0"/><line class="grid" x1="120" y1="497.5" x2="510" y2="497.5"/><line class="grid" x1="120" y1="530.0" x2="510" y2="530.0"/><line class="grid" x1="120" y1="562.5" x2="510" y2="562.5"/><line class="grid" x1="120" y1="595.0" x2="510" y2="595.0"/>
-      <line class="axis" x1="120" y1="595" x2="510" y2="595"/>
-      <line class="axis" x1="120" y1="465" x2="120" y2="595"/>
-      <polyline fill="none" stroke="#16A34A" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" points="120.0,595.0 133.0,595.0 146.0,593.4 159.0,595.0 172.0,595.0 185.0,591.8 198.0,591.8 211.0,552.2 224.0,595.0 237.0,593.4 250.0,595.0 263.0,593.4 276.0,580.7 289.0,590.2 302.0,566.4 315.0,588.7 328.0,590.2 341.0,595.0 354.0,588.7 367.0,580.7 380.0,580.7 393.0,583.9 406.0,585.5 419.0,590.2 432.0,595.0 445.0,588.7 458.0,583.9 471.0,583.9 484.0,585.5 497.0,587.1 510.0,588.7"/>
-      <circle cx="510.0" cy="588.7" r="5" fill="#16A34A"/>
-      <text class="small" x="120" y="453">terminal rate</text>
-      <text class="tiny" x="120" y="623">16,384 steps</text>
-      <text class="tiny" x="436" y="623">507,904 steps</text>
-      <text class="tiny" x="128" y="479">0.01</text>
-      <text class="tiny" x="128" y="587">0</text>
-    
-  
-      <line class="grid" x1="620" y1="465.0" x2="1010" y2="465.0"/><line class="grid" x1="620" y1="497.5" x2="1010" y2="497.5"/><line class="grid" x1="620" y1="530.0" x2="1010" y2="530.0"/><line class="grid" x1="620" y1="562.5" x2="1010" y2="562.5"/><line class="grid" x1="620" y1="595.0" x2="1010" y2="595.0"/>
-      <line class="axis" x1="620" y1="595" x2="1010" y2="595"/>
-      <line class="axis" x1="620" y1="465" x2="620" y2="595"/>
-      <polyline fill="none" stroke="#7C3AED" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" points="620.0,581.5 633.0,578.5 646.0,584.2 659.0,561.3 672.0,565.0 685.0,585.5 698.0,582.4 711.0,585.2 724.0,567.8 737.0,568.8 750.0,561.8 763.0,581.3 776.0,584.2 789.0,579.9 802.0,582.4 815.0,578.7 828.0,568.7 841.0,520.3 854.0,564.8 867.0,570.0 880.0,566.0 893.0,572.9 906.0,557.1 919.0,542.4 932.0,465.0 945.0,537.2 958.0,556.0 971.0,544.5 984.0,515.9 997.0,530.1 1010.0,527.1"/>
-      <circle cx="1010.0" cy="527.1" r="5" fill="#7C3AED"/>
-      <text class="small" x="620" y="453">critic explained variance</text>
-      <text class="tiny" x="620" y="623">16,384 steps</text>
-      <text class="tiny" x="936" y="623">507,904 steps</text>
-      <text class="tiny" x="628" y="479">0.612</text>
-      <text class="tiny" x="628" y="587">-0.05</text>
-    
-  <rect class="panel" x="1160" y="126" width="560" height="560"/>
-  <text class="h" x="1195" y="170">B. Optimization diagnostics</text>
-  
-      <line class="grid" x1="1210" y1="220.0" x2="1630" y2="220.0"/><line class="grid" x1="1210" y1="250.0" x2="1630" y2="250.0"/><line class="grid" x1="1210" y1="280.0" x2="1630" y2="280.0"/><line class="grid" x1="1210" y1="310.0" x2="1630" y2="310.0"/><line class="grid" x1="1210" y1="340.0" x2="1630" y2="340.0"/>
-      <line class="axis" x1="1210" y1="340" x2="1630" y2="340"/>
-      <line class="axis" x1="1210" y1="220" x2="1210" y2="340"/>
-      <polyline fill="none" stroke="#F97316" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" points="1210.0,340.0 1224.0,336.9 1238.0,334.0 1252.0,330.4 1266.0,326.2 1280.0,324.1 1294.0,320.7 1308.0,315.5 1322.0,313.4 1336.0,310.5 1350.0,307.2 1364.0,303.6 1378.0,298.7 1392.0,294.4 1406.0,289.5 1420.0,283.9 1434.0,280.4 1448.0,278.4 1462.0,275.8 1476.0,270.8 1490.0,264.0 1504.0,258.7 1518.0,254.4 1532.0,249.9 1546.0,247.1 1560.0,245.2 1574.0,239.5 1588.0,233.6 1602.0,228.9 1616.0,223.4 1630.0,220.0"/>
-      <circle cx="1630.0" cy="220.0" r="5" fill="#F97316"/>
-      <text class="small" x="1210" y="208">actor entropy</text>
-      <text class="tiny" x="1210" y="368">16,384 steps</text>
-      <text class="tiny" x="1556" y="368">507,904 steps</text>
-      <text class="tiny" x="1218" y="234">5.62</text>
-      <text class="tiny" x="1218" y="332">5.22</text>
-    
-  
-      <line class="grid" x1="1210" y1="420.0" x2="1630" y2="420.0"/><line class="grid" x1="1210" y1="450.0" x2="1630" y2="450.0"/><line class="grid" x1="1210" y1="480.0" x2="1630" y2="480.0"/><line class="grid" x1="1210" y1="510.0" x2="1630" y2="510.0"/><line class="grid" x1="1210" y1="540.0" x2="1630" y2="540.0"/>
-      <line class="axis" x1="1210" y1="540" x2="1630" y2="540"/>
-      <line class="axis" x1="1210" y1="420" x2="1210" y2="540"/>
-      <polyline fill="none" stroke="#DC2626" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" points="1210.0,513.8 1224.0,523.6 1238.0,504.8 1252.0,521.8 1266.0,524.1 1280.0,467.7 1294.0,493.8 1308.0,505.8 1322.0,523.7 1336.0,521.2 1350.0,519.2 1364.0,504.1 1378.0,503.5 1392.0,499.4 1406.0,514.6 1420.0,500.7 1434.0,508.6 1448.0,526.8 1462.0,420.0 1476.0,516.4 1490.0,494.3 1504.0,496.1 1518.0,517.7 1532.0,533.8 1546.0,531.5 1560.0,502.0 1574.0,493.9 1588.0,540.0 1602.0,516.1 1616.0,528.0 1630.0,530.4"/>
-      <circle cx="1630.0" cy="530.4" r="5" fill="#DC2626"/>
-      <text class="small" x="1210" y="408">approx KL</text>
-      <text class="tiny" x="1210" y="568">16,384 steps</text>
-      <text class="tiny" x="1556" y="568">507,904 steps</text>
-      <text class="tiny" x="1218" y="434">0.0176</text>
-      <text class="tiny" x="1218" y="532">0.00577</text>
-    
-  <rect class="card" x="1210" y="585" width="420" height="58"/>
-  <text class="txt" x="1232" y="620">final reward 0.0164 | speed 1127 steps/s</text>
-  <rect class="panel" x="70" y="730" width="1650" height="220"/>
-  <text class="h" x="105" y="775">C. Experiment contract</text>
-  <text class="txt" x="105" y="815">Algorithm: MAPPO self-play, gamma=0.995, rollout=256, envs=32, hidden=256</text>
-  <text class="txt" x="105" y="855">Action: target selector, base rush, block/interfere, recovery, fire gate, risk preference</text>
-  <text class="txt" x="105" y="895">Safety: own-target fire remains forbidden; reward penalizes own-target and base mistakes.</text>
-  <rect x="1260" y="785" width="370" height="90" rx="8" fill="#ECFDF5" stroke="#86EFAC"/>
-  <text class="h" x="1290" y="825" fill="#16A34A">CUDA verified</text>
-  <text class="txt" x="1290" y="858">2.11.0+cu128 / cuda</text>
+  </defs>
+  <rect width="1600" height="850" fill="#FFFFFF"/>
+  <text class="title" x="64" y="58">GPU MAPPO Training Curve</text>
+  <text class="subtitle" x="66" y="86">Committed training snapshot: 507,904 agent steps on RTX 4090.</text>
+
+  <rect class="soft" x="58.0" y="120.0" width="1484.0" height="670.0" rx="10.0"/>
+  <text class="label" x="110.0" y="190.0" text-anchor="start">A. Mean reward</text>
+<line class="grid" x1="110.0" y1="210.0" x2="730.0" y2="210.0"/>
+<line class="grid" x1="110.0" y1="257.5" x2="730.0" y2="257.5"/>
+<line class="grid" x1="110.0" y1="305.0" x2="730.0" y2="305.0"/>
+<line class="grid" x1="110.0" y1="352.5" x2="730.0" y2="352.5"/>
+<line class="grid" x1="110.0" y1="400.0" x2="730.0" y2="400.0"/>
+<line class="axis" x1="110.0" y1="400.0" x2="730.0" y2="400.0"/>
+<line class="axis" x1="110.0" y1="210.0" x2="110.0" y2="400.0"/>
+<polyline fill="none" stroke="#0072B2" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" points="110.0,400.0 130.7,366.8 151.3,312.4 172.0,330.0 192.7,325.3 213.3,316.9 234.0,314.4 254.7,261.2 275.3,334.1 296.0,325.0 316.7,290.4 337.3,280.4 358.0,280.4 378.7,314.3 399.3,228.8 420.0,277.0 440.7,283.9 461.3,271.8 482.0,284.0 502.7,280.4 523.3,258.2 544.0,272.6 564.7,290.5 585.3,282.8 606.0,256.9 626.7,254.1 647.3,210.0 668.0,256.7 688.7,280.7 709.3,252.3 730.0,240.4"/>
+<circle cx="730.0" cy="240.4" r="4.2" fill="#0072B2"/>
+<text class="tiny" x="110.0" y="420.0" text-anchor="start">16,384</text>
+<text class="tiny" x="730.0" y="420.0" text-anchor="end">507,904</text>
+<text class="tiny" x="116.0" y="222.0" text-anchor="start">0.0188</text>
+<text class="tiny" x="116.0" y="394.0" text-anchor="start">0.00374</text>
+  <text class="label" x="870.0" y="190.0" text-anchor="start">B. Terminal rate</text>
+<line class="grid" x1="870.0" y1="210.0" x2="1430.0" y2="210.0"/>
+<line class="grid" x1="870.0" y1="257.5" x2="1430.0" y2="257.5"/>
+<line class="grid" x1="870.0" y1="305.0" x2="1430.0" y2="305.0"/>
+<line class="grid" x1="870.0" y1="352.5" x2="1430.0" y2="352.5"/>
+<line class="grid" x1="870.0" y1="400.0" x2="1430.0" y2="400.0"/>
+<line class="axis" x1="870.0" y1="400.0" x2="1430.0" y2="400.0"/>
+<line class="axis" x1="870.0" y1="210.0" x2="870.0" y2="400.0"/>
+<polyline fill="none" stroke="#009E73" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" points="870.0,400.0 888.7,400.0 907.3,397.7 926.0,400.0 944.7,400.0 963.3,395.4 982.0,395.4 1000.7,337.4 1019.3,400.0 1038.0,397.7 1056.7,400.0 1075.3,397.7 1094.0,379.1 1112.7,393.0 1131.3,358.3 1150.0,390.7 1168.7,393.0 1187.3,400.0 1206.0,390.7 1224.7,379.1 1243.3,379.1 1262.0,383.8 1280.7,386.1 1299.3,393.0 1318.0,400.0 1336.7,390.7 1355.3,383.8 1374.0,383.8 1392.7,386.1 1411.3,388.4 1430.0,390.7"/>
+<circle cx="1430.0" cy="390.7" r="4.2" fill="#009E73"/>
+<text class="tiny" x="870.0" y="420.0" text-anchor="start">16,384</text>
+<text class="tiny" x="1430.0" y="420.0" text-anchor="end">507,904</text>
+<text class="tiny" x="876.0" y="222.0" text-anchor="start">0.01</text>
+<text class="tiny" x="876.0" y="394.0" text-anchor="start">0</text>
+  <text class="label" x="110.0" y="515.0" text-anchor="start">C. Critic explained variance</text>
+<line class="grid" x1="110.0" y1="535.0" x2="730.0" y2="535.0"/>
+<line class="grid" x1="110.0" y1="575.0" x2="730.0" y2="575.0"/>
+<line class="grid" x1="110.0" y1="615.0" x2="730.0" y2="615.0"/>
+<line class="grid" x1="110.0" y1="655.0" x2="730.0" y2="655.0"/>
+<line class="grid" x1="110.0" y1="695.0" x2="730.0" y2="695.0"/>
+<line class="axis" x1="110.0" y1="695.0" x2="730.0" y2="695.0"/>
+<line class="axis" x1="110.0" y1="535.0" x2="110.0" y2="695.0"/>
+<polyline fill="none" stroke="#CC79A7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" points="110.0,689.7 130.7,685.7 151.3,693.3 172.0,662.9 192.7,667.8 213.3,695.0 234.0,691.0 254.7,694.6 275.3,671.5 296.0,672.9 316.7,663.6 337.3,689.5 358.0,693.3 378.7,687.7 399.3,690.9 420.0,686.0 440.7,672.8 461.3,608.5 482.0,667.5 502.7,674.5 523.3,669.2 544.0,678.4 564.7,657.3 585.3,637.9 606.0,535.0 626.7,631.0 647.3,655.8 668.0,640.5 688.7,602.5 709.3,621.4 730.0,617.4"/>
+<circle cx="730.0" cy="617.4" r="4.2" fill="#CC79A7"/>
+<text class="tiny" x="110.0" y="715.0" text-anchor="start">16,384</text>
+<text class="tiny" x="730.0" y="715.0" text-anchor="end">507,904</text>
+<text class="tiny" x="116.0" y="547.0" text-anchor="start">0.612</text>
+<text class="tiny" x="116.0" y="689.0" text-anchor="start">-0.00146</text>
+  <text class="label" x="870.0" y="515.0" text-anchor="start">D. Approximate KL</text>
+<line class="grid" x1="870.0" y1="535.0" x2="1430.0" y2="535.0"/>
+<line class="grid" x1="870.0" y1="575.0" x2="1430.0" y2="575.0"/>
+<line class="grid" x1="870.0" y1="615.0" x2="1430.0" y2="615.0"/>
+<line class="grid" x1="870.0" y1="655.0" x2="1430.0" y2="655.0"/>
+<line class="grid" x1="870.0" y1="695.0" x2="1430.0" y2="695.0"/>
+<line class="axis" x1="870.0" y1="695.0" x2="1430.0" y2="695.0"/>
+<line class="axis" x1="870.0" y1="535.0" x2="870.0" y2="695.0"/>
+<polyline fill="none" stroke="#D55E00" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" points="870.0,660.0 888.7,673.1 907.3,648.1 926.0,670.8 944.7,673.8 963.3,598.7 982.0,633.4 1000.7,649.4 1019.3,673.2 1038.0,669.9 1056.7,667.2 1075.3,647.2 1094.0,646.3 1112.7,640.8 1131.3,661.2 1150.0,642.6 1168.7,653.2 1187.3,677.4 1206.0,535.0 1224.7,663.5 1243.3,634.0 1262.0,636.5 1280.7,665.2 1299.3,686.7 1318.0,683.6 1336.7,644.3 1355.3,633.5 1374.0,695.0 1392.7,663.1 1411.3,679.0 1430.0,682.2"/>
+<circle cx="1430.0" cy="682.2" r="4.2" fill="#D55E00"/>
+<text class="tiny" x="870.0" y="715.0" text-anchor="start">16,384</text>
+<text class="tiny" x="1430.0" y="715.0" text-anchor="end">507,904</text>
+<text class="tiny" x="876.0" y="547.0" text-anchor="start">0.0176</text>
+<text class="tiny" x="876.0" y="689.0" text-anchor="start">0.00577</text>
+  <rect class="panel" x="110.0" y="735.0" width="1320.0" height="38.0" rx="4.0"/>
+  <text class="body" x="135.0" y="760.0" text-anchor="start">final reward 0.0164 | speed 1127 steps/s | device NVIDIA GeForce RTX 4090</text>
 
 </svg>

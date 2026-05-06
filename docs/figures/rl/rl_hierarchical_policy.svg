@@ -1,106 +1,62 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1100" viewBox="0 0 1800 1100">
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
   <defs>
+    <marker id="arrowGray" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#7A869A"/></marker>
+    <marker id="arrowBlue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#0072B2"/></marker>
+    <marker id="arrowGreen" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#009E73"/></marker>
+
     <style>
-      .bg{fill:#fff}.title{font:700 38px Arial,Inter,sans-serif;fill:#111827}.sub{font:500 16px Arial,Inter,sans-serif;fill:#64748b}
-      .panel{fill:#f8fafc;stroke:#cbd5e1;stroke-width:2}.card{fill:#fff;stroke:#cbd5e1;stroke-width:2}.obs{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.policy{fill:#fffbeb;stroke:#d6a90e;stroke-width:2}.safe{fill:#fff1f2;stroke:#e11d48;stroke-width:2}.ctrl{fill:#ecfdf5;stroke:#16a34a;stroke-width:2}.critic{fill:#faf5ff;stroke:#7c3aed;stroke-width:2;stroke-dasharray:10 7}.deploy{fill:#f1f5f9;stroke:#64748b;stroke-width:2}
-      .h{font:700 22px Arial,Inter,sans-serif;fill:#1f2937}.mh{font:700 16px Arial,Inter,sans-serif;fill:#334155}.txt{font:500 14px Arial,Inter,sans-serif;fill:#475569}.small{font:600 12px Arial,Inter,sans-serif;fill:#475569}.tiny{font:700 10px Arial,Inter,sans-serif;fill:#475569}.eq{font:600 15px Consolas,Menlo,monospace;fill:#111827}
-      .arrow{fill:none;stroke:#64748b;stroke-width:3;marker-end:url(#ad)}.arrowB{fill:none;stroke:#2563eb;stroke-width:4;marker-end:url(#ab)}.arrowY{fill:none;stroke:#d6a90e;stroke-width:4;marker-end:url(#ay)}.arrowG{fill:none;stroke:#16a34a;stroke-width:4;marker-end:url(#ag)}.arrowR{fill:none;stroke:#e11d48;stroke-width:4;marker-end:url(#ar)}.arrowV{fill:none;stroke:#7c3aed;stroke-width:3.5;marker-end:url(#av)}.dash{stroke-dasharray:9 8}.blue{fill:#1d4ed8}.yellow{fill:#a16207}.green{fill:#15803d}.red{fill:#be123c}.violet{fill:#6d28d9}
-      .arena{fill:#fff;stroke:#111827;stroke-width:3}.grid{stroke:#e2e8f0;stroke-width:1;stroke-dasharray:5 6}.robotY{fill:#f2c94c;stroke:#92400e;stroke-width:2}.robotB{fill:#2563eb;stroke:#1e3a8a;stroke-width:2}.target{fill:#fff;stroke:#334155;stroke-width:2}.nn{fill:#fff;stroke:#94a3b8;stroke-width:1.7}
+      text{font-family:Inter,Arial,Helvetica,sans-serif}
+      .title{font-size:34px;font-weight:700;fill:#1B1F23}
+      .subtitle{font-size:15px;font-weight:400;fill:#5B6472}
+      .label{font-size:15px;font-weight:650;fill:#1B1F23}
+      .body{font-size:13px;font-weight:400;fill:#5B6472}
+      .small{font-size:11px;font-weight:400;fill:#5B6472}
+      .tiny{font-size:9px;font-weight:500;fill:#5B6472}
+      .panel{fill:#fff;stroke:#C9D1D9;stroke-width:1.2}
+      .soft{fill:#F7F9FB;stroke:#C9D1D9;stroke-width:1}
+      .grid{stroke:#E6EBF0;stroke-width:1}
+      .axis{stroke:#1B1F23;stroke-width:1.1}
+      .wire{fill:none;stroke:#7A869A;stroke-width:1.8;marker-end:url(#arrowGray)}
+      .wireBlue{fill:none;stroke:#0072B2;stroke-width:2;marker-end:url(#arrowBlue)}
+      .wireGreen{fill:none;stroke:#009E73;stroke-width:2;marker-end:url(#arrowGreen)}
+      .dash{stroke-dasharray:6 6}
     </style>
-    <marker id="ad" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 L12 6 L0 12 Z" fill="#64748b"/></marker>
-    <marker id="ab" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#2563eb"/></marker>
-    <marker id="ay" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#d6a90e"/></marker>
-    <marker id="ag" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#16a34a"/></marker>
-    <marker id="ar" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#e11d48"/></marker>
-    <marker id="av" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path d="M0 0 L13 6.5 L0 13 Z" fill="#7c3aed"/></marker>
+
   </defs>
-  <rect class="bg" width="1800" height="1100"/>
-  <text class="title" x="76" y="66">Hierarchical MAPPO Strategy for RoboCup VisionRL</text>
-  <text class="sub" x="78" y="98">A clear three-layer policy: local observations select tactics, rule gates enforce target legality, and ROS2 controllers execute safe actions.</text>
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+  <text class="title" x="64" y="58">Hierarchical MAPPO Strategy</text>
+  <text class="subtitle" x="66" y="86">Local actors choose tactics, safety gates enforce rules, and ROS2 controllers execute low-level motion.</text>
 
-  <rect class="panel" x="60" y="132" width="1680" height="880" rx="14"/>
+  <rect class="soft" x="64.0" y="126.0" width="1468.0" height="650.0" rx="10.0"/>
+  <rect class="panel" x="120.0" y="230.0" width="280.0" height="340.0" rx="6.0"/>
+  <text class="label" x="150.0" y="270.0" text-anchor="start">Local observation</text>
+  <text class="body" x="150.0" y="315.0" text-anchor="start">pose and heading</text>
+<text class="body" x="150.0" y="337.0" text-anchor="start">opponent bearing</text>
+<text class="body" x="150.0" y="359.0" text-anchor="start">armor / score / time</text>
+<text class="body" x="150.0" y="381.0" text-anchor="start">target visibility</text>
+<text class="body" x="150.0" y="403.0" text-anchor="start">sensor-fusion state</text>
+  <path class="wireBlue" d="M400.0 400.0 L540.0 400.0"/>
+  <rect class="panel" x="540.0" y="190.0" width="360.0" height="420.0" rx="6.0"/>
+  <text class="label" x="580.0" y="235.0" text-anchor="start">Decentralized actor</text>
+  <circle cx="630" cy="320" r="14" fill="#fff" stroke="#0072B2" stroke-width="2"/>
+  <circle cx="715" cy="285" r="14" fill="#fff" stroke="#0072B2" stroke-width="2"/>
+  <circle cx="715" cy="355" r="14" fill="#fff" stroke="#0072B2" stroke-width="2"/>
+  <circle cx="800" cy="320" r="14" fill="#fff" stroke="#0072B2" stroke-width="2"/>
+  <path d="M644 320 L701 285 M644 320 L701 355 M729 285 L786 320 M729 355 L786 320" stroke="#C9D1D9" stroke-width="1.7"/>
+  <text class="body" x="580.0" y="440.0" text-anchor="start">6-D tactical output</text>
+<text class="body" x="580.0" y="462.0" text-anchor="start">target selector</text>
+<text class="body" x="580.0" y="484.0" text-anchor="start">base-rush / block / recover / fire</text>
+  <path class="wireBlue" d="M900.0 400.0 L1040.0 400.0"/>
+  <rect class="panel" x="1040.0" y="230.0" width="350.0" height="340.0" rx="6.0"/>
+  <text class="label" x="1080.0" y="270.0" text-anchor="start">Rule and safety shield</text>
+  <text class="body" x="1080.0" y="315.0" text-anchor="start">opponent target only</text>
+<text class="body" x="1080.0" y="337.0" text-anchor="start">line-of-sight blockers</text>
+<text class="body" x="1080.0" y="359.0" text-anchor="start">dwell and range gate</text>
+<text class="body" x="1080.0" y="381.0" text-anchor="start">contact hull guard</text>
+  <path d="M1198 435 l56 24 v70 c0 40 -30 68 -56 82 c-26 -14 -56 -42 -56 -82 v-70 z" fill="#fff" stroke="#D55E00" stroke-width="2"/>
+  <path class="wireGreen" d="M1215.0 570.0 L1215.0 680.0"/>
+  <text class="label" x="1120.0" y="715.0" text-anchor="start">ROS2 behavior / Nav2 / shooter execution</text>
+  <path class="wire dash" d="M720 190 C760 105 980 105 1160 230"/>
+  <text class="body" x="830.0" y="145.0" text-anchor="start">central critic is used only during training</text>
 
-  <g transform="translate(96 172)">
-    <text class="h" x="0" y="0">A. Local observation and tactical input</text>
-    <rect class="card" x="0" y="36" width="480" height="430" rx="10"/>
-    <g transform="translate(54 84)">
-      <rect class="arena" x="0" y="0" width="330" height="270"/>
-      <path class="grid" d="M66 0 V270 M132 0 V270 M198 0 V270 M264 0 V270 M0 54 H330 M0 108 H330 M0 162 H330 M0 216 H330"/>
-      <rect x="0" y="0" width="58" height="58" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
-      <rect x="272" y="212" width="58" height="58" fill="#fef3c7" stroke="#d6a90e" stroke-width="2"/>
-      <circle class="target" cx="306" cy="48" r="12"/><circle class="target" cx="22" cy="165" r="12"/><circle class="target" cx="306" cy="165" r="12"/><circle class="target" cx="22" cy="247" r="12"/>
-      <g transform="translate(82 82) rotate(35)"><path class="robotB" d="M0 -15 L30 0 L0 15 Z"/></g>
-      <g transform="translate(226 210) rotate(-38)"><path class="robotY" d="M0 -15 L30 0 L0 15 Z"/></g>
-      <path d="M226 210 C248 150 274 94 306 48" fill="none" stroke="#e11d48" stroke-width="3" stroke-dasharray="8 6"/>
-      <path d="M180 208 L226 210 L330 168 L330 228 Z" fill="#67e8f9" opacity=".25" stroke="#06b6d4" stroke-width="2"/>
-      <text class="tiny red" x="192" y="138">opponent target</text>
-    </g>
-    <text class="mh" x="42" y="398">normalized actor input</text>
-    <g transform="translate(42 418)">
-      <rect class="obs" x="0" y="0" width="78" height="40" rx="6"/><text class="tiny blue" x="39" y="25" text-anchor="middle">pose</text>
-      <rect class="obs" x="90" y="0" width="78" height="40" rx="6"/><text class="tiny blue" x="129" y="25" text-anchor="middle">tag</text>
-      <rect class="ctrl" x="180" y="0" width="78" height="40" rx="6"/><text class="tiny green" x="219" y="25" text-anchor="middle">state</text>
-      <rect class="policy" x="270" y="0" width="78" height="40" rx="6"/><text class="tiny yellow" x="309" y="25" text-anchor="middle">time</text>
-      <rect class="safe" x="360" y="0" width="78" height="40" rx="6"/><text class="tiny red" x="399" y="25" text-anchor="middle">risk</text>
-    </g>
-  </g>
-
-  <g transform="translate(630 172)">
-    <text class="h" x="0" y="0">B. Hierarchical execution stack</text>
-    <rect class="card" x="0" y="36" width="560" height="700" rx="10"/>
-    <rect class="policy" x="54" y="86" width="452" height="128" rx="8"/>
-    <text class="h" x="82" y="126">High-Level MAPPO Actor</text>
-    <text class="txt" x="82" y="154">local observation -> tactic logits</text>
-    <g transform="translate(82 180)">
-      <circle class="nn" cx="0" cy="0" r="11"/><circle class="nn" cx="58" cy="-24" r="11"/><circle class="nn" cx="58" cy="24" r="11"/><circle class="nn" cx="116" cy="0" r="11"/>
-      <path d="M11 0 H47 M69 -24 L105 0 M69 24 L105 0" stroke="#94a3b8" stroke-width="2"/>
-      <rect class="card" x="178" y="-30" width="210" height="28" rx="4"/><text class="tiny" x="283" y="-12" text-anchor="middle">target / base rush</text>
-      <rect class="card" x="178" y="8" width="210" height="28" rx="4"/><text class="tiny" x="283" y="26" text-anchor="middle">block / recover</text>
-    </g>
-    <path class="arrowY" d="M280 214 V266"/><text class="tiny yellow" x="300" y="248">tactic</text>
-
-    <rect class="safe" x="54" y="266" width="452" height="128" rx="8"/>
-    <text class="h red" x="82" y="306">Action Mask + Rule Gate</text>
-    <text class="txt" x="82" y="334">remove own targets, blind fire, unsafe base-risk actions</text>
-    <rect class="card" x="82" y="356" width="214" height="28" rx="4"/><text class="tiny red" x="189" y="374" text-anchor="middle">opponent-target safety gate</text>
-    <path d="M380 322 l48 22 v48 c0 38 -26 62 -48 74 c-22 -12 -48 -36 -48 -74 v-48 z" fill="#fff" stroke="#e11d48" stroke-width="2"/>
-    <rect x="368" y="360" width="24" height="26" rx="5" fill="#e11d48"/><path d="M372 360 v-12 c0 -20 16 -20 16 0 v12" fill="none" stroke="#e11d48" stroke-width="5"/>
-    <path class="arrowG" d="M280 394 V446"/><text class="tiny green" x="300" y="426">safe command</text>
-
-    <rect class="ctrl" x="54" y="446" width="452" height="118" rx="8"/>
-    <text class="h green" x="82" y="486">Behavior State Machine</text>
-    <text class="txt" x="82" y="516">NAVIGATE -> SEARCH -> ALIGN -> FIRE</text>
-    <text class="txt" x="82" y="544">RECOVER -> BLOCK -> RETURN</text>
-    <path class="arrow" d="M280 564 V620"/>
-
-    <rect class="deploy" x="54" y="620" width="452" height="74" rx="8"/>
-    <text class="h" x="82" y="660">Low-Level ROS2 Control</text>
-    <text class="txt" x="82" y="684">Nav2, EKF, AprilTag alignment, shooter services</text>
-  </g>
-
-  <g transform="translate(1240 172)">
-    <text class="h" x="0" y="0">C. CTDE split</text>
-    <rect class="critic" x="0" y="36" width="430" height="230" rx="10"/>
-    <text class="h violet" x="30" y="76">Central Critic</text>
-    <text class="txt" x="30" y="106">training only: global state for advantage estimation</text>
-    <rect class="card" x="30" y="142" width="370" height="34" rx="5"/><text class="small" x="215" y="164" text-anchor="middle">both robot poses and velocities</text>
-    <rect class="card" x="30" y="188" width="370" height="34" rx="5"/><text class="small" x="215" y="210" text-anchor="middle">full target, armor and contact events</text>
-    <path class="arrowV dash" d="M0 156 C-42 154 -76 150 -112 146"/><text class="tiny violet" x="-66" y="134" text-anchor="middle">MAPPO update</text>
-
-    <rect class="deploy" x="0" y="330" width="430" height="170" rx="10"/>
-    <text class="h" x="30" y="370">Deployment Contract</text>
-    <text class="txt" x="30" y="400">critic removed; local actor outputs high-level tactic only</text>
-    <rect class="card" x="30" y="438" width="170" height="34" rx="5"/><text class="small" x="115" y="460" text-anchor="middle">/cmd_vel target</text>
-    <rect class="card" x="230" y="438" width="170" height="34" rx="5"/><text class="small" x="315" y="460" text-anchor="middle">/shooter/fire gate</text>
-    <path class="arrow dash" d="M0 414 H-112"/>
-
-    <rect class="card" x="0" y="570" width="430" height="166" rx="10"/>
-    <text class="h" x="30" y="610">Rule-Aligned Rewards</text>
-    <text class="txt" x="30" y="648">+ opponent normal target -> armor removal</text>
-    <text class="txt" x="30" y="680">+ opponent base target -> terminal win</text>
-    <text class="txt" x="30" y="712">- own target, blind fire, stuck, unsafe collision</text>
-  </g>
-
-  <path class="arrowB" d="M576 500 C602 420 604 360 630 300"/>
-  <text class="tiny blue" x="606" y="392" text-anchor="middle">local observation</text>
 </svg>

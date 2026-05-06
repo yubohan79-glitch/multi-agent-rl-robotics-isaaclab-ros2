@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <marker id="arrowGray" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#7A869A"/></marker>
+    <marker id="arrowBlue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#0072B2"/></marker>
+    <marker id="arrowGreen" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#009E73"/></marker>
+
+    <style>
+      text{font-family:Inter,Arial,Helvetica,sans-serif}
+      .title{font-size:34px;font-weight:700;fill:#1B1F23}
+      .subtitle{font-size:15px;font-weight:400;fill:#5B6472}
+      .label{font-size:15px;font-weight:650;fill:#1B1F23}
+      .body{font-size:13px;font-weight:400;fill:#5B6472}
+      .small{font-size:11px;font-weight:400;fill:#5B6472}
+      .tiny{font-size:9px;font-weight:500;fill:#5B6472}
+      .panel{fill:#fff;stroke:#C9D1D9;stroke-width:1.2}
+      .soft{fill:#F7F9FB;stroke:#C9D1D9;stroke-width:1}
+      .grid{stroke:#E6EBF0;stroke-width:1}
+      .axis{stroke:#1B1F23;stroke-width:1.1}
+      .wire{fill:none;stroke:#7A869A;stroke-width:1.8;marker-end:url(#arrowGray)}
+      .wireBlue{fill:none;stroke:#0072B2;stroke-width:2;marker-end:url(#arrowBlue)}
+      .wireGreen{fill:none;stroke:#009E73;stroke-width:2;marker-end:url(#arrowGreen)}
+      .dash{stroke-dasharray:6 6}
+    </style>
+
+  </defs>
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+  <text class="title" x="64" y="58">Multi-Agent Robot RL System</text>
+  <text class="subtitle" x="66" y="86">Publication-style summary of the IsaacLab + ROS2 + Sim2Real stack.</text>
+
+  <rect class="soft" x="52" y="122" width="1496" height="690" rx="10"/>
+  <text class="label" x="92" y="168">End-to-end research stack</text>
+  <g>
+    <rect class="panel" x="92.0" y="215.0" width="330.0" height="170.0" rx="6.0"/>
+    <text class="label" x="122.0" y="255.0" text-anchor="start">1. IsaacLab environments</text>
+    <text class="body" x="122.0" y="294.0" text-anchor="start">two robots, rigid boxes</text>
+<text class="body" x="122.0" y="316.0" text-anchor="start">targets, armor, blockers</text>
+<text class="body" x="122.0" y="338.0" text-anchor="start">strict replay traces</text>
+    <rect class="panel" x="92.0" y="455.0" width="330.0" height="170.0" rx="6.0"/>
+    <text class="label" x="122.0" y="495.0" text-anchor="start">2. Multi-agent RL</text>
+    <text class="body" x="122.0" y="534.0" text-anchor="start">MAPPO / CTDE training</text>
+<text class="body" x="122.0" y="556.0" text-anchor="start">yellow and blue actors</text>
+<text class="body" x="122.0" y="578.0" text-anchor="start">residual expert priors</text>
+    <path class="wireBlue" d="M422.0 300.0 L560.0 300.0"/>
+    <path class="wireBlue" d="M422.0 540.0 L560.0 540.0"/>
+  </g>
+  <g>
+    <rect class="panel" x="560.0" y="215.0" width="390.0" height="410.0" rx="6.0"/>
+    <text class="label" x="600.0" y="255.0" text-anchor="start">3. Rule-aware policy contract</text>
+    <text class="body" x="600.0" y="300.0" text-anchor="start">opponent-target fire gate</text>
+<text class="body" x="600.0" y="322.0" text-anchor="start">line-of-sight blockers</text>
+<text class="body" x="600.0" y="344.0" text-anchor="start">0.80 s dwell requirement</text>
+<text class="body" x="600.0" y="366.0" text-anchor="start">20-80 cm recessed-base range</text>
+<text class="body" x="600.0" y="388.0" text-anchor="start">pushable obstacle state</text>
+    <line x1="600" y1="455" x2="910" y2="455" stroke="#C9D1D9" stroke-width="1"/>
+    <text class="label" x="600.0" y="500.0" text-anchor="start">outputs</text>
+    <text class="body" x="600.0" y="538.0" text-anchor="start">target choice</text>
+<text class="body" x="600.0" y="560.0" text-anchor="start">base-rush timing</text>
+<text class="body" x="600.0" y="582.0" text-anchor="start">block / recover / fire gates</text>
+    <path class="wireGreen" d="M950.0 420.0 L1080.0 420.0"/>
+  </g>
+  <g>
+    <rect class="panel" x="1080.0" y="215.0" width="390.0" height="410.0" rx="6.0"/>
+    <text class="label" x="1120.0" y="255.0" text-anchor="start">4. ROS2 / Nav2 deployment</text>
+    <text class="body" x="1120.0" y="300.0" text-anchor="start">behavior state machine</text>
+<text class="body" x="1120.0" y="322.0" text-anchor="start">Nav2 goal execution</text>
+<text class="body" x="1120.0" y="344.0" text-anchor="start">AprilTag alignment</text>
+<text class="body" x="1120.0" y="366.0" text-anchor="start">EKF + lidar + IMU fusion</text>
+<text class="body" x="1120.0" y="388.0" text-anchor="start">shooter services</text>
+    <line x1="1120" y1="455" x2="1430" y2="455" stroke="#C9D1D9" stroke-width="1"/>
+    <text class="label" x="1120.0" y="500.0" text-anchor="start">evidence</text>
+    <text class="body" x="1120.0" y="538.0" text-anchor="start">pytest rule checks</text>
+<text class="body" x="1120.0" y="560.0" text-anchor="start">64-episode evaluation</text>
+<text class="body" x="1120.0" y="582.0" text-anchor="start">three-view IsaacLab replay</text>
+  </g>
+  <path class="wire dash" d="M1280 625 C1280 720 250 720 250 625"/>
+  <text class="small" x="620" y="735">sim-to-real feedback: drift logs, replay audits and rule geometry checks refine the training environment</text>
+
+</svg>
