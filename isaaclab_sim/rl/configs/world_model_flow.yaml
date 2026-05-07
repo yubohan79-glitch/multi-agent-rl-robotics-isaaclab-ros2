@@ -1,0 +1,42 @@
+algorithm: object_centric_world_model_sac_flow_selfplay
+seed: 260707
+num_envs: 32
+timesteps: 200000
+hidden_dim: 256
+batch_size: 1024
+replay_size: 300000
+learning_starts: 4096
+gradient_steps: 2
+gamma: 0.995
+tau: 0.01
+actor_lr: 0.0003
+critic_lr: 0.0003
+world_model_lr: 0.0003
+alpha_lr: 0.0003
+target_entropy: -6.0
+max_grad_norm: 1.0
+flow_steps: 3
+flow_velocity_scale: 0.20
+actor_mode: dual
+policy_mode: residual_expert
+residual_scale: 0.04
+domain_randomization: true
+action_shield: true
+world_model_coef: 0.25
+device: cuda
+output: ../output/rl/world_model_sacflow_seed260707
+research_stack:
+  object_centric_state: true
+  centralized_twin_q: true
+  sac_flow_actor: true
+  auxiliary_world_model: true
+  future_imagination_rollouts: td_mpc2_style_short_horizon
+deployment:
+  policy_role: high_level_tactical_actor
+  action_contract:
+    - target_selector
+    - base_rush_gate
+    - block_interference_gate
+    - recovery_gate
+    - fire_gate
+    - risk_preference

@@ -1,14 +1,16 @@
 # RoboCup VisionRL RL Interface
 
-This folder provides the reinforcement-learning bridge for the RoboCup IsaacLab scene. The current deployment path is a MAPPO-style, centralized-training/decentralized-execution strategy actor over a fast Python rule environment, then audited replay in IsaacLab.
+This folder provides the reinforcement-learning bridge for the RoboCup IsaacLab scene. The new research training path is an object-centric world-model + SAC Flow self-play actor over the fast Python rule environment, then audited replay in IsaacLab. The previous MAPPO-style centralized-training/decentralized-execution actor remains as the stable baseline.
 
 ## Current Policy
 
-- Algorithm: MAPPO-style self-play with a centralized critic and local actors.
+- Recommended research algorithm: object-centric world-model SAC Flow self-play.
+- Stable baseline algorithm: MAPPO-style self-play with a centralized critic and local actors.
 - Final actor mode: dual actor, with a yellow actor and a blue actor trained from team-specific expert priors.
 - Policy mode: residual expert, so the learned actor adjusts a rule-aware tactical prior instead of relearning basic navigation from scratch.
 - Observation dimension: 46 local features per robot.
-- Critic input: local observation concatenated with opponent observation.
+- MAPPO critic input: local observation concatenated with opponent observation.
+- SAC Flow critic/world model input: explicit object-centric state with robot, target, pushable box and base-armor blocker tokens.
 - Action dimension: 6 high-level tactical controls.
 
 Current dual-expert checkpoint after local training/evaluation:
@@ -104,6 +106,22 @@ python3 isaaclab_sim/rl/export_policy.py \
 ```
 
 ## Training
+
+Recommended object-centric world-model SAC Flow run:
+
+```bash
+python3 isaaclab_sim/rl/train_world_model_sacflow_selfplay.py \
+  --config isaaclab_sim/rl/configs/world_model_flow.yaml \
+  --timesteps 200000 \
+  --num-envs 32 \
+  --batch-size 1024 \
+  --gradient-steps 2 \
+  --device cuda \
+  --seed 260707 \
+  --output ../output/rl/world_model_sacflow_seed260707
+```
+
+This path replaces the Gaussian PPO/MAPPO actor with a velocity-reparameterized flow actor, trains a centralized twin-Q critic from replay, and jointly learns an auxiliary object-centric dynamics model. The object state explicitly tracks both robots, all targets, red pushable boxes and active base armor blockers so later TD-MPC2/Dreamer-style imagined rollouts can be added without changing the replay contract.
 
 Fast single-agent smoke test:
 
