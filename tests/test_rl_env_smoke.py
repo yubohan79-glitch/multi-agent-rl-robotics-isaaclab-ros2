@@ -40,9 +40,11 @@ from robocup_visionrl_gym_env import (
     base_removed_side_lane_quality,
     base_attack_pose_quality,
     segment_intersects_aabb,
+    wrap_angle,
 )
 from robocup_visionrl_selfplay_env import (
     AGENTS,
+    NORMAL_AIM_MICRO_SCAN_RAD,
     ROBOT_PUSHABLE_VISUAL_HALF_EXTENTS,
     TACTICAL_ACTION_DIM,
     RoboCupVisionRLSelfPlayEnv,
@@ -962,6 +964,44 @@ def test_base_fire_ready_requires_laser_inside_small_hit_radius():
     centered = env._fire_geometry_snapshot("yellow", base, risk=0.70)
     assert centered["lateral_error"] <= centered["hit_radius"]
     assert centered["geometry_ready"] is True
+
+
+def test_base_fire_candidates_include_small_side_nudges():
+    env = RoboCupVisionRLSelfPlayEnv()
+    env.reset(seed=45)
+    base = next(target for target in env.targets if target.kind == "base_blue")
+    env.armor["blue"] = 2
+    env._fire_pose_cache.clear()
+
+    candidates = env._valid_fire_pose_candidates("yellow", base, risk=0.70)
+
+    assert len(candidates) >= 8
+    lateral_values = []
+    base_xy = np.asarray(base.xy, dtype=np.float32)
+    for candidate, _shot_distance, _shot_quality, _blocker_cost in candidates:
+        lateral_values.append(round(float(np.linalg.norm(candidate - base_xy)), 3))
+    assert len(set(lateral_values)) >= 3
+
+
+def test_hold_fire_pose_applies_safe_micro_scan_when_ready():
+    env = RoboCupVisionRLSelfPlayEnv()
+    env.reset(seed=46)
+    target = next(item for item in env.targets if item.kind == "normal" and item.owner == "blue")
+    solution = env._best_fire_pose("yellow", target, risk=0.60)
+    assert solution is not None
+    fire_xy = solution[0]
+    aim_yaw = math.atan2(target.xy[1] - float(fire_xy[1]), target.xy[0] - float(fire_xy[0]))
+    env.poses["yellow"] = np.array([fire_xy[0], fire_xy[1], aim_yaw], dtype=np.float32)
+    env.elapsed = 0.5
+
+    before = float(env.poses["yellow"][2])
+    blocked = env._hold_fire_pose("yellow", target, risk=0.60)
+    after = float(env.poses["yellow"][2])
+    geometry = env._fire_geometry_snapshot("yellow", target, risk=0.60)
+
+    assert blocked is False
+    assert 0.0 < abs(wrap_angle(after - before)) <= NORMAL_AIM_MICRO_SCAN_RAD + 1e-4
+    assert geometry["geometry_ready"] is True
 
 
 def test_selfplay_shot_accuracy_increases_when_closer():

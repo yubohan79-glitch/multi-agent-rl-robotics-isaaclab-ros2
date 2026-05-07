@@ -10,8 +10,7 @@ import torch
 
 from expert_policy import compose_policy_action
 from robocup_visionrl_selfplay_env import AGENTS, RoboCupVisionRLSelfPlayEnv
-from policies import FlowActor
-from train_mappo_selfplay_parallel_torch import SharedActorCentralCritic
+from policies import FlowActor, GaussianTeamActorCritic
 from train_world_model_sacflow_selfplay import MultiAgentFlowActors
 
 
@@ -35,7 +34,7 @@ def load_policy(checkpoint_path: Path, device: torch.device) -> tuple[torch.nn.M
 
     config = checkpoint.get("config", {})
     actor_mode = str(checkpoint.get("actor_mode", config.get("actor_mode", "shared")))
-    model = SharedActorCentralCritic(
+    model = GaussianTeamActorCritic(
         int(checkpoint["obs_dim"]),
         int(checkpoint["central_obs_dim"]),
         int(checkpoint["action_dim"]),
@@ -87,7 +86,7 @@ def json_safe(value):
 
 
 def run_episode(
-    model: SharedActorCentralCritic,
+    model: torch.nn.Module,
     *,
     seed: int,
     max_steps: int,
@@ -216,7 +215,7 @@ def summarize(episodes: list[dict[str, object]], wall_time_s: float) -> dict[str
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Evaluate a saved MAPPO self-play policy.")
+    parser = argparse.ArgumentParser(description="Evaluate a saved tactical self-play policy.")
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--episodes", type=int, default=64)
     parser.add_argument("--seed", type=int, default=31)
@@ -226,7 +225,7 @@ def main():
     parser.add_argument("--trace-episodes", type=int, default=4)
     parser.add_argument("--policy-mode", choices=("auto", "direct", "expert", "residual_expert"), default="auto")
     parser.add_argument("--residual-scale", type=float, default=None)
-    parser.add_argument("--output", type=Path, default=Path("../output/eval/mappo_policy_eval.json"))
+    parser.add_argument("--output", type=Path, default=Path("../output/eval/policy_eval.json"))
     args = parser.parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu") if args.device == "auto" else torch.device(args.device)

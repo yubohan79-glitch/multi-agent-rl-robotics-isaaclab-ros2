@@ -12,7 +12,7 @@ import numpy as np
 import torch
 
 from expert_policy import compose_policy_action
-from evaluate_mappo_policy import actor_action, json_safe, load_policy
+from evaluate_policy import actor_action, json_safe, load_policy
 from robocup_visionrl_gym_env import (
     BASE_HIT_RADIUS,
     BASE_SHOOT_MIN_RANGE,

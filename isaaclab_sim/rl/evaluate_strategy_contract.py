@@ -12,8 +12,8 @@ import numpy as np
 import torch
 
 from expert_policy import compose_policy_action
-from evaluate_mappo_policy import actor_action, json_safe, load_policy
-from replay_mappo_policy_strict import pushable_box_penetration, static_blocker_penetration
+from evaluate_policy import actor_action, json_safe, load_policy
+from replay_policy_strict import pushable_box_penetration, static_blocker_penetration
 from robocup_visionrl_gym_env import (
     BASE_HIT_SUCCESS_BY_NORMAL_HITS,
     PUSHABLE_OBSTACLE_STARTS,

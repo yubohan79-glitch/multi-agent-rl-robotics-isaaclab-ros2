@@ -116,6 +116,9 @@ NORMAL_ATTACK_STALE_STEP_LIMIT = 110
 BASE_ATTACK_STALE_STEP_LIMIT = 80
 SHOT_CLOSE_DISTANCE = SHOOTER_FORWARD_OFFSET + 0.14
 BASE_SHOT_CLOSE_DISTANCE = SHOOTER_FORWARD_OFFSET + BASE_SHOOT_MIN_RANGE + 0.02
+NORMAL_AIM_MICRO_SCAN_RAD = 0.014
+BASE_AIM_MICRO_SCAN_RAD = 0.007
+BASE_FIRE_REPLAN_NUDGE_M = 0.012
 SHOT_TIME_COST_SCALE = 0.035
 PUSH_INTENT_THRESHOLD = 0.48
 PUSH_STEP_M = 0.060
@@ -699,8 +702,16 @@ class RoboCupVisionRLSelfPlayEnv:
         )
         holding_fire_pose = bool(geometry_snapshot["geometry_ready"]) or near_fire_window
         geometry_ready = bool(geometry_snapshot["geometry_ready"])
-        if holding_fire_pose:
-            blocked = self._hold_fire_pose(team, target)
+        if holding_fire_pose and base_target and not geometry_ready and pre_goal_distance < hold_radius:
+            refined = self._best_fire_pose(team, target, risk, route_aware=True)
+            if refined is not None and float(np.linalg.norm(refined[0] - self.poses[team][:2])) > BASE_FIRE_REPLAN_NUDGE_M:
+                goal = refined[0]
+                blocked = self._drive_to_goal(team, goal, risk, face_xy=np.asarray(target.xy, dtype=np.float32))
+                holding_fire_pose = False
+            else:
+                blocked = self._hold_fire_pose(team, target, risk)
+        elif holding_fire_pose:
+            blocked = self._hold_fire_pose(team, target, risk)
             if blocked and not geometry_ready:
                 face_target_xy = None if not line_clear else np.asarray(target.xy, dtype=np.float32)
                 blocked = self._drive_to_goal(team, goal, risk, face_xy=face_target_xy)
@@ -1492,11 +1503,19 @@ class RoboCupVisionRLSelfPlayEnv:
         allowed_dirs = opened_dirs[:1] if hits == 1 else [opened_dirs[1], opened_dirs[0]] if hits == 2 else opened_dirs
         side_radii = (0.62,) if hits == 1 else (0.48, 0.62, 0.78) if hits == 2 else (0.48, 0.62, 0.78, 0.94)
         side_laterals = (0.0,) if hits == 1 else (-0.06, 0.0, 0.06) if hits == 2 else (-0.10, -0.04, 0.0, 0.04, 0.10)
+        fine_radial_offsets = (0.0, -0.035, 0.035) if hits >= 2 else (0.0,)
+        fine_lateral_offsets = (0.0, -0.025, 0.025) if hits >= 2 else (0.0,)
         for direction in allowed_dirs:
             side_tangent = np.array([-direction[1], direction[0]], dtype=np.float32)
             for radius in side_radii:
                 for lateral in side_laterals:
-                    candidates.append(np.asarray(base_xy, dtype=np.float32) + direction * radius + side_tangent * lateral)
+                    anchor = np.asarray(base_xy, dtype=np.float32) + direction * radius + side_tangent * lateral
+                    candidates.append(anchor)
+                    for radial_delta in fine_radial_offsets:
+                        for lateral_delta in fine_lateral_offsets:
+                            if abs(radial_delta) <= 1e-6 and abs(lateral_delta) <= 1e-6:
+                                continue
+                            candidates.append(anchor + direction * radial_delta + side_tangent * lateral_delta)
 
         if hits >= 2:
             if target.kind == "base_blue":
@@ -1538,7 +1557,7 @@ class RoboCupVisionRLSelfPlayEnv:
                 BASE_IDEAL_CENTER_STANDOFF,
                 SHOOTER_FORWARD_OFFSET + BASE_SHOOT_RANGE - 0.03,
             ):
-                for lateral in (0.0, -0.10, 0.10, -0.18, 0.18):
+                for lateral in (0.0, -0.04, 0.04, -0.10, 0.10, -0.18, 0.18):
                     candidates.append(target_xy + front * distance + tangent * lateral)
         return candidates
 
@@ -1669,11 +1688,27 @@ class RoboCupVisionRLSelfPlayEnv:
     def _geometry_fire_ready(self, team: str, target: Target, risk: float) -> bool:
         return bool(self._fire_geometry_snapshot(team, target, risk)["geometry_ready"])
 
-    def _hold_fire_pose(self, team: str, target: Target) -> bool:
+    def _hold_fire_pose(self, team: str, target: Target, risk: float) -> bool:
         pose = self.poses[team]
         desired_yaw = math.atan2(target.xy[1] - float(pose[1]), target.xy[0] - float(pose[0]))
+        geometry = self._fire_geometry_snapshot(team, target, risk)
+        if bool(geometry["geometry_ready"]):
+            base_target = target.kind.startswith("base_")
+            shot_distance = max(float(geometry["shot_distance"]), 1e-6)
+            hit_radius = float(geometry["hit_radius"])
+            lateral_error = float(geometry["lateral_error"])
+            margin_rad = max(0.0, hit_radius - lateral_error) / shot_distance
+            max_scan = BASE_AIM_MICRO_SCAN_RAD if base_target else NORMAL_AIM_MICRO_SCAN_RAD
+            scan_amp = min(max_scan, 0.45 * margin_rad)
+            if scan_amp > 0.002:
+                phase_offset = 0.0 if team == "yellow" else math.pi * 0.5
+                frequency_hz = 0.42 if base_target else 0.58
+                desired_yaw = wrap_angle(
+                    desired_yaw + scan_amp * math.sin(math.tau * frequency_hz * self.elapsed + phase_offset)
+                )
         yaw_error = wrap_angle(desired_yaw - float(pose[2]))
-        angular_speed = 0.0 if abs(yaw_error) < 0.012 else float(np.clip(2.25 * yaw_error, -0.72, 0.72))
+        settling_deadband = 0.004 if bool(geometry["geometry_ready"]) else 0.012
+        angular_speed = 0.0 if abs(yaw_error) < settling_deadband else float(np.clip(2.25 * yaw_error, -0.72, 0.72))
         return self._integrate_command(team, 0.0, angular_speed, allow_push=False)
 
     def _target_line_clear(self, team: str, origin: tuple[float, float], target: Target) -> bool:

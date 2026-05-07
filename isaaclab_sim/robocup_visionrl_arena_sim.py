@@ -31,8 +31,8 @@ parser.add_argument(
     action="store_true",
     help="Run a deterministic full-match portfolio replay with target falls, armor removal, recovery, and base hit.",
 )
-parser.add_argument("--replay_trace", type=str, default="", help="CSV trace produced by replay_mappo_policy_strict.py.")
-parser.add_argument("--replay_events", type=str, default="", help="JSONL events produced by replay_mappo_policy_strict.py.")
+parser.add_argument("--replay_trace", type=str, default="", help="CSV trace produced by replay_policy_strict.py.")
+parser.add_argument("--replay_events", type=str, default="", help="JSONL events produced by replay_policy_strict.py.")
 parser.add_argument("--replay_episode", type=int, default=0, help="Episode index to replay from --replay_trace.")
 parser.add_argument("--record_video", type=str, default="", help="Optional MP4 output path recorded from an IsaacLab RGB camera.")
 parser.add_argument(

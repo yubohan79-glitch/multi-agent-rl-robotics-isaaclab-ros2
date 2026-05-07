@@ -7,9 +7,8 @@ from pathlib import Path
 import torch
 from torch import nn
 
-from policies import FlowActor
+from policies import FlowActor, GaussianTeamActorCritic
 from robocup_visionrl_selfplay_env import TACTICAL_ACTION_LABELS
-from train_mappo_selfplay_parallel_torch import SharedActorCentralCritic
 from train_world_model_sacflow_selfplay import MultiAgentFlowActors
 
 
@@ -22,7 +21,7 @@ class ActorOnly(nn.Module):
     the final observation column.
     """
 
-    def __init__(self, policy: SharedActorCentralCritic, export_team: str = "auto"):
+    def __init__(self, policy: GaussianTeamActorCritic, export_team: str = "auto"):
         super().__init__()
         self.actor_mode = policy.actor_mode
         self.export_team = export_team
@@ -98,7 +97,7 @@ def load_actor(checkpoint_path: Path, device: torch.device, export_team: str) ->
 
     config = checkpoint.get("config", {})
     actor_mode = str(checkpoint.get("actor_mode", config.get("actor_mode", "shared")))
-    model = SharedActorCentralCritic(
+    model = GaussianTeamActorCritic(
         int(checkpoint["obs_dim"]),
         int(checkpoint["central_obs_dim"]),
         int(checkpoint["action_dim"]),
@@ -122,7 +121,7 @@ def export_suffix(checkpoint: dict, export_team: str) -> str:
 def export_torchscript(actor: nn.Module, checkpoint: dict, output_dir: Path, device: torch.device) -> Path:
     example = torch.zeros(1, int(checkpoint["obs_dim"]), dtype=torch.float32, device=device)
     traced = torch.jit.trace(actor, example)
-    prefix = "sacflow_tactical_actor" if checkpoint.get("algorithm") == "object_centric_world_model_sac_flow_selfplay" else "mappo_tactical_actor"
+    prefix = "sacflow_tactical_actor" if checkpoint.get("algorithm") == "object_centric_world_model_sac_flow_selfplay" else "archived_gaussian_tactical_actor"
     output_path = output_dir / f"{prefix}{export_suffix(checkpoint, actor.export_team)}.ts"
     traced.save(str(output_path))
     return output_path
@@ -130,7 +129,7 @@ def export_torchscript(actor: nn.Module, checkpoint: dict, output_dir: Path, dev
 
 def export_onnx(actor: nn.Module, checkpoint: dict, output_dir: Path, device: torch.device) -> Path:
     example = torch.zeros(1, int(checkpoint["obs_dim"]), dtype=torch.float32, device=device)
-    prefix = "sacflow_tactical_actor" if checkpoint.get("algorithm") == "object_centric_world_model_sac_flow_selfplay" else "mappo_tactical_actor"
+    prefix = "sacflow_tactical_actor" if checkpoint.get("algorithm") == "object_centric_world_model_sac_flow_selfplay" else "archived_gaussian_tactical_actor"
     output_path = output_dir / f"{prefix}{export_suffix(checkpoint, actor.export_team)}.onnx"
     torch.onnx.export(
         actor,
@@ -157,7 +156,7 @@ def build_manifest(
         "project": "RoboCup VisionRL",
         "source_checkpoint": str(checkpoint_path),
         "export_format": export_format,
-        "algorithm": str(checkpoint.get("algorithm", "mappo_selfplay")),
+        "algorithm": str(checkpoint.get("algorithm", "archived_gaussian_selfplay")),
         "actor_mode": str(checkpoint.get("actor_mode", checkpoint.get("config", {}).get("actor_mode", "shared"))),
         "export_team": export_team,
         "exported_actor": str(exported_path) if exported_path is not None else None,
@@ -186,7 +185,7 @@ def build_manifest(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Export a trained MAPPO tactical actor for Sim2Real deployment.")
+    parser = argparse.ArgumentParser(description="Export a trained tactical actor for Sim2Real deployment.")
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, default=Path("../output/policy_export"))
     parser.add_argument("--format", choices=["torchscript", "onnx", "manifest"], default="torchscript")

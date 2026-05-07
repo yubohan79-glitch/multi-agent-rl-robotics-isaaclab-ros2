@@ -19,14 +19,16 @@ from robocup_visionrl_selfplay_env import (
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_mappo_config_matches_environment_action_contract():
-    config = yaml.safe_load((ROOT / "isaaclab_sim/rl/configs/mappo_selfplay.yaml").read_text(encoding="utf-8"))
+def test_world_model_flow_config_matches_environment_action_contract():
+    config = yaml.safe_load((ROOT / "isaaclab_sim/rl/configs/world_model_flow.yaml").read_text(encoding="utf-8"))
 
-    assert config["algorithm"] == "mappo_selfplay"
+    assert config["algorithm"] == "object_centric_world_model_sac_flow_selfplay"
     assert config["actor_mode"] == "dual"
     assert config["policy_mode"] == "residual_expert"
-    assert config["ctde"]["centralized_critic"] is True
-    assert config["ctde"]["actor_observation"] == "local_only"
+    assert config["research_stack"]["object_centric_state"] is True
+    assert config["research_stack"]["centralized_twin_q"] is True
+    assert config["research_stack"]["sac_flow_actor"] is True
+    assert config["research_stack"]["auxiliary_world_model"] is True
     assert config["deployment"]["action_contract"] == list(TACTICAL_ACTION_LABELS)
     assert TACTICAL_ACTION_DIM == len(config["deployment"]["action_contract"])
 
@@ -171,22 +173,26 @@ def test_action_shield_suppresses_contact_near_own_assets():
     assert shielded[5] <= 0.20
 
 
-def test_archived_gpu_run_data_has_expected_strategy_metrics():
+def test_published_world_model_flow_run_data_has_expected_strategy_metrics():
     summary = json.loads(
-        (ROOT / "docs/rl_data/mappo_selfplay_full_gpu/training_summary.json").read_text(encoding="utf-8")
+        (ROOT / "docs/rl_data/world_model_sacflow_final/training_summary.json").read_text(encoding="utf-8")
     )
     stochastic = json.loads(
-        (ROOT / "docs/rl_data/mappo_selfplay_full_gpu/mappo_full_gpu_eval_stochastic.json").read_text(encoding="utf-8")
+        (ROOT / "docs/rl_data/world_model_sacflow_final/contract_eval_multiseed.json").read_text(encoding="utf-8")
     )
 
+    assert summary["algorithm"] == "object_centric_world_model_sac_flow_selfplay"
     assert summary["device"] == "cuda"
-    assert summary["cuda_available"] is True
     assert summary["action_dim"] == TACTICAL_ACTION_DIM
-    assert summary["obs_dim"] in (34, 38, 39, 46)
-    assert summary["central_obs_dim"] in (68, 76, 78, 92)
+    assert summary["obs_dim"] == 46
+    assert summary["object_state_dim"] > summary["obs_dim"]
+    assert summary["config"]["actor_mode"] == "dual"
+    assert summary["config"]["policy_mode"] == "residual_expert"
 
     eval_summary = stochastic["summary"]
-    assert eval_summary["episodes"] == 64
-    assert eval_summary["own_target_penalties_per_episode"] == 0.0
-    assert eval_summary["base_rush_steps_per_episode"] > 0.0
-    assert eval_summary["block_steps_per_episode"] > 0.0
+    assert eval_summary["episodes"] >= 128
+    assert eval_summary["static_penetrations_total"] == 0
+    assert eval_summary["box_penetrations_total"] == 0
+    assert eval_summary["repeat_target_order_events_total"] == 0
+    assert 0.40 <= eval_summary["yellow_win_rate"] <= 0.60
+    assert 0.40 <= eval_summary["blue_win_rate"] <= 0.60
