@@ -98,7 +98,7 @@ processes first:
 
 ## Portfolio Scope
 
-The ROS2 workspace is the clean submission package. Historical ROS1 material is treated as a migration baseline and documented in `rcvrl_docs/docs/migration.md`; it is not part of the runtime architecture.
+The ROS2 workspace is the clean submission package. Historical ROS1 material is not part of the runtime architecture; retained docs now focus on the current ROS2, IsaacLab, object-centric world-model and SAC Flow stack.
 
 Sim2Real calibration and validation are documented in `docs/sim2real.md`. Elimination strategy and RL self-play design are documented in `docs/strategy.md`. A concise rules summary is kept in `docs/rules_summary.md` instead of redistributing official competition PDFs or extracted pages.
 
@@ -172,13 +172,14 @@ The rendered episode passes strict checks for static-obstacle penetration, pusha
 
 ## Reproducibility
 
+- `docs/architecture.md`: system architecture and ROS2/IsaacLab component boundaries.
 - `docs/reproducibility.md`: exact smoke-test, ROS2 dry-run, IsaacLab preview and evaluation commands.
-- `docs/results.md`: measurable evaluation matrix for rule simulation, ROS2 runtime and real-robot transfer.
+- `docs/rules_summary.md`: public rule summary used by tests and replay checks.
+- `docs/sim2real.md`: sensor calibration, domain randomization and deployment validation plan.
+- `docs/strategy.md`: elimination strategy and self-play behavior design.
 - `docs/rl_world_model_flow_policy_plan.md`: object-centric world-model + SAC Flow / PolicyFlow algorithm plan.
 - `docs/rl_expert_base_cap_rng_final_report.md`: final Chinese report for the physical-box replay and base-hit validation.
 - `docs/rl_expert_base_cap_rng_physical_boxes_strict8.md`: strict replay source for the final three-view media.
-- `docs/evidence.md`: screenshots/video/log evidence checklist for GitHub and portfolio submission.
-- `docs/award_solution.md`: competition background, autonomous design points and national top-three solution framing.
 
 ## Repository Layout
 
