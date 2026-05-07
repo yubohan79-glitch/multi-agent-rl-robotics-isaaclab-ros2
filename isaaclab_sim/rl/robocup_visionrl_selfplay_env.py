@@ -117,8 +117,9 @@ BASE_ATTACK_STALE_STEP_LIMIT = 80
 SHOT_CLOSE_DISTANCE = SHOOTER_FORWARD_OFFSET + 0.14
 BASE_SHOT_CLOSE_DISTANCE = SHOOTER_FORWARD_OFFSET + BASE_SHOOT_MIN_RANGE + 0.02
 NORMAL_AIM_MICRO_SCAN_RAD = 0.014
-BASE_AIM_MICRO_SCAN_RAD = 0.007
-BASE_FIRE_REPLAN_NUDGE_M = 0.012
+BASE_AIM_MICRO_SCAN_RAD = 0.012
+BASE_AIM_SEEK_SCAN_RAD = 0.018
+BASE_FIRE_REPLAN_NUDGE_M = 0.008
 SHOT_TIME_COST_SCALE = 0.035
 PUSH_INTENT_THRESHOLD = 0.48
 PUSH_STEP_M = 0.060
@@ -1448,6 +1449,9 @@ class RoboCupVisionRLSelfPlayEnv:
         return priority
 
     def _fire_standoff_goal(self, team: str, target: Target, risk: float) -> np.ndarray:
+        if self._geometry_fire_ready(team, target, risk):
+            return self.poses[team][:2].copy()
+
         solution = self._best_fire_pose(team, target, risk, route_aware=True)
         if solution is not None:
             return solution[0]
@@ -1503,8 +1507,8 @@ class RoboCupVisionRLSelfPlayEnv:
         allowed_dirs = opened_dirs[:1] if hits == 1 else [opened_dirs[1], opened_dirs[0]] if hits == 2 else opened_dirs
         side_radii = (0.62,) if hits == 1 else (0.48, 0.62, 0.78) if hits == 2 else (0.48, 0.62, 0.78, 0.94)
         side_laterals = (0.0,) if hits == 1 else (-0.06, 0.0, 0.06) if hits == 2 else (-0.10, -0.04, 0.0, 0.04, 0.10)
-        fine_radial_offsets = (0.0, -0.035, 0.035) if hits >= 2 else (0.0,)
-        fine_lateral_offsets = (0.0, -0.025, 0.025) if hits >= 2 else (0.0,)
+        fine_radial_offsets = (0.0, -0.055, -0.035, -0.018, 0.018, 0.035, 0.055) if hits >= 2 else (0.0,)
+        fine_lateral_offsets = (0.0, -0.055, -0.035, -0.015, 0.015, 0.035, 0.055) if hits >= 2 else (0.0,)
         for direction in allowed_dirs:
             side_tangent = np.array([-direction[1], direction[0]], dtype=np.float32)
             for radius in side_radii:
@@ -1692,8 +1696,8 @@ class RoboCupVisionRLSelfPlayEnv:
         pose = self.poses[team]
         desired_yaw = math.atan2(target.xy[1] - float(pose[1]), target.xy[0] - float(pose[0]))
         geometry = self._fire_geometry_snapshot(team, target, risk)
+        base_target = target.kind.startswith("base_")
         if bool(geometry["geometry_ready"]):
-            base_target = target.kind.startswith("base_")
             shot_distance = max(float(geometry["shot_distance"]), 1e-6)
             hit_radius = float(geometry["hit_radius"])
             lateral_error = float(geometry["lateral_error"])
@@ -1706,6 +1710,21 @@ class RoboCupVisionRLSelfPlayEnv:
                 desired_yaw = wrap_angle(
                     desired_yaw + scan_amp * math.sin(math.tau * frequency_hz * self.elapsed + phase_offset)
                 )
+        elif base_target and bool(geometry["line_clear"]) and bool(geometry["base_pose_ok"]):
+            min_range, max_range = shooting_range_limits(True)
+            shot_distance = max(float(geometry["shot_distance"]), 1e-6)
+            if min_range <= shot_distance <= max_range:
+                hit_radius = float(geometry["hit_radius"])
+                lateral_error = float(geometry["lateral_error"])
+                # At a legal base fire pose a centimeter of pose error can leave
+                # the laser just outside the small base hit radius. Keep a slow
+                # deterministic search alive instead of freezing at a single yaw.
+                seek_amp = min(BASE_AIM_SEEK_SCAN_RAD, max(BASE_AIM_MICRO_SCAN_RAD, 0.30 * lateral_error / shot_distance))
+                if lateral_error > 0.50 * hit_radius and seek_amp > 0.002:
+                    phase_offset = math.pi * 0.25 if team == "yellow" else math.pi * 0.75
+                    desired_yaw = wrap_angle(
+                        desired_yaw + seek_amp * math.sin(math.tau * 0.30 * self.elapsed + phase_offset)
+                    )
         yaw_error = wrap_angle(desired_yaw - float(pose[2]))
         settling_deadband = 0.004 if bool(geometry["geometry_ready"]) else 0.012
         angular_speed = 0.0 if abs(yaw_error) < settling_deadband else float(np.clip(2.25 * yaw_error, -0.72, 0.72))

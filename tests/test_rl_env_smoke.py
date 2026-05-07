@@ -44,6 +44,7 @@ from robocup_visionrl_gym_env import (
 )
 from robocup_visionrl_selfplay_env import (
     AGENTS,
+    BASE_AIM_MICRO_SCAN_RAD,
     NORMAL_AIM_MICRO_SCAN_RAD,
     ROBOT_PUSHABLE_VISUAL_HALF_EXTENTS,
     TACTICAL_ACTION_DIM,
@@ -983,6 +984,20 @@ def test_base_fire_candidates_include_small_side_nudges():
     assert len(set(lateral_values)) >= 3
 
 
+def test_balanced_base_rush_candidates_include_centimeter_nudges():
+    env = RoboCupVisionRLSelfPlayEnv()
+    env.reset(seed=4501)
+    base = next(target for target in env.targets if target.kind == "base_blue")
+    env.armor["blue"] = 2
+
+    candidates = env._candidate_base_fire_poses("yellow", base, risk=0.70)
+    base_xy = BLUE_BASE_XY
+
+    assert any(base_removed_side_lane_quality(2, base_xy, candidate) > 0.0 for candidate in candidates)
+    assert len({round(float(candidate[0]), 3) for candidate in candidates}) >= 5
+    assert len({round(float(candidate[1]), 3) for candidate in candidates}) >= 5
+
+
 def test_hold_fire_pose_applies_safe_micro_scan_when_ready():
     env = RoboCupVisionRLSelfPlayEnv()
     env.reset(seed=46)
@@ -1001,6 +1016,28 @@ def test_hold_fire_pose_applies_safe_micro_scan_when_ready():
 
     assert blocked is False
     assert 0.0 < abs(wrap_angle(after - before)) <= NORMAL_AIM_MICRO_SCAN_RAD + 1e-4
+    assert geometry["geometry_ready"] is True
+
+
+def test_base_hold_fire_pose_applies_safe_micro_scan_when_ready():
+    env = RoboCupVisionRLSelfPlayEnv()
+    env.reset(seed=47)
+    target = next(item for item in env.targets if item.kind == "base_blue")
+    env.armor["blue"] = 2
+    solution = env._best_fire_pose("yellow", target, risk=0.72)
+    assert solution is not None
+    fire_xy = solution[0]
+    aim_yaw = math.atan2(target.xy[1] - float(fire_xy[1]), target.xy[0] - float(fire_xy[0]))
+    env.poses["yellow"] = np.array([fire_xy[0], fire_xy[1], aim_yaw], dtype=np.float32)
+    env.elapsed = 0.75
+
+    before = float(env.poses["yellow"][2])
+    blocked = env._hold_fire_pose("yellow", target, risk=0.72)
+    after = float(env.poses["yellow"][2])
+    geometry = env._fire_geometry_snapshot("yellow", target, risk=0.72)
+
+    assert blocked is False
+    assert 0.0 < abs(wrap_angle(after - before)) <= BASE_AIM_MICRO_SCAN_RAD + 1e-4
     assert geometry["geometry_ready"] is True
 
 
