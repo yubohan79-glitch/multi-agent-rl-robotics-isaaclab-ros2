@@ -54,13 +54,14 @@ jobs:
             isaaclab_sim/rl/robocup_visionrl_selfplay_env.py \
             isaaclab_sim/rl/robocup_visionrl_selfplay_vec.py \
             isaaclab_sim/rl/evaluate_selfplay.py \
-            isaaclab_sim/rl/evaluate_mappo_policy.py \
+            isaaclab_sim/rl/evaluate_world_model_sacflow_policy.py \
             isaaclab_sim/rl/export_policy.py \
+            isaaclab_sim/rl/export_world_model_sacflow_policy.py \
             isaaclab_sim/rl/generate_rl_figures.py \
-            isaaclab_sim/rl/replay_mappo_policy_strict.py \
+            isaaclab_sim/rl/replay_policy_strict.py \
             isaaclab_sim/rl/render_strict_replay_video.py \
             isaaclab_sim/rl/train_tactical_selfplay_numpy.py \
-            isaaclab_sim/rl/train_mappo_selfplay_parallel_torch.py
+            isaaclab_sim/rl/train_world_model_sacflow_selfplay.py
 
       - name: Run rule-env smoke test
         run: |
