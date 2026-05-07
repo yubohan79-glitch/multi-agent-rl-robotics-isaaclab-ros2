@@ -10,11 +10,29 @@ import torch
 
 from expert_policy import compose_policy_action
 from robocup_visionrl_selfplay_env import AGENTS, RoboCupVisionRLSelfPlayEnv
+from policies import FlowActor
 from train_mappo_selfplay_parallel_torch import SharedActorCentralCritic
+from train_world_model_sacflow_selfplay import MultiAgentFlowActors
 
 
-def load_policy(checkpoint_path: Path, device: torch.device) -> tuple[SharedActorCentralCritic, dict]:
+def load_policy(checkpoint_path: Path, device: torch.device) -> tuple[torch.nn.Module, dict]:
     checkpoint = torch.load(checkpoint_path, map_location=device)
+    algorithm = str(checkpoint.get("algorithm", ""))
+    if algorithm == "object_centric_world_model_sac_flow_selfplay":
+        config = checkpoint.get("config", {})
+        actor_mode = str(checkpoint.get("actor_mode", config.get("actor_mode", "dual")))
+        model = MultiAgentFlowActors(
+            int(checkpoint["obs_dim"]),
+            int(checkpoint["action_dim"]),
+            int(config.get("hidden_dim", 256)),
+            actor_mode=actor_mode,
+            flow_steps=int(config.get("flow_steps", 3)),
+            velocity_scale=float(config.get("flow_velocity_scale", 0.20)),
+        ).to(device)
+        model.load_state_dict(checkpoint["actor_state_dict"])
+        model.eval()
+        return model, checkpoint
+
     config = checkpoint.get("config", {})
     actor_mode = str(checkpoint.get("actor_mode", config.get("actor_mode", "shared")))
     model = SharedActorCentralCritic(
@@ -30,19 +48,27 @@ def load_policy(checkpoint_path: Path, device: torch.device) -> tuple[SharedActo
 
 
 def actor_action(
-    model: SharedActorCentralCritic,
+    model: torch.nn.Module,
     obs: np.ndarray,
     team: str,
     device: torch.device,
     deterministic: bool,
 ) -> np.ndarray:
     obs_t = torch.as_tensor(obs[None, :], dtype=torch.float32, device=device)
-    team_id = torch.as_tensor([0 if team == "yellow" else 1], dtype=torch.long, device=device)
+    team_index = 0 if team == "yellow" else 1
     with torch.no_grad():
-        if deterministic:
-            action = model.mean_action(obs_t, team_id)
+        if isinstance(model, MultiAgentFlowActors):
+            actor: FlowActor = model._actor(team_index)
+            if deterministic:
+                action = actor.deterministic(obs_t)
+            else:
+                action = actor.sample(obs_t)[0]
         else:
-            action = model.distribution(obs_t, team_id).sample().clamp(-1.0, 1.0)
+            team_id = torch.as_tensor([team_index], dtype=torch.long, device=device)
+            if deterministic:
+                action = model.mean_action(obs_t, team_id)
+            else:
+                action = model.distribution(obs_t, team_id).sample().clamp(-1.0, 1.0)
     return action.squeeze(0).detach().cpu().numpy().astype(np.float32)
 
 

@@ -123,6 +123,28 @@ python3 isaaclab_sim/rl/train_world_model_sacflow_selfplay.py \
 
 This path replaces the Gaussian PPO/MAPPO actor with a velocity-reparameterized flow actor, trains a centralized twin-Q critic from replay, and jointly learns an auxiliary object-centric dynamics model. The object state explicitly tracks both robots, all targets, red pushable boxes and active base armor blockers so later TD-MPC2/Dreamer-style imagined rollouts can be added without changing the replay contract.
 
+Evaluate and export the resulting checkpoint with:
+
+```bash
+python3 isaaclab_sim/rl/evaluate_world_model_sacflow_policy.py \
+  --checkpoint isaaclab_sim/output/rl/world_model_sacflow_seed260707/policy.pt \
+  --episodes 64 \
+  --stochastic \
+  --output isaaclab_sim/output/eval/world_model_sacflow_eval64.json
+
+python3 isaaclab_sim/rl/evaluate_strategy_contract.py \
+  --checkpoint isaaclab_sim/output/rl/world_model_sacflow_seed260707/policy.pt \
+  --episodes 64 \
+  --stochastic \
+  --output-json isaaclab_sim/output/eval/world_model_sacflow_contract_eval64.json \
+  --output-csv isaaclab_sim/output/eval/world_model_sacflow_contract_eval64.csv
+
+python3 isaaclab_sim/rl/export_world_model_sacflow_policy.py \
+  --checkpoint isaaclab_sim/output/rl/world_model_sacflow_seed260707/policy.pt \
+  --format torchscript \
+  --output-dir isaaclab_sim/output/policy_export/world_model_sacflow_seed260707
+```
+
 Fast single-agent smoke test:
 
 ```bash

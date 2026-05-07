@@ -4,6 +4,9 @@ This directory contains compact Git-tracked media assets used by the README and 
 
 Large raw recordings remain outside Git. The tracked files are compact MP4s generated from strict replay traces.
 
+- `最终回放_顶视角.mp4`: current final top-view IsaacLab replay with Chinese filename for portfolio delivery.
+- `最终回放_黄车第一视角.mp4`: current final yellow robot first-person IsaacLab replay with Chinese filename for portfolio delivery.
+- `最终回放_蓝车第一视角.mp4`: current final blue robot first-person IsaacLab replay with Chinese filename for portfolio delivery.
 - `isaaclab_expert_base_cap_physical_boxes_seed10705_top.mp4`: current IsaacLab top-view replay generated after the real PhysX pushable-box fix, strict episode seed 10705.
 - `isaaclab_expert_base_cap_physical_boxes_seed10705_yellow_pov.mp4`: current yellow robot first-person replay from the same audited physical-box trace.
 - `isaaclab_expert_base_cap_physical_boxes_seed10705_blue_pov.mp4`: current blue robot first-person replay from the same audited physical-box trace.
@@ -32,6 +35,9 @@ Latest MP4 metadata:
 
 | File | View | Duration | Frames | Size | Strict source |
 |---|---|---:|---:|---:|---|
+| `最终回放_顶视角.mp4` | top | 35.00 s | 1050 | 10.38 MB | `docs/rl_expert_base_cap_rng_physical_boxes_strict8.md` |
+| `最终回放_黄车第一视角.mp4` | yellow POV | 33.80 s | 1014 | 9.19 MB | `docs/rl_expert_base_cap_rng_physical_boxes_strict8.md` |
+| `最终回放_蓝车第一视角.mp4` | blue POV | 25.97 s | 779 | 4.69 MB | `docs/rl_expert_base_cap_rng_physical_boxes_strict8.md` |
 | `isaaclab_expert_base_cap_physical_boxes_seed10705_top.mp4` | top | 35.00 s | 1050 | 10.38 MB | `docs/rl_expert_base_cap_rng_physical_boxes_strict8.md` |
 | `isaaclab_expert_base_cap_physical_boxes_seed10705_yellow_pov.mp4` | yellow POV | 33.80 s | 1014 | 9.19 MB | `docs/rl_expert_base_cap_rng_physical_boxes_strict8.md` |
 | `isaaclab_expert_base_cap_physical_boxes_seed10705_blue_pov.mp4` | blue POV | 25.97 s | 779 | 4.69 MB | `docs/rl_expert_base_cap_rng_physical_boxes_strict8.md` |

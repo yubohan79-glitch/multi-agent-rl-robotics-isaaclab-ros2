@@ -1,14 +1,14 @@
-# Multi-Agent Robot RL: IsaacLab + ROS2 Sim2Real
+# Object-Centric World-Model Flow RL for Multi-Agent Robotics
 
 [![ROS2 Jazzy](https://img.shields.io/badge/ROS2-Jazzy-2563EB)](https://docs.ros.org/en/jazzy/)
 [![Ubuntu 24.04](https://img.shields.io/badge/Ubuntu-24.04-E95420)](https://ubuntu.com/)
 [![IsaacLab](https://img.shields.io/badge/IsaacLab-Sim2Real-16A34A)](https://isaac-sim.github.io/IsaacLab/)
-[![RL](https://img.shields.io/badge/RL-MAPPO%20Self--Play-7C3AED)](isaaclab_sim/rl/)
+[![RL](https://img.shields.io/badge/RL-World--Model%20SAC%20Flow-7C3AED)](isaaclab_sim/rl/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-111827)](LICENSE)
 
-Multi-Agent Robot RL is a practical robotics stack for multi-agent reinforcement learning, IsaacLab simulation, ROS2/Nav2 deployment, sensor fusion, visual target interaction and Sim2Real evaluation. It uses a RoboCup-style visual challenge arena as a hard benchmark, but the reusable pieces are broader: dual-agent MAPPO self-play, rule-aware action shielding, pushable rigid obstacles, ROS2 runtime contracts and reproducible evaluation/replay tooling.
+Object-Centric World-Model Flow RL is a practical robotics stack for multi-agent reinforcement learning, IsaacLab simulation, ROS2/Nav2 deployment, sensor fusion, visual target interaction and Sim2Real evaluation. It uses a RoboCup-style visual challenge arena as a hard benchmark, but the reusable pieces are broader: object-centric state modeling, flow-policy SAC self-play, rule-aware action shielding, pushable rigid obstacles, ROS2 runtime contracts and reproducible evaluation/replay tooling.
 
-Search keywords: multi-agent reinforcement learning, robot learning, IsaacLab, Isaac Sim, ROS2, Nav2, Sim2Real, MAPPO, autonomous robots, sensor fusion, visual navigation.
+Search keywords: multi-agent reinforcement learning, world model RL, flow policy, SAC Flow, object-centric RL, robot learning, IsaacLab, Isaac Sim, ROS2, Nav2, Sim2Real, autonomous robots, sensor fusion, visual navigation.
 
 This repository documents the engineering solution evolved from a national top-three RoboCup China visual challenge entry, rewritten as a clean, reproducible, self-contained portfolio system. The submitted ROS2 engineering workspace is `crc_robocup_vision_ws/`.
 
@@ -110,9 +110,11 @@ Sim2Real calibration and validation are documented in `docs/sim2real.md`. Elimin
 
 ## Learning Strategy
 
-The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. It uses PPO as a fast single-agent baseline and MAPPO-style self-play for two-robot elimination strategy learning.
+The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. The current research path is object-centric world-model + SAC Flow self-play. PPO/MAPPO scripts remain as archived baselines until the new training/evaluation/export path has fully replaced them.
 
-The current MAPPO deployment uses separate yellow and blue actors initialized from team-specific expert priors, then trained as residual experts on an NVIDIA GeForce RTX 4090 with 32 parallel rule environments. The learned high-level action selects targets, decides when to rush the base from the opened armor side, blocks/interferes with the opponent, requests localization recovery, gates firing, and adjusts risk preference. Low-level movement, localization, AprilTag alignment and shooter timing remain controlled by ROS2/Nav2 contracts for Sim2Real transfer.
+The new actor uses a velocity-reparameterized flow policy for high-level tactical controls, a centralized twin-Q critic, replay-buffer SAC updates, and an auxiliary object-centric dynamics model over both robots, targets, armor blockers and pushable boxes. This design is intended to express long-horizon push-box routes, target-order selection, early base-rush windows and asymmetric yellow/blue tactical tempo without hard-coding a single route.
+
+The baseline MAPPO deployment uses separate yellow and blue actors initialized from team-specific expert priors, then trained as residual experts on an NVIDIA GeForce RTX 4090 with 32 parallel rule environments. The learned high-level action selects targets, decides when to rush the base from the opened armor side, blocks/interferes with the opponent, requests localization recovery, gates firing, and adjusts risk preference. Low-level movement, localization, AprilTag alignment and shooter timing remain controlled by ROS2/Nav2 contracts for Sim2Real transfer.
 
 Latest embodied RL update: the MAPPO observation now includes multi-sensor fusion features from wheel/IMU consistency, scan/costmap clearance, front ToF, bumper contact, camera visibility and EKF confidence. The rule environment and IsaacLab replay use a normal-target shooter-outlet range gate of `0.05 m` to `0.50 m` and a recessed-base gate of `0.20 m` to `0.80 m`; target knockdown requires a legal opponent target, line of sight, distance-dependent accuracy and `0.80 s` laser dwell. The final policy uses recessed, smaller base targets behind ground-touching blue armor blockers, 45-degree normal target placement, yellow/blue dual experts for route and tempo differentiation, dynamic pushable boxes whose map poses change during replay, reset-time Sim2Real domain randomization, a recovery cooldown, contact-safe robot separation, and a conservative contact hull that prevents visible robot-box penetration in strict replay and IsaacLab playback. Details are tracked in `docs/rl_dual_experts_contact_hull_seed260507_report.md`.
 
@@ -156,13 +158,13 @@ The ROS2 runtime is organized around `rcvrl_bringup`, `rcvrl_behavior`, `rcvrl_v
 
 [RoboCup VisionRL runtime/demo video](https://www.bilibili.com/video/BV1Pj9ZBKEc8/?spm_id_from=333.1387.list.card_archive.click&vd_source=f79b94dd69d0c8d08ee5c3400b69d46d)
 
-The compact IsaacLab replay below is generated from the audited MAPPO trajectory trace. Both robots leave their start zones at `t=0`, attack opponent-side targets only, push rigid obstacle boxes with changing map poses, trigger armor removal after normal-target hits, and finish with a base-target win. The selected strict episode is `5`; IsaacLab logs both red obstacles being pushed through persistent poses, and the MP4s are 1280x720 / 12 fps recordings:
+The compact IsaacLab replay below is generated from the audited physical-box trajectory trace. Both robots leave their start zones at `t=0`, attack opponent-side targets only, push rigid obstacle boxes with changing map poses, trigger armor removal after normal-target hits, and finish with a base-target win. The current deliverable uses Chinese filenames for the final three views:
 
-[IsaacLab contact-hull top-view MP4](./docs/media/isaaclab_contact_hull_top.mp4)
+[最终回放：顶视角 MP4](./docs/media/最终回放_顶视角.mp4)
 
-[Yellow robot first-person replay MP4](./docs/media/isaaclab_contact_hull_yellow_pov.mp4)
+[最终回放：黄车第一视角 MP4](./docs/media/最终回放_黄车第一视角.mp4)
 
-[Blue robot first-person replay MP4](./docs/media/isaaclab_contact_hull_blue_pov.mp4)
+[最终回放：蓝车第一视角 MP4](./docs/media/最终回放_蓝车第一视角.mp4)
 
 The rendered episode passes strict checks for static-obstacle penetration, pushable-box penetration, target legality, own-target safety, differential-drive step limits and score/armor consistency. The selected episode has 0 hard violations and 0 warnings. The 8-episode strict audit reports 37.50% yellow wins, 62.50% blue wins, 0.00% draw/timeout, 0 hard violations and 0 own-target penalties; side balance is measured with the 64-episode stochastic evaluation above.
 
