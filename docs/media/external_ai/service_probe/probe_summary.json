@@ -1,0 +1,851 @@
+[
+  {
+    "name": "linoyts_ltx_2_3_sync",
+    "base": "https://linoyts-ltx-2-3-sync.hf.space",
+    "status_code": 200,
+    "content_type": "application/json",
+    "len": 43451,
+    "body_start": "{\"version\":\"6.9.0\",\"api_prefix\":\"/gradio_api\",\"mode\":\"blocks\",\"app_id\":7492354604609930580,\"dev_mode\":false,\"vibe_mode\":false,\"analytics_enabled\":true,\"componen",
+    "api_prefix": "/gradio_api",
+    "version": "6.9.0",
+    "apis": [
+      {
+        "idx": 0,
+        "api_name": "load_example_input",
+        "inputs": [
+          31
+        ],
+        "outputs": [
+          6,
+          7,
+          10,
+          11,
+          17,
+          16,
+          19,
+          21,
+          22,
+          25,
+          24
+        ],
+        "queue": false
+      },
+      {
+        "idx": 1,
+        "api_name": "load_example",
+        "inputs": [
+          31
+        ],
+        "outputs": [
+          30,
+          21
+        ],
+        "queue": true
+      },
+      {
+        "idx": 2,
+        "api_name": "on_image_upload",
+        "inputs": [
+          6,
+          7,
+          18
+        ],
+        "outputs": [
+          24,
+          25
+        ],
+        "queue": true
+      },
+      {
+        "idx": 3,
+        "api_name": "on_video_upload",
+        "inputs": [
+          7,
+          6,
+          18
+        ],
+        "outputs": [
+          24,
+          25,
+          11
+        ],
+        "queue": true
+      },
+      {
+        "idx": 4,
+        "api_name": "on_highres_toggle",
+        "inputs": [
+          6,
+          7,
+          18
+        ],
+        "outputs": [
+          24,
+          25
+        ],
+        "queue": true
+      },
+      {
+        "idx": 5,
+        "api_name": "generate_video",
+        "inputs": [
+          6,
+          7,
+          10,
+          11,
+          17,
+          16,
+          19,
+          21,
+          22,
+          25,
+          24,
+          20
+        ],
+        "outputs": [
+          30,
+          21
+        ],
+        "queue": true
+      }
+    ],
+    "components": [
+      {
+        "id": 1,
+        "type": "markdown",
+        "label": "# LTX 2.3 Sync: Fast Character Animation🕺\n**Fast Character Animation with LTX 2.3 Distilled**, using [Lightricks/LTX-2.3",
+        "value": "# LTX 2.3 Sync: Fast Character Animation🕺\n**Fast Character Animation with LTX 2.3 Distilled**, using [Lightricks/LTX-2.3-22b-IC-LoRA-Union-Control](https://huggingface.co/Lightricks/LTX-2.3-22b-IC-LoRA-Union-Control) with pose estimation & custom audio inputs for precise lipsync and body movement replication ✨\n    "
+      },
+      {
+        "id": 6,
+        "type": "image",
+        "label": "Character reference",
+        "value": null
+      },
+      {
+        "id": 7,
+        "type": "video",
+        "label": "Motion & audio reference",
+        "value": null
+      },
+      {
+        "id": 10,
+        "type": "textbox",
+        "label": "Prompt (optional)",
+        "value": null
+      },
+      {
+        "id": 11,
+        "type": "slider",
+        "label": "Duration (s)",
+        "value": 3.0
+      },
+      {
+        "id": 12,
+        "type": "checkbox",
+        "label": "Auto-describe motion",
+        "value": false
+      },
+      {
+        "id": 14,
+        "type": "button",
+        "label": "Generate",
+        "value": "Generate"
+      },
+      {
+        "id": 15,
+        "type": "accordion",
+        "label": "Advanced Settings",
+        "value": null
+      },
+      {
+        "id": 16,
+        "type": "checkbox",
+        "label": "Enhance Prompt",
+        "value": true
+      },
+      {
+        "id": 17,
+        "type": "slider",
+        "label": "V2V Conditioning Strength",
+        "value": 0.85
+      },
+      {
+        "id": 18,
+        "type": "checkbox",
+        "label": "High Resolution (2×)",
+        "value": false
+      },
+      {
+        "id": 19,
+        "type": "checkbox",
+        "label": "Use Audio from Video",
+        "value": true
+      },
+      {
+        "id": 20,
+        "type": "audio",
+        "label": "Override Audio (optional — replaces video audio)",
+        "value": null
+      },
+      {
+        "id": 21,
+        "type": "slider",
+        "label": "Seed",
+        "value": 42
+      },
+      {
+        "id": 22,
+        "type": "checkbox",
+        "label": "Randomize Seed",
+        "value": true
+      },
+      {
+        "id": 24,
+        "type": "number",
+        "label": "Width",
+        "value": 768
+      },
+      {
+        "id": 25,
+        "type": "number",
+        "label": "Height",
+        "value": 512
+      },
+      {
+        "id": 30,
+        "type": "video",
+        "label": "Result",
+        "value": null
+      }
+    ]
+  },
+  {
+    "name": "linoyts_ltx_2_3_f2lf",
+    "base": "https://linoyts-ltx-2-3-first-last-frame.hf.space",
+    "status_code": 200,
+    "content_type": "application/json",
+    "len": 36813,
+    "body_start": "{\"version\":\"6.8.0\",\"api_prefix\":\"/gradio_api\",\"mode\":\"blocks\",\"app_id\":17426011916606603505,\"dev_mode\":false,\"vibe_mode\":false,\"analytics_enabled\":true,\"compone",
+    "api_prefix": "/gradio_api",
+    "version": "6.8.0",
+    "apis": [
+      {
+        "idx": 0,
+        "api_name": "load_example",
+        "inputs": [
+          27
+        ],
+        "outputs": [
+          7,
+          9,
+          10,
+          20,
+          13,
+          14,
+          17,
+          16
+        ],
+        "queue": false
+      },
+      {
+        "idx": 1,
+        "api_name": "on_image_upload",
+        "inputs": [
+          6,
+          7,
+          21
+        ],
+        "outputs": [
+          16,
+          17
+        ],
+        "queue": true
+      },
+      {
+        "idx": 2,
+        "api_name": "on_image_upload_1",
+        "inputs": [
+          6,
+          7,
+          21
+        ],
+        "outputs": [
+          16,
+          17
+        ],
+        "queue": true
+      },
+      {
+        "idx": 3,
+        "api_name": "on_highres_toggle",
+        "inputs": [
+          6,
+          7,
+          21
+        ],
+        "outputs": [
+          16,
+          17
+        ],
+        "queue": true
+      },
+      {
+        "idx": 4,
+        "api_name": "generate_video",
+        "inputs": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          20,
+          13,
+          14,
+          17,
+          16
+        ],
+        "outputs": [
+          26,
+          13
+        ],
+        "queue": true
+      }
+    ],
+    "components": [
+      {
+        "id": 1,
+        "type": "markdown",
+        "label": "# LTX-2.3 F2LF: Fast Audio-Video Generation with Frame Conditioning",
+        "value": "# LTX-2.3 F2LF: Fast Audio-Video Generation with Frame Conditioning"
+      },
+      {
+        "id": 2,
+        "type": "markdown",
+        "label": "Fast and high quality video + audio generation with first and last frame conditioning and optional audio input [[model]]",
+        "value": "Fast and high quality video + audio generation with first and last frame conditioning and optional audio input [[model]](https://huggingface.co/Lightricks/LTX-2.3) [[code]](https://github.com/Lightricks/LTX-2)"
+      },
+      {
+        "id": 6,
+        "type": "image",
+        "label": "First Frame (Optional)",
+        "value": null
+      },
+      {
+        "id": 7,
+        "type": "image",
+        "label": "Last Frame (Optional)",
+        "value": null
+      },
+      {
+        "id": 8,
+        "type": "audio",
+        "label": "Audio Input (Optional)",
+        "value": null
+      },
+      {
+        "id": 9,
+        "type": "textbox",
+        "label": "Prompt",
+        "value": "Make this image come alive with cinematic motion, smooth animation"
+      },
+      {
+        "id": 10,
+        "type": "slider",
+        "label": "Duration (seconds)",
+        "value": 3.0
+      },
+      {
+        "id": 11,
+        "type": "button",
+        "label": "Generate Video",
+        "value": "Generate Video"
+      },
+      {
+        "id": 12,
+        "type": "accordion",
+        "label": "Advanced Settings",
+        "value": null
+      },
+      {
+        "id": 13,
+        "type": "slider",
+        "label": "Seed",
+        "value": 10
+      },
+      {
+        "id": 14,
+        "type": "checkbox",
+        "label": "Randomize Seed",
+        "value": true
+      },
+      {
+        "id": 16,
+        "type": "number",
+        "label": "Width",
+        "value": 1536
+      },
+      {
+        "id": 17,
+        "type": "number",
+        "label": "Height",
+        "value": 1024
+      },
+      {
+        "id": 20,
+        "type": "checkbox",
+        "label": "Enhance Prompt",
+        "value": false
+      },
+      {
+        "id": 21,
+        "type": "checkbox",
+        "label": "High Resolution",
+        "value": true
+      },
+      {
+        "id": 26,
+        "type": "video",
+        "label": "Generated Video",
+        "value": null
+      }
+    ]
+  },
+  {
+    "name": "svjack_wan2_1",
+    "base": "https://svjack-wan2-1.hf.space",
+    "status_code": 200,
+    "content_type": "application/json",
+    "len": 13526,
+    "body_start": "{\"version\":\"5.19.0\",\"api_prefix\":\"/gradio_api\",\"mode\":\"blocks\",\"app_id\":9566903129470234668,\"dev_mode\":false,\"analytics_enabled\":true,\"components\":[{\"id\":1,\"typ",
+    "api_prefix": "/gradio_api",
+    "version": "5.19.0",
+    "apis": [
+      {
+        "idx": 0,
+        "api_name": "infer",
+        "inputs": [
+          5
+        ],
+        "outputs": [
+          9
+        ],
+        "queue": true
+      },
+      {
+        "idx": 1,
+        "api_name": "load_example",
+        "inputs": [
+          10
+        ],
+        "outputs": [
+          5
+        ],
+        "queue": false
+      }
+    ],
+    "components": [
+      {
+        "id": 1,
+        "type": "markdown",
+        "label": "# 🎥 Wan 2.1 Text-to-Video Generator",
+        "value": "# 🎥 Wan 2.1 Text-to-Video Generator"
+      },
+      {
+        "id": 2,
+        "type": "markdown",
+        "label": "Transform text prompts into dynamic videos - Duplicate this Space to run without queue! 🔥",
+        "value": "Transform text prompts into dynamic videos - Duplicate this Space to run without queue! 🔥"
+      },
+      {
+        "id": 5,
+        "type": "textbox",
+        "label": "Creative Prompt",
+        "value": null
+      },
+      {
+        "id": 6,
+        "type": "button",
+        "label": "Generate Video",
+        "value": "Generate Video"
+      },
+      {
+        "id": 9,
+        "type": "video",
+        "label": "Generated Video",
+        "value": null
+      }
+    ]
+  },
+  {
+    "name": "nihalgazi_wan2_1_duplicate",
+    "base": "https://nihalgazi-wan2-1-duplicate.hf.space",
+    "status_code": 503,
+    "content_type": "text/html; charset=utf-8",
+    "len": 51,
+    "body_start": "The space is paused, ask a maintainer to restart it"
+  },
+  {
+    "name": "wan_ai_wan_2_2_5b",
+    "base": "https://wan-ai-wan-2-2-5b.hf.space",
+    "status_code": 503,
+    "content_type": "text/html; charset=utf-8",
+    "len": 51,
+    "body_start": "The space is paused, ask a maintainer to restart it"
+  },
+  {
+    "name": "multimodalart_wan2_1_fast",
+    "base": "https://multimodalart-wan2-1-fast.hf.space",
+    "status_code": 200,
+    "content_type": "application/json",
+    "len": 27812,
+    "body_start": "{\"version\":\"5.30.0\",\"api_prefix\":\"/gradio_api\",\"mode\":\"blocks\",\"app_id\":10837183758560533199,\"dev_mode\":false,\"analytics_enabled\":true,\"components\":[{\"id\":1,\"ty",
+    "api_prefix": "/gradio_api",
+    "version": "5.30.0",
+    "apis": [
+      {
+        "idx": 0,
+        "api_name": "handle_image_upload_for_dims_wan",
+        "inputs": [
+          5,
+          13,
+          14
+        ],
+        "outputs": [
+          13,
+          14
+        ],
+        "queue": true
+      },
+      {
+        "idx": 1,
+        "api_name": "handle_image_upload_for_dims_wan_1",
+        "inputs": [
+          5,
+          13,
+          14
+        ],
+        "outputs": [
+          13,
+          14
+        ],
+        "queue": true
+      },
+      {
+        "idx": 2,
+        "api_name": "generate_video",
+        "inputs": [
+          5,
+          6,
+          13,
+          14,
+          9,
+          7,
+          17,
+          16,
+          10,
+          11
+        ],
+        "outputs": [
+          23,
+          10
+        ],
+        "queue": true
+      },
+      {
+        "idx": 3,
+        "api_name": "load_example_input",
+        "inputs": [
+          24
+        ],
+        "outputs": [
+          5,
+          6,
+          13,
+          14
+        ],
+        "queue": false
+      },
+      {
+        "idx": 4,
+        "api_name": "load_example",
+        "inputs": [
+          24
+        ],
+        "outputs": [
+          23,
+          10
+        ],
+        "queue": true
+      }
+    ],
+    "components": [
+      {
+        "id": 1,
+        "type": "markdown",
+        "label": "# Fast 4 steps Wan 2.1 I2V (14B) with CausVid LoRA",
+        "value": "# Fast 4 steps Wan 2.1 I2V (14B) with CausVid LoRA"
+      },
+      {
+        "id": 2,
+        "type": "markdown",
+        "label": "[CausVid](https://github.com/tianweiy/CausVid) is a distilled version of Wan 2.1 to run faster in just 4-8 steps, [extra",
+        "value": "[CausVid](https://github.com/tianweiy/CausVid) is a distilled version of Wan 2.1 to run faster in just 4-8 steps, [extracted as LoRA by Kijai](https://huggingface.co/Kijai/WanVideo_comfy/blob/main/Wan21_CausVid_14B_T2V_lora_rank32.safetensors) and is compatible with 🧨 diffusers"
+      },
+      {
+        "id": 5,
+        "type": "image",
+        "label": "Input Image (auto-resized to target H/W)",
+        "value": null
+      },
+      {
+        "id": 6,
+        "type": "textbox",
+        "label": "Prompt",
+        "value": "make this image come alive, cinematic motion, smooth animation"
+      },
+      {
+        "id": 7,
+        "type": "slider",
+        "label": "Duration (seconds)",
+        "value": 2
+      },
+      {
+        "id": 8,
+        "type": "accordion",
+        "label": "Advanced Settings",
+        "value": null
+      },
+      {
+        "id": 9,
+        "type": "textbox",
+        "label": "Negative Prompt",
+        "value": "Bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards, watermark, text, signature"
+      },
+      {
+        "id": 10,
+        "type": "slider",
+        "label": "Seed",
+        "value": 42
+      },
+      {
+        "id": 11,
+        "type": "checkbox",
+        "label": "Randomize seed",
+        "value": true
+      },
+      {
+        "id": 13,
+        "type": "slider",
+        "label": "Output Height (multiple of 32)",
+        "value": 512
+      },
+      {
+        "id": 14,
+        "type": "slider",
+        "label": "Output Width (multiple of 32)",
+        "value": 896
+      },
+      {
+        "id": 16,
+        "type": "slider",
+        "label": "Inference Steps",
+        "value": 4
+      },
+      {
+        "id": 17,
+        "type": "slider",
+        "label": "Guidance Scale",
+        "value": 1.0
+      },
+      {
+        "id": 20,
+        "type": "button",
+        "label": "Generate Video",
+        "value": "Generate Video"
+      },
+      {
+        "id": 23,
+        "type": "video",
+        "label": "Generated Video",
+        "value": null
+      }
+    ]
+  },
+  {
+    "name": "dagfinn1962_hunyuanvideo",
+    "base": "https://dagfinn1962-hunyuanvideo.hf.space",
+    "status_code": 404,
+    "content_type": "text/html; charset=utf-8",
+    "len": 3020,
+    "body_start": "<!DOCTYPE html>\n<html class=\"\">\n<head>\n    <meta charset=\"utf-8\"/>\n    <meta\n            name=\"viewport\"\n            content=\"width=device-width, initial-scale="
+  },
+  {
+    "name": "mr2along_wan_2_1_t2v_1_3b",
+    "base": "https://mr2along-wan-2-1-t2v-1-3b-gpu.hf.space",
+    "status_code": 200,
+    "content_type": "application/json",
+    "len": 21578,
+    "body_start": "{\"version\":\"5.22.0\",\"api_prefix\":\"/gradio_api\",\"mode\":\"blocks\",\"app_id\":2565501878144282007,\"dev_mode\":false,\"analytics_enabled\":true,\"components\":[{\"id\":1,\"typ",
+    "api_prefix": "/gradio_api",
+    "version": "5.22.0",
+    "apis": [
+      {
+        "idx": 0,
+        "api_name": "generate_video",
+        "inputs": [
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          12,
+          13,
+          14,
+          15,
+          16,
+          18,
+          19,
+          17,
+          20
+        ],
+        "outputs": [
+          25,
+          26
+        ],
+        "queue": true
+      }
+    ],
+    "components": [
+      {
+        "id": 1,
+        "type": "markdown",
+        "label": "# Wan 2.1 T2V with Custom LoRA",
+        "value": "# Wan 2.1 T2V with Custom LoRA"
+      },
+      {
+        "id": 4,
+        "type": "dropdown",
+        "label": "Model",
+        "value": "Wan2.1-Fun-Reward-1.3B"
+      },
+      {
+        "id": 5,
+        "type": "textbox",
+        "label": "Prompt",
+        "value": ""
+      },
+      {
+        "id": 6,
+        "type": "textbox",
+        "label": "Negative Prompt",
+        "value": "Bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static"
+      },
+      {
+        "id": 7,
+        "type": "textbox",
+        "label": "Adapter Repo",
+        "value": "alibaba-pai/Wan2.1-Fun-Reward-LoRAs"
+      },
+      {
+        "id": 9,
+        "type": "textbox",
+        "label": "Adapter File Name",
+        "value": "Wan2.1-Fun-1.3B-InP-MPS.safetensors"
+      },
+      {
+        "id": 10,
+        "type": "slider",
+        "label": "Adapter Scale",
+        "value": 1.0
+      },
+      {
+        "id": 12,
+        "type": "dropdown",
+        "label": "Scheduler",
+        "value": "UniPCMultistepScheduler"
+      },
+      {
+        "id": 13,
+        "type": "slider",
+        "label": "Flow Shift",
+        "value": 3.0
+      },
+      {
+        "id": 14,
+        "type": "slider",
+        "label": "Height",
+        "value": 320
+      },
+      {
+        "id": 15,
+        "type": "slider",
+        "label": "Width",
+        "value": 480
+      },
+      {
+        "id": 16,
+        "type": "slider",
+        "label": "Number of Frames",
+        "value": 33
+      },
+      {
+        "id": 17,
+        "type": "slider",
+        "label": "Output FPS",
+        "value": 16
+      },
+      {
+        "id": 18,
+        "type": "slider",
+        "label": "Guidance Scale (CFG)",
+        "value": 4.0
+      },
+      {
+        "id": 19,
+        "type": "slider",
+        "label": "Inference Steps",
+        "value": 20
+      },
+      {
+        "id": 20,
+        "type": "number",
+        "label": "Seed (-1 for random)",
+        "value": -1
+      },
+      {
+        "id": 21,
+        "type": "button",
+        "label": "Generate Video",
+        "value": "Generate Video"
+      },
+      {
+        "id": 25,
+        "type": "video",
+        "label": "Generated Video",
+        "value": null
+      },
+      {
+        "id": 26,
+        "type": "number",
+        "label": "Seed",
+        "value": null
+      },
+      {
+        "id": 28,
+        "type": "markdown",
+        "label": "## Tips for best results:\n- Smaller videos: Flow shift 2.0–5.0\n- Larger videos: Flow shift 7.0–12.0\n- Use frame count in",
+        "value": "## Tips for best results:\n- Smaller videos: Flow shift 2.0–5.0\n- Larger videos: Flow shift 7.0–12.0\n- Use frame count in 4k+1 form (e.g., 33, 65)\n- Limit frame count and resolution to avoid timeout"
+      }
+    ]
+  },
+  {
+    "name": "lightricks_ltx_2_3",
+    "base": "https://lightricks-ltx-2-3.hf.space",
+    "status_code": 503,
+    "content_type": "text/html; charset=utf-8",
+    "len": 49,
+    "body_start": "Your space is in error, check its status on hf.co"
+  }
+]

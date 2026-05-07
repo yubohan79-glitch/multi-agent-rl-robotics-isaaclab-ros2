@@ -1,0 +1,1942 @@
+{
+  "version": "5.30.0",
+  "api_prefix": "/gradio_api",
+  "mode": "blocks",
+  "app_id": 10837183758560533199,
+  "dev_mode": false,
+  "analytics_enabled": true,
+  "components": [
+    {
+      "id": 1,
+      "type": "markdown",
+      "props": {
+        "value": "# Fast 4 steps Wan 2.1 I2V (14B) with CausVid LoRA",
+        "show_label": false,
+        "rtl": false,
+        "latex_delimiters": [
+          {
+            "left": "$$",
+            "right": "$$",
+            "display": true
+          }
+        ],
+        "visible": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "sanitize_html": true,
+        "line_breaks": false,
+        "header_links": false,
+        "show_copy_button": false,
+        "container": false,
+        "name": "markdown",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "927e99ba5dda4bcd0dfe596d4d0cecdc2e0b41e7e95071a05f96ae3971390ed6",
+      "key": null,
+      "api_info": {
+        "type": "string"
+      },
+      "api_info_as_input": {
+        "type": "string"
+      },
+      "api_info_as_output": {
+        "type": "string"
+      },
+      "example_inputs": "# Hello!"
+    },
+    {
+      "id": 2,
+      "type": "markdown",
+      "props": {
+        "value": "[CausVid](https://github.com/tianweiy/CausVid) is a distilled version of Wan 2.1 to run faster in just 4-8 steps, [extracted as LoRA by Kijai](https://huggingface.co/Kijai/WanVideo_comfy/blob/main/Wan21_CausVid_14B_T2V_lora_rank32.safetensors) and is compatible with 🧨 diffusers",
+        "show_label": false,
+        "rtl": false,
+        "latex_delimiters": [
+          {
+            "left": "$$",
+            "right": "$$",
+            "display": true
+          }
+        ],
+        "visible": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "sanitize_html": true,
+        "line_breaks": false,
+        "header_links": false,
+        "show_copy_button": false,
+        "container": false,
+        "name": "markdown",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "927e99ba5dda4bcd0dfe596d4d0cecdc2e0b41e7e95071a05f96ae3971390ed6",
+      "key": null,
+      "api_info": {
+        "type": "string"
+      },
+      "api_info_as_input": {
+        "type": "string"
+      },
+      "api_info_as_output": {
+        "type": "string"
+      },
+      "example_inputs": "# Hello!"
+    },
+    {
+      "id": 3,
+      "type": "row",
+      "props": {
+        "variant": "default",
+        "visible": true,
+        "equal_height": false,
+        "show_progress": false,
+        "preserved_by_key": [],
+        "name": "row"
+      },
+      "skip_api": true,
+      "component_class_id": "724216f2707d8e99d1bf5993a957b41df582b9f858086784b9e93dca5b08e3ce",
+      "key": null
+    },
+    {
+      "id": 4,
+      "type": "column",
+      "props": {
+        "scale": 1,
+        "min_width": 320,
+        "variant": "default",
+        "visible": true,
+        "show_progress": false,
+        "preserved_by_key": [],
+        "name": "column"
+      },
+      "skip_api": true,
+      "component_class_id": "2936b1d11eae2288921900031596f1dda70bc86ea3912baac685b76d520ed450",
+      "key": null
+    },
+    {
+      "id": 5,
+      "type": "image",
+      "props": {
+        "streamable": false,
+        "format": "webp",
+        "image_mode": "RGB",
+        "sources": [
+          "upload",
+          "webcam",
+          "clipboard"
+        ],
+        "type": "pil",
+        "label": "Input Image (auto-resized to target H/W)",
+        "show_label": true,
+        "show_download_button": true,
+        "container": true,
+        "min_width": 160,
+        "visible": true,
+        "streaming": false,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "webcam_options": {
+          "mirror": true,
+          "constraints": null
+        },
+        "show_share_button": true,
+        "show_fullscreen_button": true,
+        "name": "image",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "351d056ca75314330d88d8aebe3aa725e7106c6eb3286a94e6de3d0fc805f246",
+      "key": null,
+      "api_info": {
+        "properties": {
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Path to a local file",
+            "title": "Path"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Publicly available url or base64 encoded image",
+            "title": "Url"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Size of image in bytes",
+            "title": "Size"
+          },
+          "orig_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Original filename",
+            "title": "Orig Name"
+          },
+          "mime_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "mime type of image",
+            "title": "Mime Type"
+          },
+          "is_stream": {
+            "default": false,
+            "description": "Can always be set to False",
+            "title": "Is Stream",
+            "type": "boolean"
+          },
+          "meta": {
+            "additionalProperties": true,
+            "default": {
+              "_type": "gradio.FileData"
+            },
+            "title": "Meta",
+            "type": "object"
+          }
+        },
+        "title": "ImageData",
+        "type": "object",
+        "additional_description": "For input, either path or url must be provided. For output, path is always provided."
+      },
+      "api_info_as_input": {
+        "properties": {
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Path to a local file",
+            "title": "Path"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Publicly available url or base64 encoded image",
+            "title": "Url"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Size of image in bytes",
+            "title": "Size"
+          },
+          "orig_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Original filename",
+            "title": "Orig Name"
+          },
+          "mime_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "mime type of image",
+            "title": "Mime Type"
+          },
+          "is_stream": {
+            "default": false,
+            "description": "Can always be set to False",
+            "title": "Is Stream",
+            "type": "boolean"
+          },
+          "meta": {
+            "additionalProperties": true,
+            "default": {
+              "_type": "gradio.FileData"
+            },
+            "title": "Meta",
+            "type": "object"
+          }
+        },
+        "title": "ImageData",
+        "type": "object",
+        "additional_description": "For input, either path or url must be provided. For output, path is always provided."
+      },
+      "api_info_as_output": {
+        "properties": {
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Path to a local file",
+            "title": "Path"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Publicly available url or base64 encoded image",
+            "title": "Url"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Size of image in bytes",
+            "title": "Size"
+          },
+          "orig_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Original filename",
+            "title": "Orig Name"
+          },
+          "mime_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "mime type of image",
+            "title": "Mime Type"
+          },
+          "is_stream": {
+            "default": false,
+            "description": "Can always be set to False",
+            "title": "Is Stream",
+            "type": "boolean"
+          },
+          "meta": {
+            "additionalProperties": true,
+            "default": {
+              "_type": "gradio.FileData"
+            },
+            "title": "Meta",
+            "type": "object"
+          }
+        },
+        "title": "ImageData",
+        "type": "object",
+        "additional_description": "For input, either path or url must be provided. For output, path is always provided."
+      },
+      "example_inputs": {
+        "path": "https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png",
+        "meta": {
+          "_type": "gradio.FileData"
+        },
+        "orig_name": "bus.png",
+        "url": "https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png"
+      }
+    },
+    {
+      "id": 6,
+      "type": "textbox",
+      "props": {
+        "value": "make this image come alive, cinematic motion, smooth animation",
+        "type": "text",
+        "lines": 1,
+        "label": "Prompt",
+        "show_label": true,
+        "container": true,
+        "min_width": 160,
+        "visible": true,
+        "autofocus": false,
+        "autoscroll": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "rtl": false,
+        "show_copy_button": false,
+        "submit_btn": false,
+        "stop_btn": false,
+        "name": "textbox",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "0ad8e7dd48970890cef0fb44101b5b9b5a57422fa28062cfa5b0de927e78f3dc",
+      "key": null,
+      "api_info": {
+        "type": "string"
+      },
+      "api_info_as_input": {
+        "type": "string"
+      },
+      "api_info_as_output": {
+        "type": "string"
+      },
+      "example_inputs": "Hello!!"
+    },
+    {
+      "id": 7,
+      "type": "slider",
+      "props": {
+        "minimum": 0.3,
+        "maximum": 3.4,
+        "value": 2,
+        "step": 0.1,
+        "label": "Duration (seconds)",
+        "info": "Clamped to model's 8-81 frames at 24fps.",
+        "show_label": true,
+        "container": true,
+        "min_width": 160,
+        "visible": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "show_reset_button": true,
+        "name": "slider",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "0ac3736b4129faf84640f0058a8d346f4329c60284cd45c39454e44098df1b16",
+      "key": null,
+      "api_info": {
+        "type": "number",
+        "description": "numeric value between 0.3 and 3.4"
+      },
+      "api_info_as_input": {
+        "type": "number",
+        "description": "numeric value between 0.3 and 3.4"
+      },
+      "api_info_as_output": {
+        "type": "number",
+        "description": "numeric value between 0.3 and 3.4"
+      },
+      "example_inputs": 0.3
+    },
+    {
+      "id": 8,
+      "type": "accordion",
+      "props": {
+        "label": "Advanced Settings",
+        "open": false,
+        "visible": true,
+        "preserved_by_key": [],
+        "name": "accordion"
+      },
+      "skip_api": true,
+      "component_class_id": "f7ca9b901f75c307c1f5ddd33f789d906d98b7f72e2885efbfaa76243b6822af",
+      "key": null
+    },
+    {
+      "id": 9,
+      "type": "textbox",
+      "props": {
+        "value": "Bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards, watermark, text, signature",
+        "type": "text",
+        "lines": 3,
+        "label": "Negative Prompt",
+        "show_label": true,
+        "container": true,
+        "min_width": 160,
+        "visible": true,
+        "autofocus": false,
+        "autoscroll": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "rtl": false,
+        "show_copy_button": false,
+        "submit_btn": false,
+        "stop_btn": false,
+        "name": "textbox",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "0ad8e7dd48970890cef0fb44101b5b9b5a57422fa28062cfa5b0de927e78f3dc",
+      "key": null,
+      "api_info": {
+        "type": "string"
+      },
+      "api_info_as_input": {
+        "type": "string"
+      },
+      "api_info_as_output": {
+        "type": "string"
+      },
+      "example_inputs": "Hello!!"
+    },
+    {
+      "id": 10,
+      "type": "slider",
+      "props": {
+        "minimum": 0,
+        "maximum": 2147483647,
+        "value": 42,
+        "step": 1,
+        "label": "Seed",
+        "show_label": true,
+        "container": true,
+        "min_width": 160,
+        "interactive": true,
+        "visible": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "show_reset_button": true,
+        "name": "slider",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "0ac3736b4129faf84640f0058a8d346f4329c60284cd45c39454e44098df1b16",
+      "key": null,
+      "api_info": {
+        "type": "number",
+        "description": "numeric value between 0 and 2147483647"
+      },
+      "api_info_as_input": {
+        "type": "number",
+        "description": "numeric value between 0 and 2147483647"
+      },
+      "api_info_as_output": {
+        "type": "number",
+        "description": "numeric value between 0 and 2147483647"
+      },
+      "example_inputs": 0
+    },
+    {
+      "id": 11,
+      "type": "checkbox",
+      "props": {
+        "value": true,
+        "label": "Randomize seed",
+        "show_label": true,
+        "container": true,
+        "min_width": 160,
+        "interactive": true,
+        "visible": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "name": "checkbox",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "ee84e6fe71f46ce35def4649190f65f814a794e417222238f1c6f0b7977175e6",
+      "key": null,
+      "api_info": {
+        "type": "boolean"
+      },
+      "api_info_as_input": {
+        "type": "boolean"
+      },
+      "api_info_as_output": {
+        "type": "boolean"
+      },
+      "example_inputs": true
+    },
+    {
+      "id": 12,
+      "type": "row",
+      "props": {
+        "variant": "default",
+        "visible": true,
+        "equal_height": false,
+        "show_progress": false,
+        "preserved_by_key": [],
+        "name": "row"
+      },
+      "skip_api": true,
+      "component_class_id": "724216f2707d8e99d1bf5993a957b41df582b9f858086784b9e93dca5b08e3ce",
+      "key": null
+    },
+    {
+      "id": 13,
+      "type": "slider",
+      "props": {
+        "minimum": 128,
+        "maximum": 896,
+        "value": 512,
+        "step": 32,
+        "label": "Output Height (multiple of 32)",
+        "show_label": true,
+        "container": true,
+        "min_width": 160,
+        "visible": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "show_reset_button": true,
+        "name": "slider",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "0ac3736b4129faf84640f0058a8d346f4329c60284cd45c39454e44098df1b16",
+      "key": null,
+      "api_info": {
+        "type": "number",
+        "description": "numeric value between 128 and 896"
+      },
+      "api_info_as_input": {
+        "type": "number",
+        "description": "numeric value between 128 and 896"
+      },
+      "api_info_as_output": {
+        "type": "number",
+        "description": "numeric value between 128 and 896"
+      },
+      "example_inputs": 128
+    },
+    {
+      "id": 14,
+      "type": "slider",
+      "props": {
+        "minimum": 128,
+        "maximum": 896,
+        "value": 896,
+        "step": 32,
+        "label": "Output Width (multiple of 32)",
+        "show_label": true,
+        "container": true,
+        "min_width": 160,
+        "visible": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "show_reset_button": true,
+        "name": "slider",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "0ac3736b4129faf84640f0058a8d346f4329c60284cd45c39454e44098df1b16",
+      "key": null,
+      "api_info": {
+        "type": "number",
+        "description": "numeric value between 128 and 896"
+      },
+      "api_info_as_input": {
+        "type": "number",
+        "description": "numeric value between 128 and 896"
+      },
+      "api_info_as_output": {
+        "type": "number",
+        "description": "numeric value between 128 and 896"
+      },
+      "example_inputs": 128
+    },
+    {
+      "id": 15,
+      "type": "form",
+      "props": {
+        "scale": 2,
+        "min_width": 320,
+        "preserved_by_key": [],
+        "name": "form"
+      },
+      "skip_api": true,
+      "component_class_id": "ed5cd51f569f3a7624b1709c4e7e50a5a608037f5fb82307671a5cec77e36b71",
+      "key": null
+    },
+    {
+      "id": 16,
+      "type": "slider",
+      "props": {
+        "minimum": 1,
+        "maximum": 30,
+        "value": 4,
+        "step": 1,
+        "label": "Inference Steps",
+        "show_label": true,
+        "container": true,
+        "min_width": 160,
+        "visible": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "show_reset_button": true,
+        "name": "slider",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "0ac3736b4129faf84640f0058a8d346f4329c60284cd45c39454e44098df1b16",
+      "key": null,
+      "api_info": {
+        "type": "number",
+        "description": "numeric value between 1 and 30"
+      },
+      "api_info_as_input": {
+        "type": "number",
+        "description": "numeric value between 1 and 30"
+      },
+      "api_info_as_output": {
+        "type": "number",
+        "description": "numeric value between 1 and 30"
+      },
+      "example_inputs": 1
+    },
+    {
+      "id": 17,
+      "type": "slider",
+      "props": {
+        "minimum": 0.0,
+        "maximum": 20.0,
+        "value": 1.0,
+        "step": 0.5,
+        "label": "Guidance Scale",
+        "show_label": true,
+        "container": true,
+        "min_width": 160,
+        "visible": false,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "show_reset_button": true,
+        "name": "slider",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "0ac3736b4129faf84640f0058a8d346f4329c60284cd45c39454e44098df1b16",
+      "key": null,
+      "api_info": {
+        "type": "number",
+        "description": "numeric value between 0.0 and 20.0"
+      },
+      "api_info_as_input": {
+        "type": "number",
+        "description": "numeric value between 0.0 and 20.0"
+      },
+      "api_info_as_output": {
+        "type": "number",
+        "description": "numeric value between 0.0 and 20.0"
+      },
+      "example_inputs": 0.0
+    },
+    {
+      "id": 18,
+      "type": "form",
+      "props": {
+        "scale": 0,
+        "min_width": 0,
+        "preserved_by_key": [],
+        "name": "form"
+      },
+      "skip_api": true,
+      "component_class_id": "ed5cd51f569f3a7624b1709c4e7e50a5a608037f5fb82307671a5cec77e36b71",
+      "key": null
+    },
+    {
+      "id": 19,
+      "type": "form",
+      "props": {
+        "scale": 0,
+        "min_width": 0,
+        "preserved_by_key": [],
+        "name": "form"
+      },
+      "skip_api": true,
+      "component_class_id": "ed5cd51f569f3a7624b1709c4e7e50a5a608037f5fb82307671a5cec77e36b71",
+      "key": null
+    },
+    {
+      "id": 20,
+      "type": "button",
+      "props": {
+        "value": "Generate Video",
+        "variant": "primary",
+        "size": "lg",
+        "visible": true,
+        "interactive": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "name": "button",
+        "_selectable": false
+      },
+      "skip_api": true,
+      "component_class_id": "51bd485a5354bcd93c72c66428b42770f71e60d8f9bb8345f6ce8a6787cd1c8f",
+      "key": null
+    },
+    {
+      "id": 21,
+      "type": "form",
+      "props": {
+        "scale": 0,
+        "min_width": 0,
+        "preserved_by_key": [],
+        "name": "form"
+      },
+      "skip_api": true,
+      "component_class_id": "ed5cd51f569f3a7624b1709c4e7e50a5a608037f5fb82307671a5cec77e36b71",
+      "key": null
+    },
+    {
+      "id": 22,
+      "type": "column",
+      "props": {
+        "scale": 1,
+        "min_width": 320,
+        "variant": "default",
+        "visible": true,
+        "show_progress": false,
+        "preserved_by_key": [],
+        "name": "column"
+      },
+      "skip_api": true,
+      "component_class_id": "2936b1d11eae2288921900031596f1dda70bc86ea3912baac685b76d520ed450",
+      "key": null
+    },
+    {
+      "id": 23,
+      "type": "video",
+      "props": {
+        "sources": [
+          "upload",
+          "webcam"
+        ],
+        "label": "Generated Video",
+        "show_label": true,
+        "container": true,
+        "min_width": 160,
+        "interactive": false,
+        "visible": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "webcam_options": {
+          "mirror": true,
+          "constraints": null
+        },
+        "include_audio": true,
+        "autoplay": true,
+        "show_share_button": true,
+        "loop": false,
+        "streaming": false,
+        "name": "video",
+        "_selectable": false
+      },
+      "skip_api": false,
+      "component_class_id": "29866c8f4e5d4d9b59025f7fa2835d40d790d1f8730776b01129bfc9c7f6741d",
+      "key": null,
+      "api_info": {
+        "$defs": {
+          "FileData": {
+            "description": "The FileData class is a subclass of the GradioModel class that represents a file object within a Gradio interface. It is used to store file data and metadata when a file is uploaded.\n\nAttributes:\n    path: The server file path where the file is stored.\n    url: The normalized server URL pointing to the file.\n    size: The size of the file in bytes.\n    orig_name: The original filename before upload.\n    mime_type: The MIME type of the file.\n    is_stream: Indicates whether the file is a stream.\n    meta: Additional metadata used internally (should not be changed).",
+            "properties": {
+              "path": {
+                "title": "Path",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "size": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Size"
+              },
+              "orig_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Orig Name"
+              },
+              "mime_type": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Mime Type"
+              },
+              "is_stream": {
+                "default": false,
+                "title": "Is Stream",
+                "type": "boolean"
+              },
+              "meta": {
+                "$ref": "#/$defs/FileDataMeta"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "title": "FileData",
+            "type": "object"
+          },
+          "FileDataMeta": {
+            "properties": {
+              "_type": {
+                "const": "gradio.FileData",
+                "title": "Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "_type"
+            ],
+            "title": "FileDataMeta",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "video": {
+            "$ref": "#/$defs/FileData"
+          },
+          "subtitles": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/FileData"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "video"
+        ],
+        "title": "VideoData",
+        "type": "object",
+        "additional_description": null
+      },
+      "api_info_as_input": {
+        "$defs": {
+          "FileData": {
+            "description": "The FileData class is a subclass of the GradioModel class that represents a file object within a Gradio interface. It is used to store file data and metadata when a file is uploaded.\n\nAttributes:\n    path: The server file path where the file is stored.\n    url: The normalized server URL pointing to the file.\n    size: The size of the file in bytes.\n    orig_name: The original filename before upload.\n    mime_type: The MIME type of the file.\n    is_stream: Indicates whether the file is a stream.\n    meta: Additional metadata used internally (should not be changed).",
+            "properties": {
+              "path": {
+                "title": "Path",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "size": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Size"
+              },
+              "orig_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Orig Name"
+              },
+              "mime_type": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Mime Type"
+              },
+              "is_stream": {
+                "default": false,
+                "title": "Is Stream",
+                "type": "boolean"
+              },
+              "meta": {
+                "$ref": "#/$defs/FileDataMeta"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "title": "FileData",
+            "type": "object"
+          },
+          "FileDataMeta": {
+            "properties": {
+              "_type": {
+                "const": "gradio.FileData",
+                "title": "Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "_type"
+            ],
+            "title": "FileDataMeta",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "video": {
+            "$ref": "#/$defs/FileData"
+          },
+          "subtitles": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/FileData"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "video"
+        ],
+        "title": "VideoData",
+        "type": "object",
+        "additional_description": null
+      },
+      "api_info_as_output": {
+        "$defs": {
+          "FileData": {
+            "description": "The FileData class is a subclass of the GradioModel class that represents a file object within a Gradio interface. It is used to store file data and metadata when a file is uploaded.\n\nAttributes:\n    path: The server file path where the file is stored.\n    url: The normalized server URL pointing to the file.\n    size: The size of the file in bytes.\n    orig_name: The original filename before upload.\n    mime_type: The MIME type of the file.\n    is_stream: Indicates whether the file is a stream.\n    meta: Additional metadata used internally (should not be changed).",
+            "properties": {
+              "path": {
+                "title": "Path",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "size": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Size"
+              },
+              "orig_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Orig Name"
+              },
+              "mime_type": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Mime Type"
+              },
+              "is_stream": {
+                "default": false,
+                "title": "Is Stream",
+                "type": "boolean"
+              },
+              "meta": {
+                "$ref": "#/$defs/FileDataMeta"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "title": "FileData",
+            "type": "object"
+          },
+          "FileDataMeta": {
+            "properties": {
+              "_type": {
+                "const": "gradio.FileData",
+                "title": "Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "_type"
+            ],
+            "title": "FileDataMeta",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "video": {
+            "$ref": "#/$defs/FileData"
+          },
+          "subtitles": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/FileData"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "video"
+        ],
+        "title": "VideoData",
+        "type": "object",
+        "additional_description": null
+      },
+      "example_inputs": {
+        "video": {
+          "path": "https://github.com/gradio-app/gradio/raw/main/demo/video_component/files/world.mp4",
+          "meta": {
+            "_type": "gradio.FileData"
+          },
+          "orig_name": "world.mp4",
+          "url": "https://github.com/gradio-app/gradio/raw/main/demo/video_component/files/world.mp4"
+        }
+      }
+    },
+    {
+      "id": 24,
+      "type": "dataset",
+      "props": {
+        "show_label": true,
+        "component_props": [
+          {
+            "format": "webp",
+            "height": null,
+            "width": null,
+            "image_mode": "RGB",
+            "sources": [
+              "upload",
+              "webcam",
+              "clipboard"
+            ],
+            "type": "pil",
+            "label": "Input Image (auto-resized to target H/W)",
+            "show_label": true,
+            "show_download_button": true,
+            "container": true,
+            "scale": null,
+            "min_width": 160,
+            "interactive": null,
+            "visible": true,
+            "streaming": false,
+            "elem_id": null,
+            "elem_classes": [],
+            "key": null,
+            "preserved_by_key": [
+              "value"
+            ],
+            "webcam_options": {
+              "mirror": true,
+              "constraints": null
+            },
+            "show_share_button": true,
+            "placeholder": null,
+            "show_fullscreen_button": true
+          },
+          {
+            "type": "text",
+            "lines": 1,
+            "max_lines": null,
+            "placeholder": null,
+            "label": "Prompt",
+            "info": null,
+            "show_label": true,
+            "container": true,
+            "scale": null,
+            "min_width": 160,
+            "interactive": null,
+            "visible": true,
+            "elem_id": null,
+            "autofocus": false,
+            "autoscroll": true,
+            "elem_classes": [],
+            "key": null,
+            "preserved_by_key": [
+              "value"
+            ],
+            "text_align": null,
+            "rtl": false,
+            "show_copy_button": false,
+            "max_length": null,
+            "submit_btn": false,
+            "stop_btn": false
+          },
+          {
+            "minimum": 128,
+            "maximum": 896,
+            "step": 32,
+            "label": "Output Height (multiple of 32)",
+            "info": null,
+            "show_label": true,
+            "container": true,
+            "scale": null,
+            "min_width": 160,
+            "interactive": null,
+            "visible": true,
+            "elem_id": null,
+            "elem_classes": [],
+            "key": null,
+            "preserved_by_key": [
+              "value"
+            ],
+            "show_reset_button": true
+          },
+          {
+            "minimum": 128,
+            "maximum": 896,
+            "step": 32,
+            "label": "Output Width (multiple of 32)",
+            "info": null,
+            "show_label": true,
+            "container": true,
+            "scale": null,
+            "min_width": 160,
+            "interactive": null,
+            "visible": true,
+            "elem_id": null,
+            "elem_classes": [],
+            "key": null,
+            "preserved_by_key": [
+              "value"
+            ],
+            "show_reset_button": true
+          }
+        ],
+        "samples": [
+          [
+            {
+              "path": "/tmp/gradio/335ac857960d0872a7b363a0bcbc24743cc6d6cca338a510d300888afa273644/peng.png",
+              "url": "https://multimodalart-wan2-1-fast.hf.space/gradio_api/file=/tmp/gradio/335ac857960d0872a7b363a0bcbc24743cc6d6cca338a510d300888afa273644/peng.png",
+              "size": null,
+              "orig_name": "peng.png",
+              "mime_type": null,
+              "is_stream": false,
+              "meta": {
+                "_type": "gradio.FileData"
+              }
+            },
+            "a penguin playfully dancing in the snow, Antarctica",
+            896,
+            512
+          ],
+          [
+            {
+              "path": "/tmp/gradio/ea5524efb267eddf8606f5b1e880058b6d26bf13f62b78c57cefcb0d0ca7de47/forg.jpg",
+              "url": "https://multimodalart-wan2-1-fast.hf.space/gradio_api/file=/tmp/gradio/ea5524efb267eddf8606f5b1e880058b6d26bf13f62b78c57cefcb0d0ca7de47/forg.jpg",
+              "size": null,
+              "orig_name": "forg.jpg",
+              "mime_type": null,
+              "is_stream": false,
+              "meta": {
+                "_type": "gradio.FileData"
+              }
+            },
+            "the frog jumps around",
+            448,
+            832
+          ]
+        ],
+        "headers": [
+          "Input Image (auto-resized to target H/W)",
+          "Prompt",
+          "Output Height (multiple of 32)",
+          "Output Width (multiple of 32)"
+        ],
+        "type": "tuple",
+        "samples_per_page": 10,
+        "visible": true,
+        "elem_classes": [],
+        "preserved_by_key": [
+          "value"
+        ],
+        "container": true,
+        "min_width": 160,
+        "name": "dataset",
+        "_selectable": false,
+        "components": [
+          "image",
+          "textbox",
+          "slider",
+          "slider"
+        ],
+        "component_ids": [
+          5,
+          6,
+          13,
+          14
+        ]
+      },
+      "skip_api": false,
+      "component_class_id": "59799070042857c5faf7de28fcb731985f98c9eb1bc03e0c2bc3eb38902a7aef",
+      "key": null,
+      "api_info": {
+        "type": "integer",
+        "description": "index of selected example"
+      },
+      "api_info_as_input": {
+        "type": "integer",
+        "description": "index of selected example"
+      },
+      "api_info_as_output": {
+        "type": "integer",
+        "description": "index of selected example"
+      },
+      "example_inputs": 0
+    }
+  ],
+  "css": "",
+  "connect_heartbeat": false,
+  "js": "",
+  "head": "",
+  "title": "Gradio",
+  "space_id": "multimodalart/wan2-1-fast",
+  "enable_queue": true,
+  "show_error": false,
+  "show_api": true,
+  "is_colab": false,
+  "max_file_size": null,
+  "stylesheets": [
+    "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap"
+  ],
+  "theme": "default",
+  "protocol": "sse_v3",
+  "body_css": {
+    "body_background_fill": "white",
+    "body_text_color": "#27272a",
+    "body_background_fill_dark": "#0f0f11",
+    "body_text_color_dark": "#f4f4f5"
+  },
+  "fill_height": false,
+  "fill_width": false,
+  "theme_hash": "63194d3741d384f9f85db890247b6c0ef9e7abac0f297f40a15c59fe4baba916",
+  "pwa": true,
+  "pages": [
+    [
+      "",
+      "Home"
+    ]
+  ],
+  "page": {
+    "": {
+      "layout": {
+        "id": 0,
+        "children": [
+          {
+            "id": 1
+          },
+          {
+            "id": 2
+          },
+          {
+            "id": 3,
+            "children": [
+              {
+                "id": 4,
+                "children": [
+                  {
+                    "id": 5
+                  },
+                  {
+                    "id": 21,
+                    "children": [
+                      {
+                        "id": 6
+                      },
+                      {
+                        "id": 7
+                      }
+                    ]
+                  },
+                  {
+                    "id": 8,
+                    "children": [
+                      {
+                        "id": 18,
+                        "children": [
+                          {
+                            "id": 9
+                          },
+                          {
+                            "id": 10
+                          },
+                          {
+                            "id": 11
+                          }
+                        ]
+                      },
+                      {
+                        "id": 12,
+                        "children": [
+                          {
+                            "id": 15,
+                            "children": [
+                              {
+                                "id": 13
+                              },
+                              {
+                                "id": 14
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": 19,
+                        "children": [
+                          {
+                            "id": 16
+                          },
+                          {
+                            "id": 17
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": 20
+                  }
+                ]
+              },
+              {
+                "id": 22,
+                "children": [
+                  {
+                    "id": 23
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": 24
+          }
+        ]
+      },
+      "components": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "dependencies": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    }
+  },
+  "mcp_server": true,
+  "i18n_translations": null,
+  "dependencies": [
+    {
+      "id": 0,
+      "targets": [
+        [
+          5,
+          "upload"
+        ]
+      ],
+      "inputs": [
+        5,
+        13,
+        14
+      ],
+      "outputs": [
+        13,
+        14
+      ],
+      "backend_fn": true,
+      "js": null,
+      "queue": true,
+      "api_name": "handle_image_upload_for_dims_wan",
+      "scroll_to_output": false,
+      "show_progress": "full",
+      "show_progress_on": null,
+      "batch": false,
+      "max_batch_size": 4,
+      "cancels": [],
+      "types": {
+        "generator": false,
+        "cancel": false
+      },
+      "collects_event_data": false,
+      "trigger_after": null,
+      "trigger_only_on_success": false,
+      "trigger_mode": "once",
+      "show_api": true,
+      "rendered_in": null,
+      "render_id": null,
+      "connection": "sse",
+      "time_limit": null,
+      "stream_every": 0.5,
+      "like_user_message": false,
+      "event_specific_args": null,
+      "js_implementation": null
+    },
+    {
+      "id": 1,
+      "targets": [
+        [
+          5,
+          "clear"
+        ]
+      ],
+      "inputs": [
+        5,
+        13,
+        14
+      ],
+      "outputs": [
+        13,
+        14
+      ],
+      "backend_fn": true,
+      "js": null,
+      "queue": true,
+      "api_name": "handle_image_upload_for_dims_wan_1",
+      "scroll_to_output": false,
+      "show_progress": "full",
+      "show_progress_on": null,
+      "batch": false,
+      "max_batch_size": 4,
+      "cancels": [],
+      "types": {
+        "generator": false,
+        "cancel": false
+      },
+      "collects_event_data": false,
+      "trigger_after": null,
+      "trigger_only_on_success": false,
+      "trigger_mode": "once",
+      "show_api": true,
+      "rendered_in": null,
+      "render_id": null,
+      "connection": "sse",
+      "time_limit": null,
+      "stream_every": 0.5,
+      "like_user_message": false,
+      "event_specific_args": null,
+      "js_implementation": null
+    },
+    {
+      "id": 2,
+      "targets": [
+        [
+          20,
+          "click"
+        ]
+      ],
+      "inputs": [
+        5,
+        6,
+        13,
+        14,
+        9,
+        7,
+        17,
+        16,
+        10,
+        11
+      ],
+      "outputs": [
+        23,
+        10
+      ],
+      "backend_fn": true,
+      "js": null,
+      "queue": true,
+      "api_name": "generate_video",
+      "scroll_to_output": false,
+      "show_progress": "full",
+      "show_progress_on": null,
+      "batch": false,
+      "max_batch_size": 4,
+      "cancels": [],
+      "types": {
+        "generator": false,
+        "cancel": false
+      },
+      "collects_event_data": false,
+      "trigger_after": null,
+      "trigger_only_on_success": false,
+      "trigger_mode": "once",
+      "show_api": true,
+      "rendered_in": null,
+      "render_id": null,
+      "connection": "sse",
+      "time_limit": null,
+      "stream_every": 0.5,
+      "like_user_message": false,
+      "event_specific_args": null,
+      "js_implementation": null
+    },
+    {
+      "id": 3,
+      "targets": [
+        [
+          24,
+          "click"
+        ]
+      ],
+      "inputs": [
+        24
+      ],
+      "outputs": [
+        5,
+        6,
+        13,
+        14
+      ],
+      "backend_fn": true,
+      "js": null,
+      "queue": false,
+      "api_name": "load_example_input",
+      "scroll_to_output": false,
+      "show_progress": "hidden",
+      "show_progress_on": null,
+      "batch": false,
+      "max_batch_size": 4,
+      "cancels": [],
+      "types": {
+        "generator": false,
+        "cancel": false
+      },
+      "collects_event_data": false,
+      "trigger_after": null,
+      "trigger_only_on_success": false,
+      "trigger_mode": "once",
+      "show_api": false,
+      "rendered_in": null,
+      "render_id": null,
+      "connection": "sse",
+      "time_limit": null,
+      "stream_every": 0.5,
+      "like_user_message": false,
+      "event_specific_args": null,
+      "js_implementation": null
+    },
+    {
+      "id": 4,
+      "targets": [
+        [
+          null,
+          "then"
+        ]
+      ],
+      "inputs": [
+        24
+      ],
+      "outputs": [
+        23,
+        10
+      ],
+      "backend_fn": true,
+      "js": null,
+      "queue": true,
+      "api_name": "load_example",
+      "scroll_to_output": false,
+      "show_progress": "full",
+      "show_progress_on": null,
+      "batch": false,
+      "max_batch_size": 4,
+      "cancels": [],
+      "types": {
+        "generator": false,
+        "cancel": false
+      },
+      "collects_event_data": false,
+      "trigger_after": 3,
+      "trigger_only_on_success": false,
+      "trigger_mode": "once",
+      "show_api": false,
+      "rendered_in": null,
+      "render_id": null,
+      "connection": "sse",
+      "time_limit": null,
+      "stream_every": 0.5,
+      "like_user_message": false,
+      "event_specific_args": null,
+      "js_implementation": null
+    }
+  ],
+  "layout": {
+    "id": 0,
+    "children": [
+      {
+        "id": 1
+      },
+      {
+        "id": 2
+      },
+      {
+        "id": 3,
+        "children": [
+          {
+            "id": 4,
+            "children": [
+              {
+                "id": 5
+              },
+              {
+                "id": 21,
+                "children": [
+                  {
+                    "id": 6
+                  },
+                  {
+                    "id": 7
+                  }
+                ]
+              },
+              {
+                "id": 8,
+                "children": [
+                  {
+                    "id": 18,
+                    "children": [
+                      {
+                        "id": 9
+                      },
+                      {
+                        "id": 10
+                      },
+                      {
+                        "id": 11
+                      }
+                    ]
+                  },
+                  {
+                    "id": 12,
+                    "children": [
+                      {
+                        "id": 15,
+                        "children": [
+                          {
+                            "id": 13
+                          },
+                          {
+                            "id": 14
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": 19,
+                    "children": [
+                      {
+                        "id": 16
+                      },
+                      {
+                        "id": 17
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": 20
+              }
+            ]
+          },
+          {
+            "id": 22,
+            "children": [
+              {
+                "id": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 24
+      }
+    ]
+  },
+  "root": "https://multimodalart-wan2-1-fast.hf.space",
+  "username": null
+}
