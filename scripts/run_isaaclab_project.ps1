@@ -6,7 +6,7 @@ param(
     [switch]$Headless,
     [switch]$DemoFlow,
     [string]$RecordVideo = "",
-    [ValidateSet("overview", "yellow_pov", "blue_pov")]
+    [ValidateSet("overview", "top", "yellow_pov", "blue_pov")]
     [string]$RecordView = "overview",
     [int]$RecordFps = 24,
     [int]$RecordWidth = 1600,
