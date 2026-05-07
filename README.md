@@ -112,7 +112,7 @@ Sim2Real calibration and validation are documented in `docs/sim2real.md`. Elimin
 
 ## Learning Strategy
 
-The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. The current research path is object-centric world-model + SAC Flow self-play. Old PPO/MAPPO training scripts have been removed from the main tree; a minimal archived Gaussian actor loader remains only for historical baseline checkpoint compatibility.
+The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. The current research path is object-centric world-model + SAC Flow self-play. Old PPO/MAPPO training scripts and the archived Gaussian actor loader have been removed from the formal tree; historical checkpoints are now baseline artifacts only, not supported as current results.
 
 The actor uses a velocity-reparameterized flow policy for high-level tactical controls, a centralized twin-Q critic, replay-buffer SAC updates, and an auxiliary object-centric dynamics model over both robots, targets, armor blockers and pushable boxes. This design is intended to express long-horizon push-box routes, target-order selection, early base-rush windows and asymmetric yellow/blue tactical tempo without hard-coding a single route.
 
@@ -154,7 +154,7 @@ Final strict replay audit:
 
 | Episodes | Yellow Win | Blue Win | Draw/Timeout | Hard Violations | Warnings | Own-Target Penalties | Base Wins/Episode |
 |---:|---:|---:|---:|---:|---:|---:|---:|
-| 8 | 50.00% | 50.00% | 0.00% | 0 | 0 | 0.0 | 1.0000 |
+| 8 | 37.50% | 62.50% | 0.00% | 0 | 0 | 0.0 | 1.0000 |
 
 ## Runtime Evidence
 
@@ -176,7 +176,7 @@ The compact IsaacLab replay below is generated from the audited physical-box tra
 
 [最终回放：蓝车第一视角 MP4](./docs/media/最终回放_蓝车第一视角.mp4)
 
-The rendered episode passes strict checks for static-obstacle penetration, pushable-box penetration, target legality, own-target safety, differential-drive step limits and score/armor consistency. The selected 8-episode strict audit reports 50.00% yellow wins, 50.00% blue wins, 0.00% draw/timeout, 0 hard violations and 0 own-target penalties; side balance is measured with the larger stochastic evaluation above.
+The rendered episode passes strict checks for static-obstacle penetration, pushable-box penetration, target legality, own-target safety, differential-drive step limits and score/armor consistency. The selected 8-episode strict audit reports 37.50% yellow wins, 62.50% blue wins, 0.00% draw/timeout, 0 hard violations and 0 own-target penalties; side balance is measured with the larger stochastic evaluation above. The README GIFs are trimmed to the active 34-second match window, while the linked MP4 files keep the full recorded IsaacLab output.
 
 ![ROS2 runtime evidence](./assets/readme/ros2_runtime_graph.png?raw=true)
 

@@ -6,9 +6,9 @@
     "docs/figures/rl/rl_box_push_metrics.svg"
   ],
   "sources": [
-    "isaaclab_sim\\output\\rl\\world_model_sacflow_seed260707_rerun\\training_curve.csv",
-    "isaaclab_sim\\output\\rl\\world_model_sacflow_seed260707_rerun\\training_summary.json",
-    "isaaclab_sim\\output\\eval\\world_model_sacflow_rs004_multiseed_contract_eval128.json",
-    "isaaclab_sim\\output\\replay\\world_model_sacflow_strict_replay_abs\\strict_replay_summary.json"
+    "docs\\rl_data\\world_model_sacflow_final\\training_curve.csv",
+    "docs\\rl_data\\world_model_sacflow_final\\training_summary.json",
+    "docs\\rl_data\\world_model_sacflow_final\\contract_eval_multiseed.json",
+    "docs\\rl_data\\world_model_sacflow_final\\strict_replay_summary.json"
   ]
 }

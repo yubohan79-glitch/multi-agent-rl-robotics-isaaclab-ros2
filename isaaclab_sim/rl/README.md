@@ -5,9 +5,9 @@ two-robot visual-target arena. The active research path is:
 
 `object-centric world model + SAC Flow / PolicyFlow self-play`
 
-Old PPO/MAPPO training entry points have been removed from the main tree. A
-small archived Gaussian actor loader remains only so historical checkpoints can
-be evaluated as baselines; it is not the formal training path.
+Old PPO/MAPPO training entry points and the archived Gaussian actor loader have
+been removed from the formal tree. Historical checkpoints remain baseline
+artifacts only and are not supported as current results.
 
 ## Current Policy
 

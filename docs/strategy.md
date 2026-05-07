@@ -1,10 +1,10 @@
 # Elimination Strategy
 
-![Hierarchical world-model strategy](figures/rl/rl_hierarchical_policy.png)
+![Object-centric SAC Flow method architecture](figures/paper/fig02_method_architecture.png)
 
-![Parallel SAC Flow self-play training](figures/rl/rl_selfplay_training.png)
+![World-model SAC Flow training and results](figures/paper/fig03_training_and_results.png)
 
-![RL Sim2Real pipeline](figures/rl/rl_sim2real_pipeline.png)
+![Sim2Real replay pipeline](figures/paper/fig05_sim2real_replay_pipeline.png)
 
 The first GUI scene uses a scripted policy so the rule scene is easy to inspect. The competition strategy should move to a hierarchical self-play policy:
 

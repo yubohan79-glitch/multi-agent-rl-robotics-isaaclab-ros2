@@ -2,6 +2,18 @@
 
 日期：2026-05-07
 
+## 2026-05-07 微瞄准与回放刷新
+
+- 新增基地/普通靶 fire pose 微扫：小车到达合法射击点后不再完全静止，而是在安全命中余量内做慢速小角度扫描，提高 0.8 秒驻留期间的命中稳定性。
+- 新增 2 靶及以上基地攻坚的厘米级径向/侧向候选点；1 靶早攻仍保持严格开口侧约束，避免从非法侧投机命中基地。
+- 若当前点位已经满足开火几何，策略保持当前点位，不再追逐附近几厘米的“更优候选点”，减少基地附近来回抖动和卡住。
+- 重新生成 strict replay trace，并重新录制三视角 IsaacLab MP4 与 README GIF：
+  - `docs/media/最终回放_顶视角.mp4`
+  - `docs/media/最终回放_黄车第一视角.mp4`
+  - `docs/media/最终回放_蓝车第一视角.mp4`
+- 最新 8 局 strict replay：yellow_win_rate=37.50%，blue_win_rate=62.50%，draw_or_timeout_rate=0.00%，hard_violations=0，warnings=0，robot_contacts_per_episode=0.00，base_wins_per_episode=1.00。
+- 128 局 stochastic contract eval 仍作为当前胜率主指标：yellow_win_rate=49.22%，blue_win_rate=50.78%，draw_rate=0.00%，static_penetrations_total=0，box_penetrations_total=0，robot_contacts_per_episode=0.00。
+
 ## 本轮改动
 
 - 继续使用正式主线：对象中心世界模型 + SAC Flow / PolicyFlow 自博弈。
