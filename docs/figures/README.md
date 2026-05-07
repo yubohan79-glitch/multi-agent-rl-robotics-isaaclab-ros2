@@ -14,6 +14,6 @@ The latest dual yellow/blue expert experiment data is under `isaaclab_sim/output
 
 - 64 stochastic evaluation episodes: yellow 50.00%, blue 43.75%, draw/timeout 6.25%.
 - 8 strict replay episodes: hard violations 0, warnings 0, own-target penalties 0, base wins/episode 1.000.
-- Current IsaacLab media: `docs/media/isaaclab_contact_hull_*.mp4`.
+- Current IsaacLab media: `docs/media/最终回放_顶视角.mp4`, `docs/media/最终回放_黄车第一视角.mp4`, and `docs/media/最终回放_蓝车第一视角.mp4`.
 
 The sensor-fusion architecture and evaluation SVGs in `rl/` remain editable assets; update their source labels if regenerating them against the final recessed-base data snapshot.

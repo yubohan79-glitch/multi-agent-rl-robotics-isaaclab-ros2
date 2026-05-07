@@ -216,6 +216,6 @@ The audited trace can be rendered by `isaaclab_sim/robocup_visionrl_arena_sim.py
 
 Current tracked MP4s:
 
-- `docs/media/isaaclab_contact_hull_top.mp4`
-- `docs/media/isaaclab_contact_hull_yellow_pov.mp4`
-- `docs/media/isaaclab_contact_hull_blue_pov.mp4`
+- `docs/media/最终回放_顶视角.mp4`
+- `docs/media/最终回放_黄车第一视角.mp4`
+- `docs/media/最终回放_蓝车第一视角.mp4`
