@@ -13,17 +13,17 @@ This folder provides the reinforcement-learning bridge for the RoboCup IsaacLab 
 - SAC Flow critic/world model input: explicit object-centric state with robot, target, pushable box and base-armor blocker tokens.
 - Action dimension: 6 high-level tactical controls.
 
-Current dual-expert checkpoint after local training/evaluation:
+Current world-model SAC Flow checkpoint after local training:
 
-`isaaclab_sim/output/rl/mappo_dual_experts_contact_hull_seed260507/policy.pt`
+`isaaclab_sim/output/rl/world_model_sacflow_seed260707/policy.pt`
 
 `isaaclab_sim/output/` is a generated runtime directory and is not committed.
 Clone users can run the smoke tests without a checkpoint, then run the training
-command below to regenerate the checkpoint before MAPPO evaluation/export.
+command below to regenerate the checkpoint before evaluation/export.
 
 Final closure report:
 
-`docs/rl_dual_experts_contact_hull_seed260507_report.md`
+`docs/rl_world_model_flow_policy_plan.md`
 
 ## Open-Source-Inspired Innovation
 
@@ -194,9 +194,9 @@ Evaluation files:
 - `isaaclab_sim/output/eval/mappo_dual_experts_contact_hull_seed260507_eval64.json`
 - `isaaclab_sim/output/eval/mappo_dual_experts_contact_hull_seed260507_eval64.csv`
 
-The latest strict replay audit is:
+The retained final strict replay source is:
 
-`docs/rl_dual_experts_contact_hull_seed260507_strict8.md`
+`docs/rl_expert_base_cap_rng_physical_boxes_strict8.md`
 
 Strict audit summary:
 

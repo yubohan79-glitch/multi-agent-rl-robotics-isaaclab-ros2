@@ -38,7 +38,13 @@ try {
         exit 0
     }
 
-    git add -A
+    git add -A -- . `
+        ":(exclude)*.md" `
+        ":(exclude)*.mp4" `
+        ":(exclude)*.mov" `
+        ":(exclude)*.avi" `
+        ":(exclude)*.mkv" `
+        ":(exclude)*.gif"
     $staged = git diff --cached --name-only
     if (-not $staged) {
         Write-Log "No staged changes after git add."

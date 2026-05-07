@@ -116,7 +116,7 @@ The new actor uses a velocity-reparameterized flow policy for high-level tactica
 
 The baseline MAPPO deployment uses separate yellow and blue actors initialized from team-specific expert priors, then trained as residual experts on an NVIDIA GeForce RTX 4090 with 32 parallel rule environments. The learned high-level action selects targets, decides when to rush the base from the opened armor side, blocks/interferes with the opponent, requests localization recovery, gates firing, and adjusts risk preference. Low-level movement, localization, AprilTag alignment and shooter timing remain controlled by ROS2/Nav2 contracts for Sim2Real transfer.
 
-Latest embodied RL update: the MAPPO observation now includes multi-sensor fusion features from wheel/IMU consistency, scan/costmap clearance, front ToF, bumper contact, camera visibility and EKF confidence. The rule environment and IsaacLab replay use a normal-target shooter-outlet range gate of `0.05 m` to `0.50 m` and a recessed-base gate of `0.20 m` to `0.80 m`; target knockdown requires a legal opponent target, line of sight, distance-dependent accuracy and `0.80 s` laser dwell. The final policy uses recessed, smaller base targets behind ground-touching blue armor blockers, 45-degree normal target placement, yellow/blue dual experts for route and tempo differentiation, dynamic pushable boxes whose map poses change during replay, reset-time Sim2Real domain randomization, a recovery cooldown, contact-safe robot separation, and a conservative contact hull that prevents visible robot-box penetration in strict replay and IsaacLab playback. Details are tracked in `docs/rl_dual_experts_contact_hull_seed260507_report.md`.
+Latest embodied RL update: the rule environment and IsaacLab replay use a normal-target shooter-outlet range gate of `0.05 m` to `0.50 m` and a recessed-base gate of `0.20 m` to `0.80 m`; target knockdown requires a legal opponent target, line of sight, distance-dependent accuracy and `0.80 s` laser dwell. The current research branch replaces the old Gaussian PPO/MAPPO actor with an object-centric world-model + SAC Flow self-play trainer. The final replay uses recessed base targets, ground-touching blue armor blockers, 45-degree normal target placement, dynamic pushable boxes and strict replay collision checks. Details are tracked in `docs/rl_world_model_flow_policy_plan.md` and `docs/rl_expert_base_cap_rng_final_report.md`.
 
 ![Hierarchical MAPPO strategy](./assets/readme/rl_hierarchical_policy.png?raw=true)
 
@@ -138,7 +138,7 @@ Latest sensor-fusion RL figures from the current embodied run:
 
 ![Sensor-fusion evaluation metrics](./docs/figures/rl/rl_sensorfusion_eval_metrics.svg)
 
-The complete CSV/JSON run data used for the archived figures is in `docs/rl_data/`. Runtime checkpoints, replay traces and policy exports are generated under `isaaclab_sim/output/` after local training/evaluation and are intentionally ignored by Git. The full dual-expert experiment write-up is in `docs/rl_dual_experts_contact_hull_seed260507_report.md`.
+Runtime checkpoints, replay traces and policy exports are generated under `isaaclab_sim/output/` after local training/evaluation and are intentionally ignored by Git. The current algorithm plan is in `docs/rl_world_model_flow_policy_plan.md`; the final physical-box replay report is in `docs/rl_expert_base_cap_rng_final_report.md`.
 
 Final stochastic evaluation for the selected residual scale:
 
@@ -174,12 +174,9 @@ The rendered episode passes strict checks for static-obstacle penetration, pusha
 
 - `docs/reproducibility.md`: exact smoke-test, ROS2 dry-run, IsaacLab preview and evaluation commands.
 - `docs/results.md`: measurable evaluation matrix for rule simulation, ROS2 runtime and real-robot transfer.
-- `docs/rl_full_strategy_report.md`: completed GPU MAPPO run, evaluation data and learned strategy interpretation.
-- `docs/rl_open_source_innovation_update.md`: domain-randomization/action-shield innovation selection, implementation scope and final evidence.
-- `docs/rl_precision_shooting_model.md`: 5-50 cm shooter-outlet model, accuracy/time tradeoff and pushable-obstacle update.
-- `docs/rl_engineering_hardening_report.md`: RL config, CI, tests and data-traceability hardening notes.
-- `docs/rl_dual_experts_contact_hull_seed260507_report.md`: latest closed-loop dual-expert contact-hull training, evaluation, strict replay and three-view IsaacLab report.
-- `docs/rl_strict_replay_audit.md`: archived strict post-training replay audit for the earlier full GPU run.
+- `docs/rl_world_model_flow_policy_plan.md`: object-centric world-model + SAC Flow / PolicyFlow algorithm plan.
+- `docs/rl_expert_base_cap_rng_final_report.md`: final Chinese report for the physical-box replay and base-hit validation.
+- `docs/rl_expert_base_cap_rng_physical_boxes_strict8.md`: strict replay source for the final three-view media.
 - `docs/evidence.md`: screenshots/video/log evidence checklist for GitHub and portfolio submission.
 - `docs/award_solution.md`: competition background, autonomous design points and national top-three solution framing.
 
