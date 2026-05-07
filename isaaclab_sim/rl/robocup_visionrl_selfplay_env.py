@@ -256,11 +256,11 @@ def team_frame_sign(team: str) -> float:
 
 
 class RoboCupVisionRLSelfPlayEnv:
-    """Two-agent rule environment for MAPPO/self-play strategy training.
+    """Two-agent rule environment for world-model SAC Flow self-play training.
 
     The interface is intentionally lightweight: each step receives one action
-    per team and returns dicts keyed by `yellow` and `blue`. A MAPPO trainer can
-    wrap this class with its own vectorization/rollout adapter.
+    per team and returns dicts keyed by `yellow` and `blue`. The SAC Flow trainer
+    wraps this class with its vectorization/rollout adapter.
     """
 
     metadata = {"render_modes": []}

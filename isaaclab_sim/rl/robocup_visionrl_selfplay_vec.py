@@ -6,11 +6,10 @@ from robocup_visionrl_selfplay_env import AGENTS, RoboCupVisionRLSelfPlayEnv
 
 
 class RoboCupVisionRLSelfPlayVector:
-    """Simple vectorized self-play runner for MAPPO rollout collection.
+    """Simple vectorized self-play runner for SAC Flow rollout collection.
 
-    It keeps environments in-process so debugging is easy. A future MAPPO
-    trainer can replace this with a multiprocessing collector when policies
-    and replay buffers are finalized.
+    It keeps environments in-process so debugging is easy and reproducible
+    while the object-centric replay buffer collects self-play transitions.
     """
 
     def __init__(self, num_envs: int = 16, seed: int = 7, env_kwargs: dict | None = None):

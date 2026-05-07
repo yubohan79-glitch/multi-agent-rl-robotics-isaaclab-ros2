@@ -7,42 +7,9 @@ from pathlib import Path
 import torch
 from torch import nn
 
-from policies import FlowActor, GaussianTeamActorCritic
+from policies import FlowActor
 from robocup_visionrl_selfplay_env import TACTICAL_ACTION_LABELS
 from train_world_model_sacflow_selfplay import MultiAgentFlowActors
-
-
-class ActorOnly(nn.Module):
-    """Deployment wrapper that exposes only the decentralized local actor.
-
-    Older checkpoints use one shared actor. Current checkpoints may use two
-    team-specific actors. For dual-actor checkpoints, export either a fixed
-    team actor or an auto-dispatch actor that reads the team id feature from
-    the final observation column.
-    """
-
-    def __init__(self, policy: GaussianTeamActorCritic, export_team: str = "auto"):
-        super().__init__()
-        self.actor_mode = policy.actor_mode
-        self.export_team = export_team
-        if policy.actor_mode == "shared":
-            self.shared_actor = policy.actor
-        else:
-            self.yellow_actor = policy.yellow_actor
-            self.blue_actor = policy.blue_actor
-
-    def forward(self, observation: torch.Tensor) -> torch.Tensor:
-        if self.actor_mode == "shared":
-            return torch.tanh(self.shared_actor(observation))
-        if self.export_team == "yellow":
-            return torch.tanh(self.yellow_actor(observation))
-        if self.export_team == "blue":
-            return torch.tanh(self.blue_actor(observation))
-
-        blue_rows = (observation[:, -1] < 0.0).reshape(-1, 1)
-        yellow_action = self.yellow_actor(observation)
-        blue_action = self.blue_actor(observation)
-        return torch.tanh(torch.where(blue_rows, blue_action, yellow_action))
 
 
 class FlowActorOnly(nn.Module):
@@ -95,20 +62,10 @@ def load_actor(checkpoint_path: Path, device: torch.device, export_team: str) ->
         actor.eval()
         return actor, checkpoint
 
-    config = checkpoint.get("config", {})
-    actor_mode = str(checkpoint.get("actor_mode", config.get("actor_mode", "shared")))
-    model = GaussianTeamActorCritic(
-        int(checkpoint["obs_dim"]),
-        int(checkpoint["central_obs_dim"]),
-        int(checkpoint["action_dim"]),
-        int(config["hidden_dim"]),
-        actor_mode,
-    ).to(device)
-    model.load_state_dict(checkpoint["model_state_dict"])
-    model.eval()
-    actor = ActorOnly(model, export_team).to(device)
-    actor.eval()
-    return actor, checkpoint
+    raise ValueError(
+        f"unsupported checkpoint algorithm {algorithm!r}; "
+        "formal export only accepts object-centric world-model SAC Flow checkpoints"
+    )
 
 
 def export_suffix(checkpoint: dict, export_team: str) -> str:
@@ -121,7 +78,7 @@ def export_suffix(checkpoint: dict, export_team: str) -> str:
 def export_torchscript(actor: nn.Module, checkpoint: dict, output_dir: Path, device: torch.device) -> Path:
     example = torch.zeros(1, int(checkpoint["obs_dim"]), dtype=torch.float32, device=device)
     traced = torch.jit.trace(actor, example)
-    prefix = "sacflow_tactical_actor" if checkpoint.get("algorithm") == "object_centric_world_model_sac_flow_selfplay" else "archived_gaussian_tactical_actor"
+    prefix = "sacflow_tactical_actor"
     output_path = output_dir / f"{prefix}{export_suffix(checkpoint, actor.export_team)}.ts"
     traced.save(str(output_path))
     return output_path
@@ -129,7 +86,7 @@ def export_torchscript(actor: nn.Module, checkpoint: dict, output_dir: Path, dev
 
 def export_onnx(actor: nn.Module, checkpoint: dict, output_dir: Path, device: torch.device) -> Path:
     example = torch.zeros(1, int(checkpoint["obs_dim"]), dtype=torch.float32, device=device)
-    prefix = "sacflow_tactical_actor" if checkpoint.get("algorithm") == "object_centric_world_model_sac_flow_selfplay" else "archived_gaussian_tactical_actor"
+    prefix = "sacflow_tactical_actor"
     output_path = output_dir / f"{prefix}{export_suffix(checkpoint, actor.export_team)}.onnx"
     torch.onnx.export(
         actor,
@@ -156,7 +113,7 @@ def build_manifest(
         "project": "RoboCup VisionRL",
         "source_checkpoint": str(checkpoint_path),
         "export_format": export_format,
-        "algorithm": str(checkpoint.get("algorithm", "archived_gaussian_selfplay")),
+        "algorithm": str(checkpoint.get("algorithm", "object_centric_world_model_sac_flow_selfplay")),
         "actor_mode": str(checkpoint.get("actor_mode", checkpoint.get("config", {}).get("actor_mode", "shared"))),
         "export_team": export_team,
         "exported_actor": str(exported_path) if exported_path is not None else None,

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1740" height="860" viewBox="0 0 1740 860">
+  <defs>
+    <style>
+      .title{font:700 32px Arial,Inter,sans-serif;fill:#111827}
+      .subtitle{font:400 16px Arial,Inter,sans-serif;fill:#64748B}
+      .h{font:700 19px Arial,Inter,sans-serif;fill:#111827}
+      .txt{font:400 15px Arial,Inter,sans-serif;fill:#334155}
+      .small{font:400 12px Arial,Inter,sans-serif;fill:#475569}
+      .tiny{font:400 10px Arial,Inter,sans-serif;fill:#64748B}
+      .panel{fill:#F8FAFC;stroke:#CBD5E1;stroke-width:1.2;rx:8}
+      .card{fill:#FFFFFF;stroke:#CBD5E1;stroke-width:1.0;rx:7}
+      .grid{stroke:#E2E8F0;stroke-width:1}
+      .axis{stroke:#475569;stroke-width:1.2}
+    </style>
+  </defs>
+  <rect width="1740" height="860" fill="#FFFFFF"/>
+
+  <text class="title" x="70" y="60">Target Clearing and Base-Rush Timing</text>
+  <text class="subtitle" x="72" y="92">The policy should use multiple target-count routes instead of collapsing to a single script.</text>
+  <rect class="panel" x="70" y="130" width="760" height="650"/>
+  <text class="h" x="105" y="175">Normal targets knocked down per game</text>
+  <line class="axis" x1="130" y1="650" x2="725" y2="650"/>
+
+      <rect x="155.0" y="647.0" width="42.0" height="3.0" rx="4" fill="#E5B82E"/>
+      <text class="tiny" x="176.0" y="639.0" text-anchor="middle">1%</text>
+      <text class="tiny" x="176.0" y="668.0" text-anchor="middle">Y1</text>
+    
+      <rect x="290.0" y="376.9" width="42.0" height="273.1" rx="4" fill="#E5B82E"/>
+      <text class="tiny" x="311.0" y="368.9" text-anchor="middle">72%</text>
+      <text class="tiny" x="311.0" y="668.0" text-anchor="middle">Y2</text>
+    
+      <rect x="425.0" y="549.1" width="42.0" height="100.9" rx="4" fill="#E5B82E"/>
+      <text class="tiny" x="446.0" y="541.1" text-anchor="middle">27%</text>
+      <text class="tiny" x="446.0" y="668.0" text-anchor="middle">Y3</text>
+    
+      <rect x="560.0" y="647.0" width="42.0" height="3.0" rx="4" fill="#E5B82E"/>
+      <text class="tiny" x="581.0" y="639.0" text-anchor="middle">1%</text>
+      <text class="tiny" x="581.0" y="668.0" text-anchor="middle">Y4</text>
+    
+      <rect x="205.0" y="641.1" width="42.0" height="8.9" rx="4" fill="#2563EB"/>
+      <text class="tiny" x="226.0" y="633.1" text-anchor="middle">2%</text>
+      <text class="tiny" x="226.0" y="668.0" text-anchor="middle">B1</text>
+    
+      <rect x="340.0" y="382.8" width="42.0" height="267.2" rx="4" fill="#2563EB"/>
+      <text class="tiny" x="361.0" y="374.8" text-anchor="middle">70%</text>
+      <text class="tiny" x="361.0" y="668.0" text-anchor="middle">B2</text>
+    
+      <rect x="475.0" y="546.1" width="42.0" height="103.9" rx="4" fill="#2563EB"/>
+      <text class="tiny" x="496.0" y="538.1" text-anchor="middle">27%</text>
+      <text class="tiny" x="496.0" y="668.0" text-anchor="middle">B3</text>
+    
+      <rect x="610.0" y="650.0" width="42.0" height="0.0" rx="4" fill="#2563EB"/>
+      <text class="tiny" x="631.0" y="642.0" text-anchor="middle">0%</text>
+      <text class="tiny" x="631.0" y="668.0" text-anchor="middle">B4</text>
+    
+  <rect class="panel" x="880" y="130" width="790" height="650"/>
+  <text class="h" x="915" y="175">Base hit success by normal-target count</text>
+  <line class="axis" x1="930" y1="650" x2="1600" y2="650"/>
+
+      <rect x="970.0" y="650.0" width="42.0" height="0.0" rx="4" fill="#E5B82E"/>
+      <text class="tiny" x="991.0" y="642.0" text-anchor="middle">0%/0</text>
+      <text class="tiny" x="991.0" y="668.0" text-anchor="middle">Y1</text>
+    
+      <rect x="1115.0" y="512.4" width="42.0" height="137.6" rx="4" fill="#E5B82E"/>
+      <text class="tiny" x="1136.0" y="504.4" text-anchor="middle">36%/127</text>
+      <text class="tiny" x="1136.0" y="668.0" text-anchor="middle">Y2</text>
+    
+      <rect x="1260.0" y="476.3" width="42.0" height="173.7" rx="4" fill="#E5B82E"/>
+      <text class="tiny" x="1281.0" y="468.3" text-anchor="middle">46%/35</text>
+      <text class="tiny" x="1281.0" y="668.0" text-anchor="middle">Y3</text>
+    
+      <rect x="1405.0" y="270.0" width="42.0" height="380.0" rx="4" fill="#E5B82E"/>
+      <text class="tiny" x="1426.0" y="262.0" text-anchor="middle">100%/1</text>
+      <text class="tiny" x="1426.0" y="668.0" text-anchor="middle">Y4</text>
+    
+      <rect x="1022.0" y="650.0" width="42.0" height="0.0" rx="4" fill="#2563EB"/>
+      <text class="tiny" x="1043.0" y="642.0" text-anchor="middle">0%/0</text>
+      <text class="tiny" x="1043.0" y="668.0" text-anchor="middle">B1</text>
+    
+      <rect x="1167.0" y="488.9" width="42.0" height="161.1" rx="4" fill="#2563EB"/>
+      <text class="tiny" x="1188.0" y="480.9" text-anchor="middle">42%/125</text>
+      <text class="tiny" x="1188.0" y="668.0" text-anchor="middle">B2</text>
+    
+      <rect x="1312.0" y="519.7" width="42.0" height="130.3" rx="4" fill="#2563EB"/>
+      <text class="tiny" x="1333.0" y="511.7" text-anchor="middle">34%/35</text>
+      <text class="tiny" x="1333.0" y="668.0" text-anchor="middle">B3</text>
+    
+      <rect x="1457.0" y="650.0" width="42.0" height="0.0" rx="4" fill="#2563EB"/>
+      <text class="tiny" x="1478.0" y="642.0" text-anchor="middle">0%/0</text>
+      <text class="tiny" x="1478.0" y="668.0" text-anchor="middle">B4</text>
+    
+</svg>

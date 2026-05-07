@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1740" height="760" viewBox="0 0 1740 760">
+  <defs>
+    <style>
+      .title{font:700 32px Arial,Inter,sans-serif;fill:#111827}
+      .subtitle{font:400 16px Arial,Inter,sans-serif;fill:#64748B}
+      .h{font:700 19px Arial,Inter,sans-serif;fill:#111827}
+      .txt{font:400 15px Arial,Inter,sans-serif;fill:#334155}
+      .small{font:400 12px Arial,Inter,sans-serif;fill:#475569}
+      .tiny{font:400 10px Arial,Inter,sans-serif;fill:#64748B}
+      .panel{fill:#F8FAFC;stroke:#CBD5E1;stroke-width:1.2;rx:8}
+      .card{fill:#FFFFFF;stroke:#CBD5E1;stroke-width:1.0;rx:7}
+      .grid{stroke:#E2E8F0;stroke-width:1}
+      .axis{stroke:#475569;stroke-width:1.2}
+    </style>
+  </defs>
+  <rect width="1740" height="760" fill="#FFFFFF"/>
+
+  <text class="title" x="70" y="60">Pushable Box Interaction</text>
+  <text class="subtitle" x="72" y="92">Rigid boxes must move in map state and remain collision-safe in strict replay.</text>
+  <rect class="panel" x="70" y="130" width="760" height="550"/>
+  <text class="h" x="105" y="175">Mean box displacement</text>
+  <line class="axis" x1="130" y1="565" x2="700" y2="565"/>
+
+      <rect x="155.0" y="302.5" width="58.0" height="262.5" rx="4" fill="#DC2626"/>
+      <text class="tiny" x="184.0" y="294.5" text-anchor="middle">0.119m</text>
+      <text class="tiny" x="184.0" y="583.0" text-anchor="middle">box_ne final</text>
+    
+      <rect x="285.0" y="302.5" width="58.0" height="262.5" rx="4" fill="#F97316"/>
+      <text class="tiny" x="314.0" y="294.5" text-anchor="middle">0.119m</text>
+      <text class="tiny" x="314.0" y="583.0" text-anchor="middle">box_ne max</text>
+    
+      <rect x="415.0" y="509.3" width="58.0" height="55.7" rx="4" fill="#2563EB"/>
+      <text class="tiny" x="444.0" y="501.3" text-anchor="middle">0.025m</text>
+      <text class="tiny" x="444.0" y="583.0" text-anchor="middle">box_sw final</text>
+    
+      <rect x="545.0" y="509.3" width="58.0" height="55.7" rx="4" fill="#0891B2"/>
+      <text class="tiny" x="574.0" y="501.3" text-anchor="middle">0.025m</text>
+      <text class="tiny" x="574.0" y="583.0" text-anchor="middle">box_sw max</text>
+    
+  <rect class="panel" x="880" y="130" width="790" height="550"/>
+  <text class="h" x="915" y="175">Push events per game</text>
+  <line class="axis" x1="930" y1="565" x2="1540" y2="565"/>
+  
+      <rect x="1030.0" y="235.0" width="82.0" height="330.0" rx="4" fill="#E5B82E"/>
+      <text class="tiny" x="1071.0" y="227.0" text-anchor="middle">2.09</text>
+      <text class="tiny" x="1071.0" y="583.0" text-anchor="middle">yellow</text>
+    
+  
+      <rect x="1220.0" y="498.5" width="82.0" height="66.5" rx="4" fill="#2563EB"/>
+      <text class="tiny" x="1261.0" y="490.5" text-anchor="middle">0.42</text>
+      <text class="tiny" x="1261.0" y="583.0" text-anchor="middle">blue</text>
+    
+
+</svg>

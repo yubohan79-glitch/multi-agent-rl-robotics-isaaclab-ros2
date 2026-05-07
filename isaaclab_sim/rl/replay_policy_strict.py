@@ -522,11 +522,11 @@ def write_markdown_report(payload: dict[str, object], report_path: Path):
     summary = payload["summary"]
     verdict = "PASS" if int(summary["hard_violations"]) == 0 else "FAIL"
     lines = [
-        "# Strict MAPPO Replay Audit",
+        "# Strict SAC Flow Replay Audit",
         "",
         f"Verdict: **{verdict}**",
         "",
-        "This report replays the trained MAPPO tactical actor and audits each step against strict rule and physics invariants.",
+        "This report replays the trained object-centric SAC Flow tactical actor and audits each step against strict rule and physics invariants.",
         "",
         "## Replay Setup",
         "",
@@ -585,7 +585,7 @@ def repo_relative(path: Path) -> str:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Strictly replay and audit a trained MAPPO policy.")
+    parser = argparse.ArgumentParser(description="Strictly replay and audit a trained SAC Flow policy.")
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--episodes", type=int, default=32)
     parser.add_argument("--seed", type=int, default=701)

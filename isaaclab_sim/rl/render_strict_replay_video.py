@@ -274,7 +274,7 @@ def draw_scene(
     body_font = font(15)
     small_font = font(11)
 
-    draw.text((36, 28), "Strict MAPPO Replay - MP4 Audit", fill=COLORS["ink"], font=title_font)
+    draw.text((36, 28), "Strict SAC Flow Replay - MP4 Audit", fill=COLORS["ink"], font=title_font)
     draw.text((38, 66), "Post-training stochastic replay, rule legality and motion sanity checks", fill=COLORS["muted"], font=body_font)
 
     ox, oy = arena_origin
@@ -350,7 +350,7 @@ def draw_scene(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Render strict MAPPO replay trace to MP4.")
+    parser = argparse.ArgumentParser(description="Render strict SAC Flow replay trace to MP4.")
     parser.add_argument("--trace", type=Path, default=ROOT / "isaaclab_sim/output/replay/mappo_strict_replay_full/strict_replay_trace.csv")
     parser.add_argument("--events", type=Path, default=ROOT / "isaaclab_sim/output/replay/mappo_strict_replay_full/strict_replay_events.jsonl")
     parser.add_argument("--summary", type=Path, default=ROOT / "isaaclab_sim/output/replay/mappo_strict_replay_full/strict_replay_summary.json")

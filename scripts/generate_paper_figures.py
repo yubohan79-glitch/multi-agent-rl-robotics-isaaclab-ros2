@@ -18,7 +18,10 @@ OUT = ROOT / "docs" / "figures" / "paper"
 MEDIA = ROOT / "docs" / "media"
 TRAIN_CSV = ROOT / "isaaclab_sim" / "output" / "rl" / "world_model_sacflow_seed260707_rerun" / "training_curve.csv"
 TRAIN_SUMMARY = ROOT / "isaaclab_sim" / "output" / "rl" / "world_model_sacflow_seed260707_rerun" / "training_summary.json"
-EVAL_JSON = ROOT / "isaaclab_sim" / "output" / "eval" / "world_model_sacflow_rs004_multiseed_contract_eval128.json"
+EVAL_JSON_CANDIDATES = [
+    ROOT / "isaaclab_sim" / "output" / "eval" / "world_model_sacflow_microaim_contract_eval256.json",
+    ROOT / "isaaclab_sim" / "output" / "eval" / "world_model_sacflow_rs004_multiseed_contract_eval128.json",
+]
 STRICT_JSON = ROOT / "isaaclab_sim" / "output" / "replay" / "world_model_sacflow_strict_replay_abs" / "strict_replay_summary.json"
 
 W, H = 1920, 1080
@@ -202,6 +205,13 @@ def read_curve() -> list[dict[str, float]]:
 
 def read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def first_existing(paths: list[Path]) -> Path:
+    for path in paths:
+        if path.exists():
+            return path
+    raise FileNotFoundError("none of these inputs exist: " + ", ".join(str(path) for path in paths))
 
 
 def chart_axes(fig: Figure, x, y, w, h, label_y="", label_x=""):
@@ -521,10 +531,11 @@ def ppt_color(value: str) -> str:
 
 def ppt_text_body(text: str, size: int, bold: bool, color: str) -> str:
     safe = escape(str(text))
+    bold_attr = ' b="1"' if bold else ""
     return (
         '<p:txBody><a:bodyPr wrap="square" lIns="60000" tIns="40000" rIns="60000" bIns="40000"/>'
         '<a:lstStyle/><a:p><a:r>'
-        f'<a:rPr lang="en-US" sz="{size * 100}"{" b=\"1\"" if bold else ""}><a:solidFill><a:srgbClr val="{ppt_color(color)}"/></a:solidFill></a:rPr>'
+        f'<a:rPr lang="en-US" sz="{size * 100}"{bold_attr}><a:solidFill><a:srgbClr val="{ppt_color(color)}"/></a:solidFill></a:rPr>'
         f"<a:t>{safe}</a:t></a:r><a:endParaRPr lang=\"en-US\" sz=\"{size * 100}\"/></a:p></p:txBody>"
     )
 
@@ -627,14 +638,14 @@ def build_pptx(figures: list[Figure]) -> Path:
     return path
 
 
-def write_manifest(paths: list[Path], pptx: Path):
+def write_manifest(paths: list[Path], pptx: Path, eval_json: Path):
     payload = {
         "png": [str(p.relative_to(ROOT)).replace("\\", "/") for p in paths],
         "editable_pptx": str(pptx.relative_to(ROOT)).replace("\\", "/"),
         "style": "publication-style, white background, thin borders, restrained Okabe-Ito-like palette",
         "sources": [
             str(TRAIN_CSV.relative_to(ROOT)).replace("\\", "/"),
-            str(EVAL_JSON.relative_to(ROOT)).replace("\\", "/"),
+            str(eval_json.relative_to(ROOT)).replace("\\", "/"),
             str(STRICT_JSON.relative_to(ROOT)).replace("\\", "/"),
         ],
     }
@@ -644,7 +655,8 @@ def write_manifest(paths: list[Path], pptx: Path):
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     curve = read_curve()
-    eval_payload = read_json(EVAL_JSON)
+    eval_json = first_existing(EVAL_JSON_CANDIDATES)
+    eval_payload = read_json(eval_json)
     strict_payload = read_json(STRICT_JSON)
     eval_summary = eval_payload["summary"]
     strict_summary = strict_payload["summary"]
@@ -657,7 +669,7 @@ def main() -> None:
     ]
     pngs = [render(fig) for fig in figures]
     pptx = build_pptx(figures)
-    write_manifest(pngs, pptx)
+    write_manifest(pngs, pptx, eval_json)
     for path in pngs + [pptx]:
         print(path.relative_to(ROOT))
 

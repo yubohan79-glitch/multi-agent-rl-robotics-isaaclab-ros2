@@ -10,7 +10,7 @@ import torch
 
 from expert_policy import compose_policy_action
 from robocup_visionrl_selfplay_env import AGENTS, RoboCupVisionRLSelfPlayEnv
-from policies import FlowActor, GaussianTeamActorCritic
+from policies import FlowActor
 from train_world_model_sacflow_selfplay import MultiAgentFlowActors
 
 
@@ -32,18 +32,10 @@ def load_policy(checkpoint_path: Path, device: torch.device) -> tuple[torch.nn.M
         model.eval()
         return model, checkpoint
 
-    config = checkpoint.get("config", {})
-    actor_mode = str(checkpoint.get("actor_mode", config.get("actor_mode", "shared")))
-    model = GaussianTeamActorCritic(
-        int(checkpoint["obs_dim"]),
-        int(checkpoint["central_obs_dim"]),
-        int(checkpoint["action_dim"]),
-        int(config["hidden_dim"]),
-        actor_mode,
-    ).to(device)
-    model.load_state_dict(checkpoint["model_state_dict"])
-    model.eval()
-    return model, checkpoint
+    raise ValueError(
+        f"unsupported checkpoint algorithm {algorithm!r}; "
+        "the formal evaluator only accepts object-centric world-model SAC Flow checkpoints"
+    )
 
 
 def actor_action(
@@ -56,18 +48,13 @@ def actor_action(
     obs_t = torch.as_tensor(obs[None, :], dtype=torch.float32, device=device)
     team_index = 0 if team == "yellow" else 1
     with torch.no_grad():
-        if isinstance(model, MultiAgentFlowActors):
-            actor: FlowActor = model._actor(team_index)
-            if deterministic:
-                action = actor.deterministic(obs_t)
-            else:
-                action = actor.sample(obs_t)[0]
+        if not isinstance(model, MultiAgentFlowActors):
+            raise TypeError("formal evaluation expects MultiAgentFlowActors")
+        actor: FlowActor = model._actor(team_index)
+        if deterministic:
+            action = actor.deterministic(obs_t)
         else:
-            team_id = torch.as_tensor([team_index], dtype=torch.long, device=device)
-            if deterministic:
-                action = model.mean_action(obs_t, team_id)
-            else:
-                action = model.distribution(obs_t, team_id).sample().clamp(-1.0, 1.0)
+            action = actor.sample(obs_t)[0]
     return action.squeeze(0).detach().cpu().numpy().astype(np.float32)
 
 
