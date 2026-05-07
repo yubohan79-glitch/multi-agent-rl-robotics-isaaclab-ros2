@@ -1,0 +1,388 @@
+[
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/@aside.js",
+    "len": 4322,
+    "hits": [
+      "https://tool-api${isProductionEnv()?"
+    ]
+  },
+  {
+    "script": "https://www.googletagmanager.com/gtag/js?id=UA-261532538-1",
+    "len": 325736,
+    "hits": [
+      "http://ad.doubleclick.net/pagead/regclk",
+      "https://ad.doubleclick.net/activity;",
+      "https://ad.doubleclick.net/ccm/s/collect",
+      "https://ade.googlesyndication.com",
+      "https://cct.google/taggy/agent.js",
+      "https://google.com/ccm/form-data",
+      "https://google.com/pagead/form-data",
+      "https://googleads.g.doubleclick.net/pagead/viewthroughconversion",
+      "https://m.youtube.com",
+      "https://pagead2.googlesyndication.com",
+      "https://pagead2.googlesyndication.com/ccm/collect",
+      "https://pagead2.googlesyndication.com/ccm/conversion",
+      "https://pagead2.googlesyndication.com/measurement/conversion",
+      "https://pagead2.googlesyndication.com/pagead/conversion",
+      "https://pagead2.googlesyndication.com/pagead/gen_204?id=tcfe",
+      "https://www.google-analytics.com/analytics.js",
+      "https://www.google.com",
+      "https://www.google.com/",
+      "https://www.google.com/ccm/collect",
+      "https://www.google.com/ccm/conversion",
+      "https://www.google.com/ccm/form-data",
+      "https://www.google.com/ccm/geo",
+      "https://www.google.com/measurement/conversion",
+      "https://www.google.com/pagead/1p-conversion",
+      "https://www.google.com/pagead/form-data",
+      "https://www.google.com/pagead/uconversion",
+      "https://www.google.com/rmkt/collect",
+      "https://www.google.com/travel/flights/click/conversion",
+      "https://www.googleadservices.com",
+      "https://www.googleadservices.com/ccm/conversion",
+      "https://www.googleadservices.com/pagead/conversion",
+      "https://www.googletagmanager.com",
+      "https://www.googletagmanager.com/",
+      "https://www.googletagmanager.com/static/service_worker/",
+      "https://www.youtube.com"
+    ]
+  },
+  {
+    "script": "https://www.googletagmanager.com/gtag/js?id=G-8LEQGPTX7P",
+    "len": 553232,
+    "hits": [
+      "http://.",
+      "http://ad.doubleclick.net/pagead/regclk",
+      "https://ad.doubleclick.net/activity;",
+      "https://ad.doubleclick.net/ccm/s/collect",
+      "https://ad.doubleclick.net/ccm/s/collect?",
+      "https://ade.googlesyndication.com",
+      "https://cct.google/taggy/agent.js",
+      "https://google.com/ccm/form-data",
+      "https://google.com/pagead/form-data",
+      "https://googleads.g.doubleclick.net/pagead/viewthroughconversion",
+      "https://m.youtube.com",
+      "https://pagead2.googlesyndication.com",
+      "https://pagead2.googlesyndication.com/ccm/collect",
+      "https://pagead2.googlesyndication.com/ccm/conversion",
+      "https://pagead2.googlesyndication.com/measurement/conversion",
+      "https://pagead2.googlesyndication.com/pagead/conversion",
+      "https://pagead2.googlesyndication.com/pagead/gen_204?id=tcfe",
+      "https://stats.g.doubleclick.net/g/collect",
+      "https://stats.g.doubleclick.net/g/collect?v=2&",
+      "https://www.%/ads/ga-audiences?v=1&t=sr&slf_rd=1&_r=4&",
+      "https://www.facebook.com/tr/",
+      "https://www.google.com",
+      "https://www.google.com/",
+      "https://www.google.com/ccm/collect",
+      "https://www.google.com/ccm/conversion",
+      "https://www.google.com/ccm/form-data",
+      "https://www.google.com/ccm/geo",
+      "https://www.google.com/measurement/conversion",
+      "https://www.google.com/pagead/1p-conversion",
+      "https://www.google.com/pagead/form-data",
+      "https://www.google.com/pagead/uconversion",
+      "https://www.google.com/rmkt/collect",
+      "https://www.google.com/travel/flights/click/conversion",
+      "https://www.googleadservices.com",
+      "https://www.googleadservices.com/ccm/conversion",
+      "https://www.googleadservices.com/pagead/conversion",
+      "https://www.googletagmanager.com",
+      "https://www.googletagmanager.com/",
+      "https://www.googletagmanager.com/static/service_worker/",
+      "https://www.merchant-center-analytics.goog",
+      "https://www.youtube.com",
+      "https://www.youtube.com/iframe_api",
+      "https://{ga4CollectionSubdomain.}analytics.google.com/g/s/collect",
+      "https://{ga4CollectionSubdomain.}google-analytics.com/g/s/collect"
+    ]
+  },
+  {
+    "script": "https://static-alter1.vidnoz.com/web/js/swiper-bundle.min.js",
+    "len": 143674,
+    "hits": [
+      "https://swiperjs.com\r\n *\r\n * Copyright 2014-2023 Vladimir Kharlampidi\r\n *\r\n * Released under the MIT License\r\n *\r\n * Released on: January 17, 2023\r\n */\r\n\r\n!function(e,t){"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/common.js",
+    "len": 76409,
+    "hits": [
+      "/ai-attractiveness-test.html",
+      "/ai-avatar-generator.html",
+      "/ai-baby-generator.html",
+      "/ai-cartoon-generator.html",
+      "/ai-clothes-changer.html",
+      "/ai-color-correction.html",
+      "/ai-dubbing.html",
+      "/ai-ghibli-filter.html",
+      "/ai-head-swap.html",
+      "/ai-headshot-generator.html",
+      "/ai-image-describer.html",
+      "/ai-image-extender.html",
+      "/ai-image-generator.html",
+      "/ai-image-remover.html",
+      "/ai-kissing-video.html",
+      "/ai-kissing.html",
+      "/ai-lip-sync.html",
+      "/ai-music-video-generator.html",
+      "/ai-music.html",
+      "/ai-podcast-generator.html",
+      "/ai-privacy-policy.html",
+      "/ai-product-avatar.html",
+      "/ai-santa-video.html",
+      "/ai-script-generator.html",
+      "/ai-solutions/",
+      "/ai-song-cover.html",
+      "/ai-terms-of-service.html",
+      "/ai-video-compressor.html",
+      "/ai-video-enhancer.html",
+      "/ai-video-generator.html",
+      "/ai-video-highlights.html",
+      "/ai-video-wizard.html",
+      "/ai-vocal-remover.html",
+      "/ai-voice-cloning.html",
+      "/ai-voice-cloning1.html",
+      "/ai-voice-translator.html",
+      "/ai-voice.html",
+      "/ai/public/example-display?action=",
+      "/ai/public/get-country-type",
+      "/ai/source/download-file",
+      "/ai/source/edit-file",
+      "/ai/source/get-access-url",
+      "/ai/source/get-upload-url-web",
+      "/ai/source/is-local-download",
+      "/ai/source/share-link",
+      "/ai/task/detail",
+      "/ai/task/generate",
+      "/ai/tool/get-task",
+      "/ai/web/celebrity-whitelist",
+      "/aiclean-privacy-policy.html",
+      "/aiclean-terms-of-service.html",
+      "/aimusic-privacy-policy.html",
+      "/aimusic-terms-of-service.html",
+      "/aitools/faceswap.html",
+      "/api-credentials-v2.html",
+      "/api-credentials.html",
+      "/api-interactive.html",
+      "/api-pricing.html",
+      "/api/site/app-config?t=",
+      "/api/third-login/easy-google-login",
+      "/api/user/refresh-token",
+      "/api/user/sign-out",
+      "/video-communication/",
+      "/video-creation/",
+      "/video-editor.html",
+      "/video-effects.html",
+      "/video-email.html",
+      "/video-for-communication.html",
+      "/video-for-marketing.html",
+      "/video-for-sales.html",
+      "/video-for-support.html",
+      "/video-hosting.html",
+      "/video-marketing/",
+      "/video-sales/",
+      "/video-support/",
+      "/video-template.html",
+      "/video-translate.html",
+      "http://flex-test.vidnoz.com/",
+      "https://${VITE_API_URL}/api/tiktok/login-url?uid=${e}`;const o=setInterval(()=>{if(t.closed){clearInterval(o);const e=getCookie(",
+      "https://${langPrefix}.vidnoz.com/`:"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/moment/locales.min.js",
+    "len": 291517,
+    "hits": [
+      "http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.",
+      "http://momentjs.com/guides/#/warnings/define-locale/ for more info.",
+      "http://momentjs.com/guides/#/warnings/dst-shifted/ for more information",
+      "http://momentjs.com/guides/#/warnings/js-date/ for more info.",
+      "http://momentjs.com/guides/#/warnings/min-max/",
+      "http://momentjs.com/guides/#/warnings/zone/"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/components/banner.js",
+    "len": 1015,
+    "hits": []
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/@constants.js",
+    "len": 5684,
+    "hits": [
+      "/ai_head_swap.png"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/components/languageRoute.js",
+    "len": 4983,
+    "hits": [
+      "/ai-attractiveness-test.html",
+      "/ai-baby-generator.html",
+      "/ai-beauty-test.html",
+      "/ai-cartoon-generator.html",
+      "/ai-clothes-changer.html",
+      "/ai-effects.html",
+      "/ai-image-generator.html",
+      "/ai-image-mixer.html",
+      "/ai-image-to-video.html",
+      "/ai-kissing-video.html",
+      "/ai-kissing.html",
+      "/ai-video-effects.html",
+      "/generateur-de-bebe-ia.html",
+      "/generateur-image-ia.html",
+      "/video-effects.html"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/@http.js",
+    "len": 3015,
+    "hits": []
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/@common.js",
+    "len": 21805,
+    "hits": [
+      "/ai/gen/edit-creations-file",
+      "/ai/sensitive/words-list",
+      "/ai/source/get-access-url",
+      "https://apps.apple.com/app/apple-store/id6497986083?pt=127019031&ct=from_en_vd&mt=8",
+      "https://r2"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/@core.js",
+    "len": 13291,
+    "hits": [
+      "/ai/gen/creations",
+      "/ai/gen/user-extra-info",
+      "/ai/product/user-now-order",
+      "/ai/public/ip"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/share-dialog/index.js",
+    "len": 41507,
+    "hits": [
+      "/video",
+      "/video_library_share_black.svg",
+      "/video_library_share_hover.svg",
+      "https://${e}/`,setSkipURL=()=>{upImageApi=httpsTemp(isPro?",
+      "https://discord.com/oauth2/authorize?client_id=1163417715940265996&redirect_uri=https://www.vidnoz.com/discord-tool.html&response_type=code&scope=webhook.incoming",
+      "https://tool-api-test.vidnoz.com",
+      "https://tool-api.vidnoz.com",
+      "https://twitter.com/intent/tweet?url=${this.shareLink}${encodeURIComponent(",
+      "https://twitter.com/intent/tweet?url=${this.shareLink}?play_source=Twitter&text=${encodeURIComponent(e)}`,",
+      "https://www.facebook.com/sharer.php?u=${this.shareLink}${encodeURIComponent(",
+      "https://www.facebook.com/sharer.php?u=${this.shareLink}?play_source=Facebook&text=${encodeURIComponent(e)}`,",
+      "https://www.linkedin.com/shareArticle?spm=&mini=true&url=${n}&text=${e}`,"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/components/dialog.js",
+    "len": 21383,
+    "hits": [
+      "/ai/gen/promotion-pop-ups?type=",
+      "/video",
+      "http://www.w3.org/2000/svg"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/components/share.js",
+    "len": 24867,
+    "hits": [
+      "/ai/gen/creations-detail",
+      "/ai/source/get-access-url",
+      "/ai/source/share-link",
+      "/video"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/lib/jszip.min.js",
+    "len": 96877,
+    "hits": [
+      "/generate",
+      "https://stuk.github.io/jszip/documentation/howto/read_zip.html"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/bottom-message/index.js",
+    "len": 13049,
+    "hits": []
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/linebreaker.js",
+    "len": 15015,
+    "hits": []
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/checkTextNsFw.js",
+    "len": 2593,
+    "hits": [
+      "/ai/sensitive/words-list",
+      "/api/site/app-config",
+      "https://${e}`;e.includes("
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/recent-item/index.js",
+    "len": 26050,
+    "hits": []
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/recentComponent/index.js",
+    "len": 4716,
+    "hits": [
+      "/ai/gen/creations",
+      "/ai/gen/task-retry"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/trainTask.js",
+    "len": 1181,
+    "hits": [
+      "/ai/gen/creations-detail"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/gen/components/waterfallflow.js",
+    "len": 16712,
+    "hits": [
+      "/ai-avatar/default_avatar.png",
+      "/ai/gen/post-like",
+      "/ai/gen/post-list",
+      "/ai/gen/tag-list?",
+      "/video"
+    ]
+  },
+  {
+    "script": "https://www.vidnoz.com/ai-tools-batch-template/image-to-video-ai/dist/js/image-to-video-ai.js",
+    "len": 103772,
+    "hits": [
+      "/ai-kissing-video.html",
+      "/ai/ai-tool/add-task",
+      "/ai/gen/get-generate-info",
+      "/ai/gen/remix-param",
+      "/ai/gen/tag-list?category=2",
+      "/ai/public/options",
+      "/ai/source/get-access-url",
+      "/ai/tool/get-task",
+      "/ai/translation/text",
+      "/video",
+      "/videoAspectRatio",
+      "https://static-alter1.vidnoz.com/kissing_to_video/ai_kissing_to_video_demo_banner.mp4"
+    ]
+  },
+  {
+    "script": "https://challenges.cloudflare.com/turnstile/v0/api.js",
+    "len": 61556,
+    "hits": [
+      "/api",
+      "http://www.w3.org/2000/svg",
+      "https://challenges-staging.cloudflare.com",
+      "https://challenges.cloudflare.com",
+      "https://challenges.fed.cloudflare.com"
+    ]
+  }
+]
