@@ -27,7 +27,15 @@ def make_gif(stem: str) -> None:
         palette = Path(tmp) / "palette.png"
         vf = "fps=4,scale=540:-1:flags=lanczos"
         subprocess.run(
-            [ffmpeg, "-y", "-i", str(src), "-vf", f"{vf},palettegen=stats_mode=diff", str(palette)],
+            [
+                ffmpeg,
+                "-y",
+                "-i",
+                str(src),
+                "-vf",
+                f"{vf},palettegen=stats_mode=diff",
+                str(palette),
+            ],
             check=True,
         )
         subprocess.run(

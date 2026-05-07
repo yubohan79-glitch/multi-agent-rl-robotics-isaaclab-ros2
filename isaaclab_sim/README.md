@@ -19,15 +19,15 @@ Record the latest audited three-view replay:
 
 ```powershell
 .\isaaclab.bat -p <repo-root>\isaaclab_sim\robocup_visionrl_arena_sim.py `
-  --headless --duration 32 `
-  --replay_trace <repo-root>\isaaclab_sim\output\replay\mappo_dual_experts_contact_hull_seed260507_strict8\strict_replay_trace.csv `
-  --replay_events <repo-root>\isaaclab_sim\output\replay\mappo_dual_experts_contact_hull_seed260507_strict8\strict_replay_events.jsonl `
-  --replay_episode 5 `
-  --record_video <repo-root>\docs\media\isaaclab_contact_hull_top.mp4 `
-  --record_view top --record_fps 12 --record_width 1280 --record_height 720
+  --headless --duration 40 `
+  --replay_trace <repo-root>\isaaclab_sim\output\replay\world_model_sacflow_strict_replay_abs\strict_replay_trace.csv `
+  --replay_events <repo-root>\isaaclab_sim\output\replay\world_model_sacflow_strict_replay_abs\strict_replay_events.jsonl `
+  --replay_episode 0 `
+  --record_video <repo-root>\docs\media\最终回放_顶视角.mp4 `
+  --record_view top --record_fps 30 --record_width 1600 --record_height 900
 ```
 
-Repeat with `--record_view yellow_pov` / `--record_video <repo-root>\docs\media\isaaclab_contact_hull_yellow_pov.mp4` and `--record_view blue_pov` / `--record_video <repo-root>\docs\media\isaaclab_contact_hull_blue_pov.mp4` for the two robot first-person videos.
+Repeat with `--record_view yellow_pov` / `--record_video <repo-root>\docs\media\最终回放_黄车第一视角.mp4` and `--record_view blue_pov` / `--record_video <repo-root>\docs\media\最终回放_蓝车第一视角.mp4` for the two robot first-person videos.
 
 Live IsaacLab camera/lidar streams are opt-in because this PC's Isaac Sim 5.1 build can keep Replicator alive during headless shutdown:
 
@@ -64,4 +64,4 @@ Competition rule logic is active in the GUI scene:
 - base armor plates are active navigation and laser blockers until removed in rule order
 - pushable boxes are real dynamic rigid bodies in IsaacLab (`rigidBodyEnabled=true`, `kinematicEnabled=false`, 1.8 kg, high-friction material), while strict replay traces provide the persistent pushed state used for audited video reproduction
 
-The reinforcement-learning bridge lives in `rl/`. The selected training path is MAPPO-style self-play for high-level strategy, with PPO kept as a fast single-agent baseline. The latest policy uses separate yellow and blue expert priors, a partially symmetrized residual actor, Sim2Real domain randomization, recovery cooldown, contact-safe robot separation, a conservative robot-box contact hull and a geometry-aware action shield before rendering the audited trace in IsaacLab. The latest strict trace passes 8 audited episodes with 0 hard violations, 0 warnings, 0 own-target penalties and 1.0 base wins per episode; the 64-episode stochastic evaluation reports 50.00% yellow wins, 43.75% blue wins and 6.25% draw/timeout with zero static/box penetrations. Blue is still slightly below the ideal 45%-55% balance band. The USD export is written to `output/robocup_visionrl_arena.usd` whenever the script starts.
+The reinforcement-learning bridge lives in `rl/`. The selected training path is object-centric world-model SAC Flow self-play: a flow-policy actor, centralized twin-Q critic, auxiliary object dynamics model, team-specific expert priors, Sim2Real domain randomization, contact-safe robot separation, geometry-aware action shielding and strict replay auditing before rendering in IsaacLab. The selected strict replay passes 8 audited episodes with 0 hard violations, 0 warnings, 0 own-target penalties and 1.0 base wins per episode. The USD export is written to `output/robocup_visionrl_arena.usd` whenever the script starts.

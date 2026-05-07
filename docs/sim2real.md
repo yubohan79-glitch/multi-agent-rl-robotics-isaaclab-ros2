@@ -36,18 +36,18 @@ Randomize only the values that are unstable in the real arena:
 
 ## RL Interface
 
-Use PPO as the first baseline, then MAPPO-style self-play for elimination matches:
+Use object-centric world-model SAC Flow self-play for elimination matches:
 
 - observation: robot pose estimate, opponent-target bearing/distance, tag visibility, own/opponent armor count, time remaining, obstacle distances
-- action: normalized linear and angular velocity
-- reward: progress toward opponent target, valid target detection, clean alignment, successful hit, legal blocking, collision penalty, own-target penalty, timeout penalty
+- action: high-level tactical controls for target selection, base-rush timing, blocking, recovery, fire gating and risk preference
+- reward: progress toward opponent targets, valid target detection, clean alignment, successful hit, legal blocking, collision penalty, own-target penalty, timeout penalty and safe push-box progress
 - recovery: blocked motion and bumper contact reduce localization confidence; the policy is rewarded for spinning in place only when confidence is poor
 - training: use many fast parallel rule environments before replaying the learned high-level policy in IsaacLab
 - deployment: keep Nav2, AprilTag detection, EKF, and shooter services in the loop; do not deploy a raw full-state sim policy directly to the real robot
 
 ## Verification Ladder
 
-1. Fast Gymnasium environment for thousands of PPO episodes.
+1. Fast Python rule environment for world-model SAC Flow self-play and contract tests.
 2. IsaacLab headless match replay.
 3. IsaacLab GUI visual check: target falls, armor moves, two robots collide, lasers do not pass walls.
 4. ROS2 dry run with `shooter_dry_run:=true`.

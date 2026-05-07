@@ -14,6 +14,8 @@ This repository documents the engineering solution evolved from a national top-t
 
 ![RoboCup VisionRL overview](./assets/readme/overview.png?raw=true)
 
+![Final replay top view](./docs/media/最终回放_顶视角.gif)
+
 The project has been reorganized from a ROS1 research prototype into a ROS2 Jazzy portfolio project with separated navigation, vision, shooter control, behavior orchestration, robot description and documentation packages.
 
 ## Highlights
@@ -110,47 +112,49 @@ Sim2Real calibration and validation are documented in `docs/sim2real.md`. Elimin
 
 ## Learning Strategy
 
-The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. The current research path is object-centric world-model + SAC Flow self-play. PPO/MAPPO scripts remain as archived baselines until the new training/evaluation/export path has fully replaced them.
+The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. The current research path is object-centric world-model + SAC Flow self-play. Old PPO/MAPPO training scripts have been removed from the main tree; a minimal archived Gaussian actor loader remains only for historical baseline checkpoint compatibility.
 
-The new actor uses a velocity-reparameterized flow policy for high-level tactical controls, a centralized twin-Q critic, replay-buffer SAC updates, and an auxiliary object-centric dynamics model over both robots, targets, armor blockers and pushable boxes. This design is intended to express long-horizon push-box routes, target-order selection, early base-rush windows and asymmetric yellow/blue tactical tempo without hard-coding a single route.
+The actor uses a velocity-reparameterized flow policy for high-level tactical controls, a centralized twin-Q critic, replay-buffer SAC updates, and an auxiliary object-centric dynamics model over both robots, targets, armor blockers and pushable boxes. This design is intended to express long-horizon push-box routes, target-order selection, early base-rush windows and asymmetric yellow/blue tactical tempo without hard-coding a single route.
 
-The baseline MAPPO deployment uses separate yellow and blue actors initialized from team-specific expert priors, then trained as residual experts on an NVIDIA GeForce RTX 4090 with 32 parallel rule environments. The learned high-level action selects targets, decides when to rush the base from the opened armor side, blocks/interferes with the opponent, requests localization recovery, gates firing, and adjusts risk preference. Low-level movement, localization, AprilTag alignment and shooter timing remain controlled by ROS2/Nav2 contracts for Sim2Real transfer.
+Latest embodied RL update: the rule environment and IsaacLab replay use a normal-target shooter-outlet range gate of `0.05 m` to `0.50 m` and a recessed-base gate of `0.20 m` to `0.80 m`; target knockdown requires a legal opponent target, line of sight, distance-dependent accuracy and `0.80 s` laser dwell. The current policy adds safe micro-aim scanning at the fire pose and denser base-side pose candidates so robots can make small legal angle/side adjustments instead of freezing near the base. The final replay uses recessed base targets, ground-touching blue armor blockers, 45-degree normal target placement, dynamic pushable boxes and strict replay collision checks. Details are tracked in `docs/rl_world_model_flow_policy_plan.md` and `docs/world_model_sacflow_rerun_final_report.md`.
 
-Latest embodied RL update: the rule environment and IsaacLab replay use a normal-target shooter-outlet range gate of `0.05 m` to `0.50 m` and a recessed-base gate of `0.20 m` to `0.80 m`; target knockdown requires a legal opponent target, line of sight, distance-dependent accuracy and `0.80 s` laser dwell. The current research branch replaces the old Gaussian PPO/MAPPO actor with an object-centric world-model + SAC Flow self-play trainer. The final replay uses recessed base targets, ground-touching blue armor blockers, 45-degree normal target placement, dynamic pushable boxes and strict replay collision checks. Details are tracked in `docs/rl_world_model_flow_policy_plan.md` and `docs/rl_expert_base_cap_rng_final_report.md`.
+Publication-style method and experiment figures:
 
-![Hierarchical MAPPO strategy](./assets/readme/rl_hierarchical_policy.png?raw=true)
+![Project overview](./docs/figures/paper/fig01_project_overview.png)
 
-![Parallel MAPPO self-play training](./assets/readme/rl_selfplay_training.png?raw=true)
+![Method architecture](./docs/figures/paper/fig02_method_architecture.png)
 
-![RL Sim2Real pipeline](./assets/readme/rl_sim2real_pipeline.png?raw=true)
+![Training and results](./docs/figures/paper/fig03_training_and_results.png)
+
+![Ablation and safety audit](./docs/figures/paper/fig04_ablation_and_safety.png)
+
+![Sim2Real replay pipeline](./docs/figures/paper/fig05_sim2real_replay_pipeline.png)
+
+Editable PowerPoint source: [world_model_sacflow_paper_figures_master.pptx](./docs/figures/paper/world_model_sacflow_paper_figures_master.pptx)
 
 Data-driven GPU training and evaluation figures:
 
-![GPU MAPPO training curve](./docs/figures/rl/rl_training_curve_gpu.svg)
+![World-model SAC Flow training curve](./docs/figures/rl/rl_training_curve_gpu.svg)
 
-![Learned strategy event distribution](./docs/figures/rl/rl_strategy_event_metrics.svg)
+![Self-play strategy contract metrics](./docs/figures/rl/rl_strategy_event_metrics.svg)
 
-![Learned policy episode trace](./docs/figures/rl/rl_policy_episode_trace.svg)
+![Target and base-rush metrics](./docs/figures/rl/rl_target_base_metrics.svg)
 
-Latest sensor-fusion RL figures from the current embodied run:
+![Pushable box metrics](./docs/figures/rl/rl_box_push_metrics.svg)
 
-![Sensor-fusion MAPPO training curve](./docs/figures/rl/rl_sensorfusion_training_curve.svg)
-
-![Sensor-fusion evaluation metrics](./docs/figures/rl/rl_sensorfusion_eval_metrics.svg)
-
-Runtime checkpoints, replay traces and policy exports are generated under `isaaclab_sim/output/` after local training/evaluation and are intentionally ignored by Git. The current algorithm plan is in `docs/rl_world_model_flow_policy_plan.md`; the final physical-box replay report is in `docs/rl_expert_base_cap_rng_final_report.md`.
+Runtime checkpoints, replay traces and policy exports are generated under `isaaclab_sim/output/` after local training/evaluation and are intentionally ignored by Git except for the explicitly published final checkpoint/result artifacts. The current algorithm plan is in `docs/rl_world_model_flow_policy_plan.md`; the final replay report is in `docs/world_model_sacflow_rerun_final_report.md`.
 
 Final stochastic evaluation for the selected residual scale:
 
-| Episodes | Yellow Win | Blue Win | Draw/Timeout | Base Wins/Episode | Own-Target Penalties |
-|---:|---:|---:|---:|---:|---:|
-| 64 | 50.00% | 43.75% | 6.25% | 0.9375 | 0.0 |
+| Episodes | Yellow Win | Blue Win | Draw/Timeout | Static Penetrations | Box Penetrations | Robot Contacts/Game |
+|---:|---:|---:|---:|---:|---:|---:|
+| 128 | 49.22% | 50.78% | 0.00% | 0 | 0 | 0.00 |
 
 Final strict replay audit:
 
 | Episodes | Yellow Win | Blue Win | Draw/Timeout | Hard Violations | Warnings | Own-Target Penalties | Base Wins/Episode |
 |---:|---:|---:|---:|---:|---:|---:|---:|
-| 8 | 37.50% | 62.50% | 0.00% | 0 | 0 | 0.0 | 1.0000 |
+| 8 | 50.00% | 50.00% | 0.00% | 0 | 0 | 0.0 | 1.0000 |
 
 ## Runtime Evidence
 
@@ -158,7 +162,13 @@ The ROS2 runtime is organized around `rcvrl_bringup`, `rcvrl_behavior`, `rcvrl_v
 
 [RoboCup VisionRL runtime/demo video](https://www.bilibili.com/video/BV1Pj9ZBKEc8/?spm_id_from=333.1387.list.card_archive.click&vd_source=f79b94dd69d0c8d08ee5c3400b69d46d)
 
-The compact IsaacLab replay below is generated from the audited physical-box trajectory trace. Both robots leave their start zones at `t=0`, attack opponent-side targets only, push rigid obstacle boxes with changing map poses, trigger armor removal after normal-target hits, and finish with a base-target win. The current deliverable uses Chinese filenames for the final three views:
+The compact IsaacLab replay below is generated from the audited physical-box trajectory trace. Both robots leave their start zones at `t=0`, attack opponent-side targets only, push rigid obstacle boxes with changing map poses, trigger armor removal after normal-target hits, and finish with a base-target win. The current deliverable uses Chinese filenames for the final three views, with the top-view GIF shown first:
+
+![最终回放：顶视角 GIF](./docs/media/最终回放_顶视角.gif)
+
+![最终回放：黄车第一视角 GIF](./docs/media/最终回放_黄车第一视角.gif)
+
+![最终回放：蓝车第一视角 GIF](./docs/media/最终回放_蓝车第一视角.gif)
 
 [最终回放：顶视角 MP4](./docs/media/最终回放_顶视角.mp4)
 
@@ -166,7 +176,7 @@ The compact IsaacLab replay below is generated from the audited physical-box tra
 
 [最终回放：蓝车第一视角 MP4](./docs/media/最终回放_蓝车第一视角.mp4)
 
-The rendered episode passes strict checks for static-obstacle penetration, pushable-box penetration, target legality, own-target safety, differential-drive step limits and score/armor consistency. The selected episode has 0 hard violations and 0 warnings. The 8-episode strict audit reports 37.50% yellow wins, 62.50% blue wins, 0.00% draw/timeout, 0 hard violations and 0 own-target penalties; side balance is measured with the 64-episode stochastic evaluation above.
+The rendered episode passes strict checks for static-obstacle penetration, pushable-box penetration, target legality, own-target safety, differential-drive step limits and score/armor consistency. The selected 8-episode strict audit reports 50.00% yellow wins, 50.00% blue wins, 0.00% draw/timeout, 0 hard violations and 0 own-target penalties; side balance is measured with the larger stochastic evaluation above.
 
 ![ROS2 runtime evidence](./assets/readme/ros2_runtime_graph.png?raw=true)
 
@@ -178,8 +188,7 @@ The rendered episode passes strict checks for static-obstacle penetration, pusha
 - `docs/sim2real.md`: sensor calibration, domain randomization and deployment validation plan.
 - `docs/strategy.md`: elimination strategy and self-play behavior design.
 - `docs/rl_world_model_flow_policy_plan.md`: object-centric world-model + SAC Flow / PolicyFlow algorithm plan.
-- `docs/rl_expert_base_cap_rng_final_report.md`: final Chinese report for the physical-box replay and base-hit validation.
-- `docs/rl_expert_base_cap_rng_physical_boxes_strict8.md`: strict replay source for the final three-view media.
+- `docs/world_model_sacflow_rerun_final_report.md`: final Chinese report for the world-model SAC Flow run, evaluation and replay media.
 
 ## Repository Layout
 

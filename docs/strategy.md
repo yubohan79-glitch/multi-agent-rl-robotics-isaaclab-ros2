@@ -1,8 +1,8 @@
 # Elimination Strategy
 
-![Hierarchical MAPPO strategy](figures/rl/rl_hierarchical_policy.png)
+![Hierarchical world-model strategy](figures/rl/rl_hierarchical_policy.png)
 
-![Parallel MAPPO self-play training](figures/rl/rl_selfplay_training.png)
+![Parallel SAC Flow self-play training](figures/rl/rl_selfplay_training.png)
 
 ![RL Sim2Real pipeline](figures/rl/rl_sim2real_pipeline.png)
 
@@ -31,7 +31,7 @@ Colliding with the opponent is legal match behavior, but it should be intentiona
 
 ## RL Recommendation
 
-Use MAPPO/self-play for the final two-robot strategy. During training, the critic can see full simulator state; during runtime, each robot only uses local observations:
+Use object-centric world-model SAC Flow self-play for the final two-robot strategy. During training, the critic and world model use explicit object state; during runtime, each robot only uses local observations:
 
 - own pose, velocity, odom confidence, and stuck state
 - visible tag ID, bearing, range, and confidence
@@ -56,7 +56,7 @@ Reward should match the rule book:
 
 - IsaacLab GUI strategy controller dynamically selects attack, base-rush, block, recover, or wait instead of following a fixed target list.
 - Shot execution uses the laser ray check before applying the target fall/scoring rule.
-- `isaaclab_sim/rl/robocup_visionrl_selfplay_env.py` exposes a two-agent self-play API for MAPPO-style training.
+- `isaaclab_sim/rl/robocup_visionrl_selfplay_env.py` exposes a two-agent self-play API for SAC Flow training and strict contract evaluation.
 - Localization confidence is part of the RL observation. Collisions and blocked motion reduce confidence; spinning in place restores it and receives reward only when confidence is low.
 - `isaaclab_sim/rl/robocup_visionrl_selfplay_vec.py` provides a multi-environment rollout interface for parallel self-play collection.
-- `isaaclab_sim/rl/robocup_visionrl_gym_env.py` remains as a fast single-agent PPO baseline.
+- `isaaclab_sim/rl/robocup_visionrl_gym_env.py` remains as a fast single-agent rule smoke environment, not the formal training algorithm.
