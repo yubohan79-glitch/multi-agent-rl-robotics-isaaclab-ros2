@@ -9,6 +9,7 @@ import imageio_ffmpeg
 
 ROOT = Path(__file__).resolve().parents[1]
 MEDIA = ROOT / "docs" / "media"
+PREVIEW_SECONDS = 34
 
 SOURCES = [
     "最终回放_顶视角",
@@ -30,8 +31,12 @@ def make_gif(stem: str) -> None:
             [
                 ffmpeg,
                 "-y",
+                "-t",
+                str(PREVIEW_SECONDS),
                 "-i",
                 str(src),
+                "-t",
+                str(PREVIEW_SECONDS),
                 "-vf",
                 f"{vf},palettegen=stats_mode=diff",
                 str(palette),
@@ -42,8 +47,12 @@ def make_gif(stem: str) -> None:
             [
                 ffmpeg,
                 "-y",
+                "-t",
+                str(PREVIEW_SECONDS),
                 "-i",
                 str(src),
+                "-t",
+                str(PREVIEW_SECONDS),
                 "-i",
                 str(palette),
                 "-filter_complex",

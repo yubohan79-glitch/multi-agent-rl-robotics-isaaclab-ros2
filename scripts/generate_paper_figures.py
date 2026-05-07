@@ -16,13 +16,24 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs" / "figures" / "paper"
 MEDIA = ROOT / "docs" / "media"
-TRAIN_CSV = ROOT / "isaaclab_sim" / "output" / "rl" / "world_model_sacflow_seed260707_rerun" / "training_curve.csv"
-TRAIN_SUMMARY = ROOT / "isaaclab_sim" / "output" / "rl" / "world_model_sacflow_seed260707_rerun" / "training_summary.json"
+DOC_DATA = ROOT / "docs" / "rl_data" / "world_model_sacflow_final"
+TRAIN_CSV_CANDIDATES = [
+    DOC_DATA / "training_curve.csv",
+    ROOT / "isaaclab_sim" / "output" / "rl" / "world_model_sacflow_seed260707_rerun" / "training_curve.csv",
+]
+TRAIN_SUMMARY_CANDIDATES = [
+    DOC_DATA / "training_summary.json",
+    ROOT / "isaaclab_sim" / "output" / "rl" / "world_model_sacflow_seed260707_rerun" / "training_summary.json",
+]
 EVAL_JSON_CANDIDATES = [
+    DOC_DATA / "contract_eval_multiseed.json",
     ROOT / "isaaclab_sim" / "output" / "eval" / "world_model_sacflow_microaim_contract_eval256.json",
     ROOT / "isaaclab_sim" / "output" / "eval" / "world_model_sacflow_rs004_multiseed_contract_eval128.json",
 ]
-STRICT_JSON = ROOT / "isaaclab_sim" / "output" / "replay" / "world_model_sacflow_strict_replay_abs" / "strict_replay_summary.json"
+STRICT_JSON_CANDIDATES = [
+    DOC_DATA / "strict_replay_summary.json",
+    ROOT / "isaaclab_sim" / "output" / "replay" / "world_model_sacflow_strict_replay_abs" / "strict_replay_summary.json",
+]
 
 W, H = 1920, 1080
 SCALE = 2
@@ -198,8 +209,8 @@ def draw_dashed_line(d, x1, y1, x2, y2, color, width):
             )
 
 
-def read_curve() -> list[dict[str, float]]:
-    with TRAIN_CSV.open("r", encoding="utf-8") as f:
+def read_curve(path: Path) -> list[dict[str, float]]:
+    with path.open("r", encoding="utf-8") as f:
         return [{k: float(v) for k, v in row.items()} for row in csv.DictReader(f)]
 
 
@@ -638,15 +649,16 @@ def build_pptx(figures: list[Figure]) -> Path:
     return path
 
 
-def write_manifest(paths: list[Path], pptx: Path, eval_json: Path):
+def write_manifest(paths: list[Path], pptx: Path, train_csv: Path, train_summary_json: Path, eval_json: Path, strict_json: Path):
     payload = {
         "png": [str(p.relative_to(ROOT)).replace("\\", "/") for p in paths],
         "editable_pptx": str(pptx.relative_to(ROOT)).replace("\\", "/"),
         "style": "publication-style, white background, thin borders, restrained Okabe-Ito-like palette",
         "sources": [
-            str(TRAIN_CSV.relative_to(ROOT)).replace("\\", "/"),
+            str(train_csv.relative_to(ROOT)).replace("\\", "/"),
+            str(train_summary_json.relative_to(ROOT)).replace("\\", "/"),
             str(eval_json.relative_to(ROOT)).replace("\\", "/"),
-            str(STRICT_JSON.relative_to(ROOT)).replace("\\", "/"),
+            str(strict_json.relative_to(ROOT)).replace("\\", "/"),
         ],
     }
     (OUT / "paper_figures_manifest.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
@@ -654,10 +666,13 @@ def write_manifest(paths: list[Path], pptx: Path, eval_json: Path):
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    curve = read_curve()
+    train_csv = first_existing(TRAIN_CSV_CANDIDATES)
+    train_summary_json = first_existing(TRAIN_SUMMARY_CANDIDATES)
+    strict_json = first_existing(STRICT_JSON_CANDIDATES)
+    curve = read_curve(train_csv)
     eval_json = first_existing(EVAL_JSON_CANDIDATES)
     eval_payload = read_json(eval_json)
-    strict_payload = read_json(STRICT_JSON)
+    strict_payload = read_json(strict_json)
     eval_summary = eval_payload["summary"]
     strict_summary = strict_payload["summary"]
     figures = [
@@ -669,7 +684,7 @@ def main() -> None:
     ]
     pngs = [render(fig) for fig in figures]
     pptx = build_pptx(figures)
-    write_manifest(pngs, pptx, eval_json)
+    write_manifest(pngs, pptx, train_csv, train_summary_json, eval_json, strict_json)
     for path in pngs + [pptx]:
         print(path.relative_to(ROOT))
 

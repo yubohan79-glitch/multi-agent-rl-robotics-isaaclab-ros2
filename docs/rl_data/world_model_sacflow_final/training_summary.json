@@ -1,0 +1,41 @@
+{
+  "algorithm": "object_centric_world_model_sac_flow_selfplay",
+  "policy_path": "/mnt/c/Users/Administrator/Desktop/\u4f5c\u54c1\u96c6/RoboCupVisionRL_IsaacLab_ROS2/isaaclab_sim/output/rl/world_model_sacflow_seed260707_rerun/policy.pt",
+  "curve_csv": "/mnt/c/Users/Administrator/Desktop/\u4f5c\u54c1\u96c6/RoboCupVisionRL_IsaacLab_ROS2/isaaclab_sim/output/rl/world_model_sacflow_seed260707_rerun/training_curve.csv",
+  "config": {
+    "timesteps": 200000,
+    "num_envs": 32,
+    "seed": 260707,
+    "hidden_dim": 256,
+    "batch_size": 1024,
+    "replay_size": 200000,
+    "learning_starts": 4096,
+    "gradient_steps": 2,
+    "gamma": 0.995,
+    "tau": 0.01,
+    "actor_lr": 0.0003,
+    "critic_lr": 0.0003,
+    "world_model_lr": 0.0003,
+    "alpha_lr": 0.0003,
+    "target_entropy": -6.0,
+    "max_grad_norm": 1.0,
+    "flow_steps": 3,
+    "flow_velocity_scale": 0.2,
+    "actor_mode": "dual",
+    "policy_mode": "residual_expert",
+    "residual_scale": 0.04,
+    "domain_randomization": true,
+    "action_shield": true,
+    "world_model_coef": 0.25
+  },
+  "obs_dim": 46,
+  "object_state_dim": 165,
+  "action_dim": 6,
+  "agents": [
+    "yellow",
+    "blue"
+  ],
+  "device": "cuda",
+  "torch_version": "2.11.0+cu128",
+  "wall_time_s": 3847.046
+}
