@@ -12,9 +12,9 @@ Search keywords: multi-agent reinforcement learning, world model RL, flow policy
 
 This repository documents the engineering solution evolved from a national top-three RoboCup China visual challenge entry, rewritten as a clean, reproducible, self-contained portfolio system. The submitted ROS2 engineering workspace is `crc_robocup_vision_ws/`.
 
-![RoboCup VisionRL overview](./assets/readme/overview.png?raw=true)
-
 ![Final replay top view](./docs/media/最终回放_顶视角.gif)
+
+![RoboCup VisionRL overview](./assets/readme/overview.png?raw=true)
 
 The project has been reorganized from a ROS1 research prototype into a ROS2 Jazzy portfolio project with separated navigation, vision, shooter control, behavior orchestration, robot description and documentation packages.
 
@@ -112,7 +112,7 @@ Sim2Real calibration and validation are documented in `docs/sim2real.md`. Elimin
 
 ## Learning Strategy
 
-The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. The current research path is object-centric world-model + SAC Flow self-play. Old PPO/MAPPO training scripts and the archived Gaussian actor loader have been removed from the formal tree; historical checkpoints are now baseline artifacts only, not supported as current results.
+The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. The current research path is object-centric world-model + SAC Flow self-play with a PolicyFlow-style tactical actor. The formal tree now presents only the current architecture and its audited results.
 
 The actor uses a velocity-reparameterized flow policy for high-level tactical controls, a centralized twin-Q critic, replay-buffer SAC updates, and an auxiliary object-centric dynamics model over both robots, targets, armor blockers and pushable boxes. This design is intended to express long-horizon push-box routes, target-order selection, early base-rush windows and asymmetric yellow/blue tactical tempo without hard-coding a single route.
 

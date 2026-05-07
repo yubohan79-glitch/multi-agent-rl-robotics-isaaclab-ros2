@@ -594,7 +594,7 @@ def main():
     parser.add_argument("--stochastic", action="store_true")
     parser.add_argument("--policy-mode", choices=("auto", "direct", "expert", "residual_expert"), default="auto")
     parser.add_argument("--residual-scale", type=float, default=None)
-    parser.add_argument("--output-dir", type=Path, default=Path("../output/replay/mappo_strict_replay"))
+    parser.add_argument("--output-dir", type=Path, default=Path("../output/replay/world_model_sacflow_strict_replay_abs"))
     parser.add_argument("--report", type=Path, default=Path("../../docs/rl_strict_replay_audit.md"))
     args = parser.parse_args()
 

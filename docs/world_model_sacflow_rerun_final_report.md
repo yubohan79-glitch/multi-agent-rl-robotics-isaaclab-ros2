@@ -23,7 +23,7 @@
 
 ## 为什么改
 
-- 旧 PPO/MAPPO 只能作为历史 baseline；本轮结果必须来自新 SAC Flow checkpoint。
+- 本轮报告只采用对象中心世界模型 SAC Flow checkpoint、严格规则审计和 IsaacLab 三视角回放。
 - 顶视角、第一视角回放需要直接使用严格 replay trace，不能复用旧视频。
 - 训练后的胜率、推箱、基地命中、穿模和碰撞必须用统一规则环境审计。
 

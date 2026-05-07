@@ -351,11 +351,11 @@ def draw_scene(
 
 def main():
     parser = argparse.ArgumentParser(description="Render strict SAC Flow replay trace to MP4.")
-    parser.add_argument("--trace", type=Path, default=ROOT / "isaaclab_sim/output/replay/mappo_strict_replay_full/strict_replay_trace.csv")
-    parser.add_argument("--events", type=Path, default=ROOT / "isaaclab_sim/output/replay/mappo_strict_replay_full/strict_replay_events.jsonl")
-    parser.add_argument("--summary", type=Path, default=ROOT / "isaaclab_sim/output/replay/mappo_strict_replay_full/strict_replay_summary.json")
+    parser.add_argument("--trace", type=Path, default=ROOT / "isaaclab_sim/output/replay/world_model_sacflow_strict_replay_abs/strict_replay_trace.csv")
+    parser.add_argument("--events", type=Path, default=ROOT / "isaaclab_sim/output/replay/world_model_sacflow_strict_replay_abs/strict_replay_events.jsonl")
+    parser.add_argument("--summary", type=Path, default=ROOT / "isaaclab_sim/output/replay/world_model_sacflow_strict_replay_abs/strict_replay_summary.json")
     parser.add_argument("--episode", type=int, default=0)
-    parser.add_argument("--output", type=Path, default=ROOT / "docs/media/strict_mappo_replay_episode0.mp4")
+    parser.add_argument("--output", type=Path, default=ROOT / "docs/media/strict_sacflow_replay_episode0.mp4")
     parser.add_argument("--fps", type=int, default=12)
     parser.add_argument("--step-stride", type=int, default=4)
     parser.add_argument("--width", type=int, default=1280)

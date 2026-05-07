@@ -331,7 +331,7 @@ def fig01_overview(eval_summary, strict_summary) -> Figure:
         fig.rect(720 + (i % 2) * 300, 610 + (i // 2) * 105, 235, 64, name, "#FFFFFF", col, 1.4, fs=15, bold=True)
     fig.line(955, 642, 1020, 642, COL["muted"], 1.6, arrow=True)
     fig.line(955, 747, 1020, 747, COL["muted"], 1.6, arrow=True)
-    fig.wrapped(720, 838, 560, "All formal metrics and media are regenerated from the world-model SAC Flow checkpoint, not renamed legacy PPO/MAPPO results.", 15, False, COL["muted"])
+    fig.wrapped(720, 838, 560, "All formal metrics and media are regenerated from the selected world-model SAC Flow checkpoint and strict replay audits.", 15, False, COL["muted"])
 
     fig.panel(1415, 520, 475, 360, "(f)", "Main takeaway", COL["white"])
     fig.rect(1465, 612, 350, 76, "Object-centric state makes long-horizon target/base timing explicit.", COL["pale_blue"], COL["blue"], fs=16, bold=True)

@@ -394,7 +394,7 @@ def active_base_armor_blockers(
 
 
 class RoboCupVisionRLGymEnv(gym.Env):
-    """Fast 2D rule environment for PPO before moving policies into IsaacLab.
+    """Fast 2D rule environment for validating tactics before IsaacLab replay.
 
     Action: [linear_velocity, angular_velocity, fire_gate], each in [-1, 1].
     Observation: normalized robot states, armor counts, target flags, nearest target vector, base vector.
