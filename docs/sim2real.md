@@ -2,6 +2,17 @@
 
 This project does not transfer a perfect Isaac Sim state directly to the real robot. The transferable layer is the ROS2 contract: `/cmd_vel`, `/target_detection`, Nav2 goals, shooter services, TF frames, and the opponent-target safety gate.
 
+## Public Evidence Status
+
+The repository publishes simulation, rule-environment evaluation and IsaacLab replay evidence. It does not publish a quantified real-robot deployment benchmark, real-arena win rate, migration success percentage or long-horizon real-world rosbag dataset.
+
+The correct interpretation is:
+
+- validated publicly: ROS2 deployment contract, calibration procedure, domain-randomization plan, rule tests, IsaacLab replay and simulation evaluation.
+- not publicly validated here: statistical real-robot success rate, large-scale real multi-robot deployment and measured Sim2Real transfer percentage.
+
+Any future real-robot claim should add hardware setup, calibration logs, rosbag2 recordings, number of runs, success/failure definition, task success rate, collision/stuck statistics and arena condition notes. The exact capability matrix is maintained in `docs/capability_boundaries.md`.
+
 ## Rule Contract
 
 - Yellow robot attacks blue-side targets only.

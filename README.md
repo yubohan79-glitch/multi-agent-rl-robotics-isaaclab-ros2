@@ -90,6 +90,13 @@ processes first:
 .\scripts\stop_project_isaaclab.ps1
 ```
 
+Detailed onboarding:
+
+- [Getting Started Guide](./docs/getting_started.md): step-by-step Python, ROS2 and IsaacLab setup, quick demo tutorial and troubleshooting.
+- [Parameter Tuning Guide](./docs/parameter_tuning.md): SAC Flow/world-model parameters, stuck/base-aim fixes, win-balance tuning and resource tradeoffs.
+- [Scene Adaptation Tutorial](./docs/scene_adaptation.md): how to change target layout, blockers, pushable boxes, ROS2 routes and validation gates.
+- [Capability Boundaries](./docs/capability_boundaries.md): validated agent scale, published metrics, distributed-training boundary and Sim2Real evidence boundary.
+
 ## Target Platform
 
 - Ubuntu 24.04
@@ -156,6 +163,12 @@ Final strict replay audit:
 |---:|---:|---:|---:|---:|---:|---:|---:|
 | 8 | 37.50% | 62.50% | 0.00% | 0 | 0 | 0.0 | 1.0000 |
 
+## Capability Boundaries
+
+The public validated multi-agent result is a two-robot yellow-vs-blue adversarial RoboCup-style match. The current repository validates object-centric world-model SAC Flow self-play, rule-aware action shielding, pushable boxes, base blockers, laser dwell/range constraints, ROS2 runtime contracts and IsaacLab three-view replay for this two-agent setting.
+
+Large-scale robot teams, swarm settings, multi-node distributed training, multi-GPU training and quantified real-robot success-rate benchmarks are not claimed as public validated results in this repository. The Sim2Real material documents the ROS2 interface contract, calibration order, domain randomization and deployment validation ladder; it does not include a public real-robot migration success percentage. See [Capability Boundaries and Measured Evidence](./docs/capability_boundaries.md) for the exact support matrix and metrics.
+
 ## Runtime Evidence
 
 The ROS2 runtime is organized around `rcvrl_bringup`, `rcvrl_behavior`, `rcvrl_vision`, `rcvrl_navigation`, `rcvrl_motion`, `rcvrl_shooter`, `rcvrl_description` and `rcvrl_interfaces`. A demo video is available on Bilibili:
@@ -182,6 +195,11 @@ The rendered episode passes strict checks for static-obstacle penetration, pusha
 
 ## Reproducibility
 
+- `docs/project_deep_dive.md`: full Chinese deep-dive covering rules, ROS2, IsaacLab, world-model SAC Flow training, evaluation, replay media, data artifacts and Sim2Real deployment.
+- `docs/getting_started.md`: step-by-step environment setup, quick demo, ROS2 dry run, IsaacLab preview and troubleshooting.
+- `docs/parameter_tuning.md`: algorithm parameter reference and tuning recipes for stuck behavior, base aiming, win balance and resource usage.
+- `docs/scene_adaptation.md`: target-layout, blocker, pushable-box and ROS2 route adaptation workflow.
+- `docs/capability_boundaries.md`: explicit validated scope, measured metrics, unsupported large-scale/distributed claims and Sim2Real evidence boundary.
 - `docs/architecture.md`: system architecture and ROS2/IsaacLab component boundaries.
 - `docs/reproducibility.md`: exact smoke-test, ROS2 dry-run, IsaacLab preview and evaluation commands.
 - `docs/rules_summary.md`: public rule summary used by tests and replay checks.
