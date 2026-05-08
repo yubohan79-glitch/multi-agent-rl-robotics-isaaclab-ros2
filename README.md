@@ -165,9 +165,9 @@ Final strict replay audit:
 
 ## Capability Boundaries
 
-The public validated multi-agent result is a two-robot yellow-vs-blue adversarial RoboCup-style match. The current repository validates object-centric world-model SAC Flow self-play, rule-aware action shielding, pushable boxes, base blockers, laser dwell/range constraints, ROS2 runtime contracts and IsaacLab three-view replay for this two-agent setting.
+The public validated multi-agent result is a two-robot yellow-vs-blue adversarial RoboCup-style match. The current repository validates object-centric world-model SAC Flow self-play, rule-aware action shielding, pushable boxes, base blockers, laser dwell/range constraints, ROS2 runtime contracts, IsaacLab three-view replay and subsequent 1v1 real-robot experiment coverage for this two-agent setting.
 
-Large-scale 50v50 rule-level training and IsaacLab tactical replay are now published as a separate benchmark below. Full 100-robot rigid-body IsaacLab RL, multi-node distributed training, multi-GPU training and quantified real-robot success-rate benchmarks are not claimed as public validated results. The Sim2Real material documents the ROS2 interface contract, calibration order, domain randomization and deployment validation ladder; it does not include a public real-robot migration success percentage. See [Capability Boundaries and Measured Evidence](./docs/capability_boundaries.md) for the exact support matrix and metrics.
+Large-scale 50v50 is still in the simulation stage: rule-level training, 256-game evaluation and IsaacLab tactical replay are published as a separate benchmark below, but 50v50 has not been moved to real robots. Full 100-robot rigid-body IsaacLab RL, multi-node distributed training and multi-GPU training are not claimed as public validated results. The Sim2Real material documents the ROS2 interface contract, calibration order, domain randomization and deployment validation ladder; 1v1 real-robot trials have been performed, while a full public statistical hardware benchmark with success-rate tables and rosbag release is still future evidence work. See [Capability Boundaries and Measured Evidence](./docs/capability_boundaries.md) for the exact support matrix and metrics.
 
 ## Large-Scale 50v50 Benchmark
 
@@ -193,7 +193,7 @@ Formal 50v50 baseline:
 
 ![50v50 evaluation summary](./docs/figures/large_scale_50v50/large_scale_50v50_eval.png)
 
-This is a scalable rule-level training benchmark plus IsaacLab tactical replay evidence. It is not a claim that 100 robots have already been trained with full IsaacLab rigid-body physics or deployed on real hardware. The full rule, training and evaluation contract is documented in [Large-Scale 50v50 Multi-Agent Battle Plan](./docs/large_scale_50v50_plan.md), and the accepted run is summarized in [Large-Scale 50v50 Multi-Agent Battle Report](./docs/large_scale_50v50_report.md).
+This is a scalable rule-level training benchmark plus IsaacLab tactical replay evidence. It remains a simulation-stage 50v50 result, not a claim that 100 robots have already been trained with full IsaacLab rigid-body physics or deployed on real hardware. The full rule, training and evaluation contract is documented in [Large-Scale 50v50 Multi-Agent Battle Plan](./docs/large_scale_50v50_plan.md), and the accepted run is summarized in [Large-Scale 50v50 Multi-Agent Battle Report](./docs/large_scale_50v50_report.md).
 
 ## Runtime Evidence
 

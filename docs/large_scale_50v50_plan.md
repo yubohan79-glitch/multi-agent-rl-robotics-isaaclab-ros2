@@ -11,7 +11,7 @@ The current accepted evidence package contains:
 - an IsaacLab replay using 100 vehicle-shaped actors, bases, zones, walls and obstacles;
 - GIF/MP4 media and figures for review.
 
-This is not claimed as 100-robot real-hardware validation, and it is not claimed as full rigid-body IsaacLab reinforcement learning for all contacts. It is a reproducible large-scale benchmark and an IsaacLab visual replay of the accepted tactical trace.
+This is not claimed as 100-robot real-hardware validation, and it is not claimed as full rigid-body IsaacLab reinforcement learning for all contacts. Unlike the 1v1 line, which has progressed to real-robot experiments, 50v50 is still a simulation-stage benchmark and an IsaacLab visual replay of the accepted tactical trace.
 
 ## 1. Scenario Contract
 

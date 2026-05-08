@@ -52,4 +52,4 @@ This report documents the first formal large-scale rule-level extension for the 
 
 ## Boundary
 
-This benchmark validates scalable rule-level 50v50 mechanics and a trained swarm policy baseline. It does not claim IsaacLab rigid-body validation for all 100 robots and does not claim real-robot deployment. Those require a separate physics scaling and Sim2Real evidence package.
+This benchmark validates scalable rule-level 50v50 mechanics and a trained swarm policy baseline. It does not claim IsaacLab rigid-body validation for all 100 robots and does not claim 50v50 real-robot deployment. The 1v1 line has separate real-robot experiment coverage; this 50v50 result remains in the simulation stage until a separate physics-scaling and Sim2Real evidence package is added.

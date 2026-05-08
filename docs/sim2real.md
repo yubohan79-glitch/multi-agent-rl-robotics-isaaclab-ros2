@@ -4,14 +4,14 @@ This project does not transfer a perfect Isaac Sim state directly to the real ro
 
 ## Public Evidence Status
 
-The repository publishes simulation, rule-environment evaluation and IsaacLab replay evidence. It does not publish a quantified real-robot deployment benchmark, real-arena win rate, migration success percentage or long-horizon real-world rosbag dataset.
+The repository publishes simulation, rule-environment evaluation and IsaacLab replay evidence, and the 1v1 two-robot line has subsequently been exercised on real robots. It does not yet publish a full quantified hardware benchmark package, real-arena win-rate table, migration success percentage or long-horizon real-world rosbag dataset.
 
 The correct interpretation is:
 
-- validated publicly: ROS2 deployment contract, calibration procedure, domain-randomization plan, rule tests, IsaacLab replay and simulation evaluation.
-- not publicly validated here: statistical real-robot success rate, large-scale real multi-robot deployment and measured Sim2Real transfer percentage.
+- validated publicly: ROS2 deployment contract, calibration procedure, domain-randomization plan, rule tests, IsaacLab replay, simulation evaluation and 1v1 real-robot experiment coverage.
+- not publicly validated here: full statistical 1v1 hardware success-rate table, large-scale real multi-robot deployment, 50v50 real-robot deployment and measured Sim2Real transfer percentage.
 
-Any future real-robot claim should add hardware setup, calibration logs, rosbag2 recordings, number of runs, success/failure definition, task success rate, collision/stuck statistics and arena condition notes. The exact capability matrix is maintained in `docs/capability_boundaries.md`.
+Any future quantified real-robot claim should add hardware setup, calibration logs, rosbag2 recordings, number of runs, success/failure definition, task success rate, collision/stuck statistics and arena condition notes. The exact capability matrix is maintained in `docs/capability_boundaries.md`.
 
 ## Rule Contract
 

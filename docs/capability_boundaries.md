@@ -4,7 +4,7 @@ This file defines exactly what this repository validates and what it does not ye
 
 ## 1. Validated Main Scenario
 
-The primary validated scenario is a RoboCup-style two-robot yellow-vs-blue adversarial match.
+The primary validated scenario is a RoboCup-style two-robot yellow-vs-blue adversarial match. This 1v1 line has progressed beyond simulation: after the IsaacLab/rule-environment evidence package, real-robot 1v1 experiments were also performed. The repository still separates that fact from a fully published statistical hardware benchmark, because detailed rosbag logs, run counts and success-rate tables are not included here yet.
 
 Validated elements:
 
@@ -18,6 +18,7 @@ Validated elements:
 - base blockers that must be removed before base hit;
 - collision, penetration, stuck and replay audits;
 - IsaacLab three-view MP4/GIF replay.
+- 1v1 real-robot experiment coverage through the ROS2 deployment stack.
 
 Primary evidence files:
 
@@ -108,6 +109,7 @@ Boundary for the 50v50 result:
 
 - It is validated as rule-level large-scale training and evaluation.
 - It is validated as an IsaacLab visual/tactical replay of the accepted trace.
+- It is still a simulation-stage large-scale result.
 - It is not yet validated as full rigid-body IsaacLab reinforcement learning with all 100 vehicles physically simulated during training.
 - It is not real-hardware 100-robot validation.
 
@@ -121,26 +123,29 @@ Boundary for the 50v50 result:
 | Rule-aware action shield | Validated in main scenario | zero static/box penetrations |
 | Pushable red boxes | Validated in main scenario | push events and changing box poses |
 | Base blocker line-of-sight | Validated in main scenario | strict replay hard violations = 0 |
-| ROS2 runtime contract | Implemented | `crc_robocup_vision_ws/` packages |
+| ROS2 runtime contract | Implemented and used for 1v1 real-robot experiments | `crc_robocup_vision_ws/` packages |
 | IsaacLab two-robot replay | Validated | final three-view MP4/GIF |
+| 1v1 real-robot experiment | Performed | public docs state coverage; full statistical hardware benchmark is not yet packaged |
 | Large-scale 50v50 rule benchmark | Implemented and evaluated | 256-game eval and 50v50 artifacts |
-| Large-scale IsaacLab replay | Implemented | `large_scale_50v50_isaaclab_replay.mp4` and GIF |
+| Large-scale IsaacLab replay | Implemented for simulation-stage 50v50 | `large_scale_50v50_isaaclab_replay.mp4` and GIF |
 | Full 100-robot rigid-body IsaacLab RL | Not yet validated | future physics-scaling milestone |
 | Distributed multi-node training | Not provided | no released worker/replay-server stack |
-| Real-robot success-rate benchmark | Not publicly provided | no public hardware run statistics |
+| 50v50 real-robot deployment | Not validated | current 50v50 result remains simulation-stage only |
+| Public quantified real-robot success-rate table | Not yet packaged | no public hardware run statistics table or rosbag bundle |
 
 ## 5. Multi-Agent Scope
 
 The repository uses "multi-agent" in two explicit scopes:
 
-1. Primary scope: a validated two-robot adversarial RoboCup-style match.
-2. Large-scale extension: a 50-vs-50 rule-level benchmark with IsaacLab replay evidence.
+1. Primary scope: a validated two-robot adversarial RoboCup-style match with subsequent 1v1 real-robot experiments.
+2. Large-scale extension: a simulation-stage 50-vs-50 rule-level benchmark with IsaacLab replay evidence.
 
 It does not yet claim:
 
 - cooperative formation learning;
 - learned inter-agent communication;
 - 100-robot hardware deployment;
+- 50v50 real-robot deployment;
 - multi-node distributed self-play;
 - full-physics 100-robot RL in IsaacLab.
 
@@ -164,7 +169,7 @@ Not provided as public features:
 
 ## 7. Sim2Real Boundary
 
-The Sim2Real contribution is an interface and validation ladder:
+The Sim2Real contribution is an interface and validation ladder. The 1v1 line has been exercised on real robots after the simulation/replay validation. The 50v50 line has not; it remains simulation-stage evidence.
 
 - ROS2 topics, services and actions are separated from simulation internals;
 - Nav2, AprilTag detection, EKF, shooter services and `/cmd_vel` remain the deployment contract;
@@ -173,15 +178,16 @@ The Sim2Real contribution is an interface and validation ladder:
 
 Not publicly claimed:
 
-- no public real-robot win-rate benchmark;
-- no public real-robot migration success percentage;
+- no public full statistical 1v1 hardware win-rate table yet;
+- no public 1v1 migration success percentage yet;
 - no public long-horizon real arena dataset;
 - no public statistical comparison between sim-only and real-robot matches.
+- no 50v50 real-robot deployment.
 
 Correct public wording:
 
 ```text
-The project provides a ROS2/IsaacLab Sim2Real contract and validation procedure, with simulation and replay evidence. Public quantified real-robot deployment metrics are not included in this repository.
+The project provides a ROS2/IsaacLab Sim2Real contract and validation procedure. The 1v1 scenario has real-robot experiment coverage, while public quantified hardware statistics are not yet packaged. The 50v50 scenario remains simulation-stage only.
 ```
 
 ## 8. How to Extend the Evidence
