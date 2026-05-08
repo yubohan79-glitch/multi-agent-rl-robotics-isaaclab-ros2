@@ -35,7 +35,7 @@ class BattleConfig:
     agent_damage: float = 0.16
     base_hp: float = 45.0
     base_damage: float = 1.10
-    blue_base_damage_multiplier: float = 4.2
+    blue_base_damage_multiplier: float = 1.0
     capture_radius_m: float = 6.0
     capture_rate: float = 0.055
     shield_progress_to_open: float = 9.0
@@ -53,8 +53,24 @@ DEFAULT_THETA = np.array(
 
 def config_from_args(args: argparse.Namespace) -> BattleConfig:
     cfg = BattleConfig()
+    if hasattr(args, "agents_per_team"):
+        cfg.agents_per_team = int(args.agents_per_team)
     if hasattr(args, "max_steps"):
         cfg.max_steps = int(args.max_steps)
+    if hasattr(args, "base_hp") and args.base_hp is not None:
+        cfg.base_hp = float(args.base_hp)
+    if hasattr(args, "base_damage") and args.base_damage is not None:
+        cfg.base_damage = float(args.base_damage)
+    if hasattr(args, "blue_base_damage_multiplier") and args.blue_base_damage_multiplier is not None:
+        cfg.blue_base_damage_multiplier = float(args.blue_base_damage_multiplier)
+    if hasattr(args, "capture_rate") and args.capture_rate is not None:
+        cfg.capture_rate = float(args.capture_rate)
+    if hasattr(args, "shield_progress_to_open") and args.shield_progress_to_open is not None:
+        cfg.shield_progress_to_open = float(args.shield_progress_to_open)
+    if hasattr(args, "contact_radius") and args.contact_radius is not None:
+        cfg.contact_radius_m = float(args.contact_radius)
+    if hasattr(args, "separation_radius") and args.separation_radius is not None:
+        cfg.separation_radius_m = float(args.separation_radius)
     return cfg
 
 
@@ -95,8 +111,8 @@ class LargeScaleBattle50v50:
 
     def _initial_positions(self, team: str, rng: np.random.Generator) -> np.ndarray:
         n = self.cfg.agents_per_team
-        rows = 5
-        cols = n // rows
+        rows = min(5, n)
+        cols = int(math.ceil(n / rows))
         grid = []
         for r in range(rows):
             for c in range(cols):
@@ -106,6 +122,7 @@ class LargeScaleBattle50v50:
         if team == "yellow":
             x = 7.0 + grid[:, 1] * 0.9 + rng.normal(0.0, 0.15, size=n)
         else:
+            y = self.cfg.height_m - y
             x = 73.0 - grid[:, 1] * 0.9 + rng.normal(0.0, 0.15, size=n)
         return np.stack([x, y], axis=1)
 
@@ -197,17 +214,19 @@ class LargeScaleBattle50v50:
     ) -> np.ndarray:
         p = policy_params(theta)
         n = self.cfg.agents_per_team
-        squad = np.arange(n) // 10
-        zone_idx = squad % 3
+        squad = np.floor(np.arange(n) * 5 / max(1, n)).astype(int)
+        raw_zone_idx = squad % 3
+        zone_idx = raw_zone_idx if team == "yellow" else 2 - raw_zone_idx
         flank = np.where((np.arange(n) % 2) == 0, 1.0, -1.0)
+        flank_dir = flank if team == "yellow" else -flank
         side = 1.0 if team == "yellow" else -1.0
         own_base = self.yellow_base if team == "yellow" else self.blue_base
         enemy_base = self.blue_base if team == "yellow" else self.yellow_base
         zone_targets = self.zones[zone_idx].copy()
-        zone_targets[:, 1] += flank * (0.4 * p["spread_m"] + 0.35 * p["flank_bias_m"])
+        zone_targets[:, 1] += flank_dir * (0.4 * p["spread_m"] + 0.35 * p["flank_bias_m"])
         base_targets = np.repeat(enemy_base[None, :], n, axis=0)
         base_targets[:, 0] -= side * 3.5
-        base_targets[:, 1] += flank * p["flank_bias_m"]
+        base_targets[:, 1] += flank_dir * p["flank_bias_m"]
 
         idx, nearest_dist, nearest_vec = self._nearest_enemy(pos, alive, enemy_pos, enemy_alive)
         enemy_dir = nearest_vec / (nearest_dist[:, None] + 1e-6)
@@ -225,13 +244,11 @@ class LargeScaleBattle50v50:
         controlled = np.count_nonzero(zone_state > 0.35) if team == "yellow" else np.count_nonzero(zone_state < -0.35)
         base_gate = shield_open or controlled >= 2 or progress_ratio > 0.78
         base_weight = p["base_weight"] * (6.5 if base_gate else 1.2)
-        if team == "blue":
-            base_weight *= 1.45
         assault_mask = (squad >= 3) | (base_gate & (squad >= 2))
         defend = ((squad == 4) | low_hp) & (~assault_mask)
         defense_targets = np.repeat(own_base[None, :], n, axis=0)
         defense_targets[:, 0] += side * 8.0
-        defense_targets[:, 1] += flank * 6.0
+        defense_targets[:, 1] += flank_dir * 6.0
 
         desired = np.zeros_like(pos)
         desired += p["zone_weight"] * (zone_targets - pos) * np.where(assault_mask[:, None], 0.12, 1.0)
@@ -511,9 +528,13 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     env = LargeScaleBattle50v50(config_from_args(args))
     rng = np.random.default_rng(args.seed)
-    theta = DEFAULT_THETA.copy()
+    init_checkpoint = getattr(args, "init_checkpoint", "")
+    if init_checkpoint and Path(init_checkpoint).exists():
+        theta = np.array(load_checkpoint(Path(init_checkpoint))["theta"], dtype=np.float64)
+    else:
+        theta = DEFAULT_THETA.copy()
     sigma = float(args.sigma)
-    archive: list[np.ndarray] = [DEFAULT_THETA.copy()]
+    archive: list[np.ndarray] = [DEFAULT_THETA.copy(), theta.copy()]
     curve = []
     best_theta = theta.copy()
     best_fitness = -1e9
@@ -606,7 +627,7 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
     training_time = __import__("time").time() - start
     ckpt = {
         "algorithm": "population_based_swarm_flow_policy_search",
-        "scenario": "large_scale_50v50_control_zone_base_assault",
+        "scenario": f"large_scale_{env.cfg.agents_per_team}v{env.cfg.agents_per_team}_control_zone_base_assault",
         "seed": args.seed,
         "theta": selected_theta.round(8).tolist(),
         "policy_params": policy_params(selected_theta),
@@ -649,7 +670,7 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     episodes = [env.run_episode(theta, theta, args.seed + i) for i in range(args.episodes)]
     summary = summarize_episodes(episodes)
     payload = {
-        "scenario": "large_scale_50v50_control_zone_base_assault",
+        "scenario": f"large_scale_{env.cfg.agents_per_team}v{env.cfg.agents_per_team}_control_zone_base_assault",
         "policy_checkpoint": str(Path(args.checkpoint).as_posix()),
         "summary": summary,
         "episodes": episodes,
@@ -757,7 +778,12 @@ def render_frame(env: LargeScaleBattle50v50, item: dict[str, Any], width: int = 
     y_alive = int(np.count_nonzero(item["yellow_alive"]))
     b_alive = int(np.count_nonzero(item["blue_alive"]))
     draw.text((70, 30), "Large-Scale 50v50 Multi-Agent Battle Replay", font=title_font, fill="#0f172a")
-    draw.text((70, 75), f"t={item['step'] * cfg.dt_s:.1f}s   yellow alive={y_alive}/50   blue alive={b_alive}/50", font=label_font, fill="#334155")
+    draw.text(
+        (70, 75),
+        f"t={item['step'] * cfg.dt_s:.1f}s   yellow alive={y_alive}/{cfg.agents_per_team}   blue alive={b_alive}/{cfg.agents_per_team}",
+        font=label_font,
+        fill="#334155",
+    )
     draw.text((width - 520, 35), f"base hp: Y {item['yellow_base_hp']:.1f} | B {item['blue_base_hp']:.1f}", font=label_font, fill="#334155")
     draw.text((width - 520, 75), "zones: yellow if gold, blue if blue, neutral if gray", font=small_font, fill="#64748b")
     return img
@@ -971,8 +997,8 @@ This report documents the first formal large-scale rule-level extension for the 
 - Evaluation CSV: `docs/rl_data/large_scale_50v50/eval_episodes.csv`
 - Rule-level preview MP4: `docs/media/large_scale_50v50_replay.mp4`
 - Rule-level preview GIF: `docs/media/large_scale_50v50_replay.gif`
-- IsaacLab replay MP4: `docs/media/large_scale_50v50_isaaclab_replay.mp4`
-- IsaacLab replay GIF: `docs/media/large_scale_50v50_isaaclab_replay.gif`
+- IsaacLab tactical replay MP4: `docs/media/large_scale_50v50_isaaclab_replay.mp4`
+- IsaacLab tactical replay GIF: `docs/media/large_scale_50v50_isaaclab_replay.gif`
 - Figures: `docs/figures/large_scale_50v50/`
 
 ## Boundary
@@ -985,11 +1011,22 @@ This benchmark validates scalable rule-level 50v50 mechanics and a trained swarm
 def run_all(args: argparse.Namespace) -> None:
     train_args = argparse.Namespace(**vars(args))
     ckpt = train(train_args)
+    rule_kwargs = {
+        "agents_per_team": args.agents_per_team,
+        "base_hp": args.base_hp,
+        "base_damage": args.base_damage,
+        "blue_base_damage_multiplier": args.blue_base_damage_multiplier,
+        "capture_rate": args.capture_rate,
+        "shield_progress_to_open": args.shield_progress_to_open,
+        "contact_radius": args.contact_radius,
+        "separation_radius": args.separation_radius,
+    }
     eval_args = argparse.Namespace(
         checkpoint=str(DATA_DIR / "policy_checkpoint.json"),
         episodes=args.eval_episodes,
         seed=args.eval_seed,
         max_steps=args.max_steps,
+        **rule_kwargs,
     )
     evaluate(eval_args)
     render_args = argparse.Namespace(
@@ -1003,6 +1040,7 @@ def run_all(args: argparse.Namespace) -> None:
         width=args.width,
         height=args.height,
         max_steps=args.max_steps,
+        **rule_kwargs,
     )
     render_video(render_args)
     make_figures(args)
@@ -1015,6 +1053,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     def add_train_flags(p: argparse.ArgumentParser) -> None:
         p.add_argument("--seed", type=int, default=507050)
+        p.add_argument("--agents-per-team", type=int, default=50)
         p.add_argument("--generations", type=int, default=80)
         p.add_argument("--population", type=int, default=16)
         p.add_argument("--episodes-per-candidate", type=int, default=2)
@@ -1025,8 +1064,16 @@ def build_parser() -> argparse.ArgumentParser:
         p.add_argument("--sigma-decay", type=float, default=0.985)
         p.add_argument("--archive-interval", type=int, default=4)
         p.add_argument("--archive-size", type=int, default=8)
+        p.add_argument("--init-checkpoint", default="")
         p.add_argument("--log-interval", type=int, default=5)
         p.add_argument("--max-steps", type=int, default=420)
+        p.add_argument("--base-hp", type=float, default=None)
+        p.add_argument("--base-damage", type=float, default=None)
+        p.add_argument("--blue-base-damage-multiplier", type=float, default=None)
+        p.add_argument("--capture-rate", type=float, default=None)
+        p.add_argument("--shield-progress-to-open", type=float, default=None)
+        p.add_argument("--contact-radius", type=float, default=None)
+        p.add_argument("--separation-radius", type=float, default=None)
         p.add_argument("--selection-episodes", type=int, default=24)
         p.add_argument("--verbose", action="store_true")
 
@@ -1036,7 +1083,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_eval.add_argument("--checkpoint", default=str(DATA_DIR / "policy_checkpoint.json"))
     p_eval.add_argument("--episodes", type=int, default=128)
     p_eval.add_argument("--seed", type=int, default=508000)
+    p_eval.add_argument("--agents-per-team", type=int, default=50)
     p_eval.add_argument("--max-steps", type=int, default=420)
+    p_eval.add_argument("--base-hp", type=float, default=None)
+    p_eval.add_argument("--base-damage", type=float, default=None)
+    p_eval.add_argument("--blue-base-damage-multiplier", type=float, default=None)
+    p_eval.add_argument("--capture-rate", type=float, default=None)
+    p_eval.add_argument("--shield-progress-to-open", type=float, default=None)
+    p_eval.add_argument("--contact-radius", type=float, default=None)
+    p_eval.add_argument("--separation-radius", type=float, default=None)
     p_render = sub.add_parser("render")
     p_render.add_argument("--checkpoint", default=str(DATA_DIR / "policy_checkpoint.json"))
     p_render.add_argument("--seed", type=int, default=509000)
@@ -1047,9 +1102,25 @@ def build_parser() -> argparse.ArgumentParser:
     p_render.add_argument("--gif-fps", type=int, default=8)
     p_render.add_argument("--width", type=int, default=1920)
     p_render.add_argument("--height", type=int, default=1080)
+    p_render.add_argument("--agents-per-team", type=int, default=50)
     p_render.add_argument("--max-steps", type=int, default=420)
+    p_render.add_argument("--base-hp", type=float, default=None)
+    p_render.add_argument("--base-damage", type=float, default=None)
+    p_render.add_argument("--blue-base-damage-multiplier", type=float, default=None)
+    p_render.add_argument("--capture-rate", type=float, default=None)
+    p_render.add_argument("--shield-progress-to-open", type=float, default=None)
+    p_render.add_argument("--contact-radius", type=float, default=None)
+    p_render.add_argument("--separation-radius", type=float, default=None)
     p_fig = sub.add_parser("figures")
+    p_fig.add_argument("--agents-per-team", type=int, default=50)
     p_fig.add_argument("--max-steps", type=int, default=420)
+    p_fig.add_argument("--base-hp", type=float, default=None)
+    p_fig.add_argument("--base-damage", type=float, default=None)
+    p_fig.add_argument("--blue-base-damage-multiplier", type=float, default=None)
+    p_fig.add_argument("--capture-rate", type=float, default=None)
+    p_fig.add_argument("--shield-progress-to-open", type=float, default=None)
+    p_fig.add_argument("--contact-radius", type=float, default=None)
+    p_fig.add_argument("--separation-radius", type=float, default=None)
     sub.add_parser("report")
     p_all = sub.add_parser("all")
     add_train_flags(p_all)

@@ -167,19 +167,19 @@ Final strict replay audit:
 
 The public validated multi-agent result is a two-robot yellow-vs-blue adversarial RoboCup-style match. The current repository validates object-centric world-model SAC Flow self-play, rule-aware action shielding, pushable boxes, base blockers, laser dwell/range constraints, ROS2 runtime contracts, IsaacLab three-view replay and subsequent 1v1 real-robot experiment coverage for this two-agent setting.
 
-Large-scale 50v50 is still in the simulation stage: rule-level training, 256-game evaluation and IsaacLab tactical replay are published as a separate benchmark below, but 50v50 has not been moved to real robots. Full 100-robot rigid-body IsaacLab RL, multi-node distributed training and multi-GPU training are not claimed as public validated results. The Sim2Real material documents the ROS2 interface contract, calibration order, domain randomization and deployment validation ladder; 1v1 real-robot trials have been performed, while a full public statistical hardware benchmark with success-rate tables and rosbag release is still future evidence work. See [Capability Boundaries and Measured Evidence](./docs/capability_boundaries.md) for the exact support matrix and metrics.
+Large-scale 50v50 is still in the simulation stage: staged rule-level curriculum training, 256-game evaluation and IsaacLab tactical replay are published as a separate benchmark below, but 50v50 has not been moved to real robots. Full 100-robot rigid-body IsaacLab RL, multi-node distributed training and multi-GPU training are not claimed as public validated results. The Sim2Real material documents the ROS2 interface contract, calibration order, domain randomization and deployment validation ladder; 1v1 real-robot trials have been performed, while a full public statistical hardware benchmark with success-rate tables and rosbag release is still future evidence work. See [Capability Boundaries and Measured Evidence](./docs/capability_boundaries.md) for the exact support matrix and metrics.
 
 ## Large-Scale 50v50 Benchmark
 
 The repository also includes a large-scale extension for studying 100-agent adversarial coordination before committing to expensive full-physics training. The benchmark uses two teams of 50 differential-drive vehicles in an `80 m x 50 m` arena with three control zones, static cover, shielded bases, line-of-sight shooting, fire cooldowns, agent elimination, base damage, robot-contact metrics and obstacle-contact metrics.
 
-The accepted long-run baseline uses population-based swarm-flow policy search: candidate team policies are sampled, evaluated against archive opponents from both yellow and blue sides, promoted through elite weighting, validated against candidate archives, then evaluated over 256 games. The accepted trace is replayed in IsaacLab with 100 vehicle-shaped actors, visible heading noses, bases, zones, barriers, tactical lanes and a telemetry panel.
+The accepted long-run baseline uses staged population-based swarm-flow policy search: 5v5 first learns the zone-to-shield-to-base attack loop, then 10v10, 25v25 and 50v50 reuse the last passing checkpoint with stricter HP and shield gates. Candidate team policies are sampled, evaluated against archive opponents from both yellow and blue sides, promoted through elite weighting, validated against candidate archives, then evaluated over 256 games. The accepted trace is replayed in IsaacLab with 100 vehicle-shaped actors, visible heading noses, bases, zones, barriers, tactical lanes and a telemetry panel.
 
 Formal 50v50 baseline:
 
-| Training Episodes | Eval Episodes | Yellow Win | Blue Win | Draw | Yellow Base Damage | Blue Base Damage | Robot Contacts Mean/P95 | Obstacle Contacts |
+| Final-Stage Training Episodes | Eval Episodes | Yellow Win | Blue Win | Draw | Yellow Base Damage | Blue Base Damage | Robot Contacts Mean/P95 | Obstacle Contacts |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 6400 | 256 | 57.03% | 42.97% | 0.00% | 41.72 | 27.74 | 85.68 / 105.00 | 0.00 |
+| 12000 | 256 | 36.72% | 42.19% | 21.09% | 44.90 | 44.89 | 0.00 / 0.00 | 0.00 |
 
 ![50v50 IsaacLab replay GIF](./docs/media/large_scale_50v50_isaaclab_replay.gif)
 
@@ -193,7 +193,7 @@ Formal 50v50 baseline:
 
 ![50v50 evaluation summary](./docs/figures/large_scale_50v50/large_scale_50v50_eval.png)
 
-This is a scalable rule-level training benchmark plus IsaacLab tactical replay evidence. It remains a simulation-stage 50v50 result, not a claim that 100 robots have already been trained with full IsaacLab rigid-body physics or deployed on real hardware. The full rule, training and evaluation contract is documented in [Large-Scale 50v50 Multi-Agent Battle Plan](./docs/large_scale_50v50_plan.md), and the accepted run is summarized in [Large-Scale 50v50 Multi-Agent Battle Report](./docs/large_scale_50v50_report.md).
+This is a scalable rule-level training benchmark plus IsaacLab tactical replay evidence. It remains a simulation-stage 50v50 result, not a claim that 100 robots have already been trained with full IsaacLab rigid-body physics or deployed on real hardware. The full rule, staged curriculum and evaluation contract are documented in [Large-Scale 50v50 Multi-Agent Battle Plan](./docs/large_scale_50v50_plan.md) and [Large-Scale Curriculum Plan](./docs/large_scale_50v50_curriculum_plan.md); the accepted run is summarized in [Large-Scale 50v50 Multi-Agent Battle Report](./docs/large_scale_50v50_report.md).
 
 ## Runtime Evidence
 

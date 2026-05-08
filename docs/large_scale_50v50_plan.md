@@ -5,7 +5,7 @@ This document defines the repository's large-scale adversarial simulation extens
 The current accepted evidence package contains:
 
 - a 50-vs-50 rule-scoring environment;
-- formal population-based swarm-flow policy training;
+- staged population-based swarm-flow policy training from 5v5 to 50v50;
 - 256-game evaluation;
 - a trace exported from the trained policy;
 - an IsaacLab replay using 100 vehicle-shaped actors, bases, zones, walls and obstacles;
@@ -99,7 +99,7 @@ Optimized parameters:
 
 ## 4. Training Plan
 
-Current implemented training uses population-based swarm-flow policy search:
+Current implemented training uses staged population-based swarm-flow policy search:
 
 1. initialize a tactical baseline policy;
 2. sample candidate parameter vectors;
@@ -108,35 +108,23 @@ Current implemented training uses population-based swarm-flow policy search:
 5. promote elites into a running archive;
 6. perform a validation selection pass so a one-sided exploit is not selected as the final policy.
 
-Formal training command used for the current artifact:
+Formal curriculum command used for the current artifact:
 
 ```powershell
-& "C:\Users\Administrator\anaconda3\envs\env_isaaclab\python.exe" isaaclab_sim\rl\large_scale_50v50_battle.py all `
-  --generations 100 `
-  --population 16 `
-  --episodes-per-candidate 2 `
-  --probe-episodes 6 `
-  --selection-episodes 48 `
-  --eval-episodes 128 `
-  --max-steps 720 `
-  --video-seconds 30 `
-  --gif-seconds 12 `
-  --fps 30 `
-  --gif-fps 8 `
-  --width 1920 `
-  --height 1080 `
-  --log-interval 5 `
-  --verbose
+& "C:\Users\Administrator\anaconda3\envs\env_isaaclab\python.exe" `
+  isaaclab_sim\rl\run_large_scale_curriculum.py `
+  --seed 607051 `
+  --stop-on-failure
 ```
 
-Additional stability evaluation:
+The curriculum stages were:
 
-```powershell
-& "C:\Users\Administrator\anaconda3\envs\env_isaaclab\python.exe" isaaclab_sim\rl\large_scale_50v50_battle.py eval `
-  --episodes 256 `
-  --max-steps 720 `
-  --seed 508500
-```
+| Stage | Team Size | Generations | Population | Eval Games | Promotion Result |
+| --- | ---: | ---: | ---: | ---: | --- |
+| stage01_05v05 | 5v5 | 80 | 14 | 128 | passed |
+| stage02_10v10 | 10v10 | 90 | 16 | 160 | passed |
+| stage03_25v25 | 25v25 | 110 | 18 | 192 | passed |
+| stage04_50v50 | 50v50 | 150 | 20 | 256 | passed |
 
 ## 5. Evaluation Gate
 
@@ -156,20 +144,20 @@ Current 256-game evaluation:
 | Metric | Value |
 | --- | ---: |
 | Episodes | 256 |
-| Yellow win rate | 57.03% |
-| Blue win rate | 42.97% |
-| Draw rate | 0.00% |
-| Mean elapsed time | 33.33 s |
-| Mean yellow score | 215.63 |
-| Mean blue score | 150.11 |
-| Mean yellow survivors | 45.58 / 50 |
-| Mean blue survivors | 46.39 / 50 |
-| Mean yellow base damage | 41.72 |
-| Mean blue base damage | 27.74 |
-| Mean yellow base open rate | 19.77% |
-| Mean blue base open rate | 43.42% |
-| Mean robot contacts | 85.68 |
-| P95 robot contacts | 105.00 |
+| Yellow win rate | 36.72% |
+| Blue win rate | 42.19% |
+| Draw rate | 21.09% |
+| Mean elapsed time | 23.09 s |
+| Mean yellow score | 227.67 |
+| Mean blue score | 227.55 |
+| Mean yellow survivors | 48.71 / 50 |
+| Mean blue survivors | 48.77 / 50 |
+| Mean yellow base damage | 44.90 |
+| Mean blue base damage | 44.89 |
+| Mean yellow base open rate | 18.37% |
+| Mean blue base open rate | 18.39% |
+| Mean robot contacts | 0.00 |
+| P95 robot contacts | 0.00 |
 | Mean obstacle contacts | 0.00 |
 
 ## 6. IsaacLab Replay Plan
@@ -208,6 +196,8 @@ Published replay artifacts:
 ```text
 docs/media/large_scale_50v50_isaaclab_replay.mp4
 docs/media/large_scale_50v50_isaaclab_replay.gif
+docs/media/large_scale_50v50_replay.mp4
+docs/media/large_scale_50v50_replay.gif
 ```
 
 ## 7. Figures

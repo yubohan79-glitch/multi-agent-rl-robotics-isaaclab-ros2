@@ -1,0 +1,63 @@
+{
+  "algorithm": "population_based_swarm_flow_policy_search",
+  "scenario": "large_scale_25v25_control_zone_base_assault",
+  "seed": 807051,
+  "theta": [
+    6.34978118,
+    6.17165956,
+    3.4003424,
+    -3.71712588,
+    3.99287577,
+    -0.24372119,
+    -3.10655153,
+    5.1794555,
+    -1.48772832,
+    4.10187657
+  ],
+  "policy_params": {
+    "zone_weight": 2.4970350601492948,
+    "base_weight": 2.5954164789786733,
+    "enemy_weight": 1.748344375013438,
+    "cohesion_weight": 0.12609976983148843,
+    "separation_weight": 2.7637750474642635,
+    "flank_bias_m": -2.1510673092593637,
+    "defense_weight": 0.2771080730776151,
+    "aggression": 0.9944004597334352,
+    "spread_m": 1.7370517539185828,
+    "retreat_health": 0.6610501620514577
+  },
+  "config": {
+    "width_m": 80.0,
+    "height_m": 50.0,
+    "agents_per_team": 25,
+    "dt_s": 0.2,
+    "max_steps": 680,
+    "max_speed_mps": 3.0,
+    "fire_range_m": 6.5,
+    "base_fire_range_m": 10.0,
+    "fire_cooldown_s": 1.2,
+    "agent_hp": 3.0,
+    "agent_damage": 0.16,
+    "base_hp": 28.0,
+    "base_damage": 1.1,
+    "blue_base_damage_multiplier": 1.0,
+    "capture_radius_m": 6.0,
+    "capture_rate": 0.07,
+    "shield_progress_to_open": 5.0,
+    "obstacle_margin_m": 1.1,
+    "contact_radius_m": 0.7,
+    "separation_radius_m": 1.35,
+    "sensor_range_m": 14.0
+  },
+  "training": {
+    "generations": 110,
+    "population": 18,
+    "episodes_per_candidate": 2,
+    "probe_episodes": 10,
+    "episodes_seen": 7920,
+    "best_fitness": 256.3074375250871,
+    "selection_episodes_per_candidate": 64,
+    "selected_validation_score": 19.75,
+    "wall_time_s": 1361.0684015750885
+  }
+}

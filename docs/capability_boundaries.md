@@ -76,32 +76,35 @@ Validated in the current 50v50 evidence package:
 - vehicle elimination;
 - score/winner closure;
 - 256-game evaluation;
-- IsaacLab replay with 100 vehicle-shaped actors.
+- IsaacLab tactical replay with 100 vehicle-shaped actors.
 
 Current 256-game metrics:
 
 | Metric | Value |
 | --- | ---: |
 | Episodes | 256 |
-| Yellow win rate | 57.03% |
-| Blue win rate | 42.97% |
-| Draw rate | 0.00% |
-| Mean yellow base damage | 41.72 |
-| Mean blue base damage | 27.74 |
-| Mean yellow base open rate | 19.77% |
-| Mean blue base open rate | 43.42% |
-| Mean robot contacts | 85.68 |
-| P95 robot contacts | 105.00 |
+| Yellow win rate | 36.72% |
+| Blue win rate | 42.19% |
+| Draw rate | 21.09% |
+| Mean yellow base damage | 44.90 |
+| Mean blue base damage | 44.89 |
+| Mean yellow base open rate | 18.37% |
+| Mean blue base open rate | 18.39% |
+| Mean robot contacts | 0.00 |
+| P95 robot contacts | 0.00 |
 | Mean obstacle contacts | 0.00 |
 
 Large-scale evidence files:
 
 ```text
 docs/large_scale_50v50_plan.md
+docs/large_scale_50v50_curriculum_plan.md
 docs/large_scale_50v50_report.md
 docs/rl_data/large_scale_50v50/
 docs/media/large_scale_50v50_isaaclab_replay.mp4
 docs/media/large_scale_50v50_isaaclab_replay.gif
+docs/media/large_scale_50v50_replay.mp4
+docs/media/large_scale_50v50_replay.gif
 docs/figures/large_scale_50v50/
 ```
 

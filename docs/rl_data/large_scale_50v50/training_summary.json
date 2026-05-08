@@ -1,12 +1,12 @@
 {
   "checkpoint": "docs/rl_data/large_scale_50v50/policy_checkpoint.json",
-  "generations": 100,
-  "population": 16,
+  "generations": 150,
+  "population": 20,
   "episodes_per_candidate": 2,
-  "probe_episodes": 6,
-  "episodes_seen": 6400,
-  "best_fitness": 511.62955685932,
-  "selection_episodes_per_candidate": 48,
-  "selected_validation_score": 11.333333333333332,
-  "wall_time_s": 1526.7372250556946
+  "probe_episodes": 10,
+  "episodes_seen": 12000,
+  "best_fitness": 368.7112895154986,
+  "selection_episodes_per_candidate": 72,
+  "selected_validation_score": 19.77777777777778,
+  "wall_time_s": 2561.3229479789734
 }

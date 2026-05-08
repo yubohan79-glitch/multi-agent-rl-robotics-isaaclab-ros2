@@ -14,31 +14,31 @@ This report documents the first formal large-scale rule-level extension for the 
 ## Training
 
 - Algorithm: population-based swarm flow policy search.
-- Generations: 100.
-- Population: 16.
+- Generations: 150.
+- Population: 20.
 - Candidate episodes: 2.
-- Total training episodes sampled: 6400.
-- Best fitness: 511.6296.
-- Wall time: 1526.74 s.
+- Total training episodes sampled: 12000.
+- Best fitness: 368.7113.
+- Wall time: 2561.32 s.
 
 ## Evaluation
 
 - Episodes: 256.
-- Yellow win rate: 57.03%.
-- Blue win rate: 42.97%.
-- Draw rate: 0.00%.
-- Mean yellow score: 215.63.
-- Mean blue score: 150.11.
-- Mean yellow survivors: 45.58 / 50.
-- Mean blue survivors: 46.39 / 50.
-- Mean yellow base damage: 41.72.
-- Mean blue base damage: 27.74.
-- Mean yellow base open rate: 19.77%.
-- Mean blue base open rate: 43.42%.
-- Mean robot contacts: 85.68.
-- P95 robot contacts: 105.00.
+- Yellow win rate: 36.72%.
+- Blue win rate: 42.19%.
+- Draw rate: 21.09%.
+- Mean yellow score: 227.67.
+- Mean blue score: 227.55.
+- Mean yellow survivors: 48.71 / 50.
+- Mean blue survivors: 48.77 / 50.
+- Mean yellow base damage: 44.90.
+- Mean blue base damage: 44.89.
+- Mean yellow base open rate: 18.37%.
+- Mean blue base open rate: 18.39%.
+- Mean robot contacts: 0.00.
+- P95 robot contacts: 0.00.
 - Mean obstacle contacts: 0.00.
-- Mean final zone state: [-1.0, -0.8315, 1.0].
+- Mean final zone state: [-1.0, 0.0011, 1.0].
 
 ## Artifacts
 
@@ -46,10 +46,12 @@ This report documents the first formal large-scale rule-level extension for the 
 - Training curve: `docs/rl_data/large_scale_50v50/training_curve.csv`
 - Evaluation JSON: `docs/rl_data/large_scale_50v50/eval_summary.json`
 - Evaluation CSV: `docs/rl_data/large_scale_50v50/eval_episodes.csv`
-- IsaacLab replay MP4: `docs/media/large_scale_50v50_isaaclab_replay.mp4`
-- IsaacLab replay GIF: `docs/media/large_scale_50v50_isaaclab_replay.gif`
+- Rule-level preview MP4: `docs/media/large_scale_50v50_replay.mp4`
+- Rule-level preview GIF: `docs/media/large_scale_50v50_replay.gif`
+- IsaacLab tactical replay MP4: `docs/media/large_scale_50v50_isaaclab_replay.mp4`
+- IsaacLab tactical replay GIF: `docs/media/large_scale_50v50_isaaclab_replay.gif`
 - Figures: `docs/figures/large_scale_50v50/`
 
 ## Boundary
 
-This benchmark validates scalable rule-level 50v50 mechanics and a trained swarm policy baseline. It does not claim IsaacLab rigid-body validation for all 100 robots and does not claim 50v50 real-robot deployment. The 1v1 line has separate real-robot experiment coverage; this 50v50 result remains in the simulation stage until a separate physics-scaling and Sim2Real evidence package is added.
+This benchmark validates scalable rule-level 50v50 mechanics and a trained swarm policy baseline. It does not claim IsaacLab rigid-body validation for all 100 robots and does not claim real-robot deployment. Those require a separate physics scaling and Sim2Real evidence package.
