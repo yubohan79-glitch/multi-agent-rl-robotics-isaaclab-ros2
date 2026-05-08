@@ -112,11 +112,11 @@ Formal training command used for the current artifact:
 
 ```powershell
 & "C:\Users\Administrator\anaconda3\envs\env_isaaclab\python.exe" isaaclab_sim\rl\large_scale_50v50_battle.py all `
-  --generations 40 `
-  --population 12 `
-  --episodes-per-candidate 1 `
-  --probe-episodes 4 `
-  --selection-episodes 24 `
+  --generations 100 `
+  --population 16 `
+  --episodes-per-candidate 2 `
+  --probe-episodes 6 `
+  --selection-episodes 48 `
   --eval-episodes 128 `
   --max-steps 720 `
   --video-seconds 30 `
@@ -125,6 +125,7 @@ Formal training command used for the current artifact:
   --gif-fps 8 `
   --width 1920 `
   --height 1080 `
+  --log-interval 5 `
   --verbose
 ```
 
@@ -155,20 +156,20 @@ Current 256-game evaluation:
 | Metric | Value |
 | --- | ---: |
 | Episodes | 256 |
-| Yellow win rate | 59.77% |
-| Blue win rate | 40.23% |
+| Yellow win rate | 57.03% |
+| Blue win rate | 42.97% |
 | Draw rate | 0.00% |
-| Mean elapsed time | 33.19 s |
-| Mean yellow score | 215.20 |
-| Mean blue score | 134.25 |
-| Mean yellow survivors | 45.60 / 50 |
-| Mean blue survivors | 46.33 / 50 |
-| Mean yellow base damage | 41.63 |
-| Mean blue base damage | 24.71 |
-| Mean yellow base open rate | 19.83% |
-| Mean blue base open rate | 43.02% |
-| Mean robot contacts | 83.88 |
-| P95 robot contacts | 102.00 |
+| Mean elapsed time | 33.33 s |
+| Mean yellow score | 215.63 |
+| Mean blue score | 150.11 |
+| Mean yellow survivors | 45.58 / 50 |
+| Mean blue survivors | 46.39 / 50 |
+| Mean yellow base damage | 41.72 |
+| Mean blue base damage | 27.74 |
+| Mean yellow base open rate | 19.77% |
+| Mean blue base open rate | 43.42% |
+| Mean robot contacts | 85.68 |
+| P95 robot contacts | 105.00 |
 | Mean obstacle contacts | 0.00 |
 
 ## 6. IsaacLab Replay Plan

@@ -50,14 +50,14 @@
     "sensor_range_m": 14.0
   },
   "training": {
-    "generations": 40,
-    "population": 12,
-    "episodes_per_candidate": 1,
-    "probe_episodes": 4,
-    "episodes_seen": 960,
-    "best_fitness": 509.5002792489166,
-    "selection_episodes_per_candidate": 24,
-    "selected_validation_score": 10.666666666666668,
-    "wall_time_s": 296.44325017929077
+    "generations": 100,
+    "population": 16,
+    "episodes_per_candidate": 2,
+    "probe_episodes": 6,
+    "episodes_seen": 6400,
+    "best_fitness": 511.62955685932,
+    "selection_episodes_per_candidate": 48,
+    "selected_validation_score": 11.333333333333332,
+    "wall_time_s": 1526.7372250556946
   }
 }

@@ -173,13 +173,13 @@ Large-scale 50v50 rule-level training and IsaacLab tactical replay are now publi
 
 The repository also includes a large-scale extension for studying 100-agent adversarial coordination before committing to expensive full-physics training. The benchmark uses two teams of 50 differential-drive vehicles in an `80 m x 50 m` arena with three control zones, static cover, shielded bases, line-of-sight shooting, fire cooldowns, agent elimination, base damage, robot-contact metrics and obstacle-contact metrics.
 
-The accepted baseline uses population-based swarm-flow policy search: candidate team policies are sampled, evaluated against archive opponents from both yellow and blue sides, promoted through elite weighting, validated against candidate archives, then evaluated over 256 games. The accepted trace is replayed in IsaacLab with 100 vehicle-shaped actors, visible heading noses, bases, zones, barriers, tactical lanes and a telemetry panel.
+The accepted long-run baseline uses population-based swarm-flow policy search: candidate team policies are sampled, evaluated against archive opponents from both yellow and blue sides, promoted through elite weighting, validated against candidate archives, then evaluated over 256 games. The accepted trace is replayed in IsaacLab with 100 vehicle-shaped actors, visible heading noses, bases, zones, barriers, tactical lanes and a telemetry panel.
 
 Formal 50v50 baseline:
 
 | Training Episodes | Eval Episodes | Yellow Win | Blue Win | Draw | Yellow Base Damage | Blue Base Damage | Robot Contacts Mean/P95 | Obstacle Contacts |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 960 | 256 | 59.77% | 40.23% | 0.00% | 41.63 | 24.71 | 83.88 / 102.00 | 0.00 |
+| 6400 | 256 | 57.03% | 42.97% | 0.00% | 41.72 | 27.74 | 85.68 / 105.00 | 0.00 |
 
 ![50v50 IsaacLab replay GIF](./docs/media/large_scale_50v50_isaaclab_replay.gif)
 

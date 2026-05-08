@@ -82,15 +82,15 @@ Current 256-game metrics:
 | Metric | Value |
 | --- | ---: |
 | Episodes | 256 |
-| Yellow win rate | 59.77% |
-| Blue win rate | 40.23% |
+| Yellow win rate | 57.03% |
+| Blue win rate | 42.97% |
 | Draw rate | 0.00% |
-| Mean yellow base damage | 41.63 |
-| Mean blue base damage | 24.71 |
-| Mean yellow base open rate | 19.83% |
-| Mean blue base open rate | 43.02% |
-| Mean robot contacts | 83.88 |
-| P95 robot contacts | 102.00 |
+| Mean yellow base damage | 41.72 |
+| Mean blue base damage | 27.74 |
+| Mean yellow base open rate | 19.77% |
+| Mean blue base open rate | 43.42% |
+| Mean robot contacts | 85.68 |
+| P95 robot contacts | 105.00 |
 | Mean obstacle contacts | 0.00 |
 
 Large-scale evidence files:
