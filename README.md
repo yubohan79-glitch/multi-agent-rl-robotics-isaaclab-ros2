@@ -167,7 +167,33 @@ Final strict replay audit:
 
 The public validated multi-agent result is a two-robot yellow-vs-blue adversarial RoboCup-style match. The current repository validates object-centric world-model SAC Flow self-play, rule-aware action shielding, pushable boxes, base blockers, laser dwell/range constraints, ROS2 runtime contracts and IsaacLab three-view replay for this two-agent setting.
 
-Large-scale robot teams, swarm settings, multi-node distributed training, multi-GPU training and quantified real-robot success-rate benchmarks are not claimed as public validated results in this repository. The Sim2Real material documents the ROS2 interface contract, calibration order, domain randomization and deployment validation ladder; it does not include a public real-robot migration success percentage. See [Capability Boundaries and Measured Evidence](./docs/capability_boundaries.md) for the exact support matrix and metrics.
+Large-scale 50v50 rule-level training and IsaacLab tactical replay are now published as a separate benchmark below. Full 100-robot rigid-body IsaacLab RL, multi-node distributed training, multi-GPU training and quantified real-robot success-rate benchmarks are not claimed as public validated results. The Sim2Real material documents the ROS2 interface contract, calibration order, domain randomization and deployment validation ladder; it does not include a public real-robot migration success percentage. See [Capability Boundaries and Measured Evidence](./docs/capability_boundaries.md) for the exact support matrix and metrics.
+
+## Large-Scale 50v50 Benchmark
+
+The repository also includes a large-scale extension for studying 100-agent adversarial coordination before committing to expensive full-physics training. The benchmark uses two teams of 50 differential-drive vehicles in an `80 m x 50 m` arena with three control zones, static cover, shielded bases, line-of-sight shooting, fire cooldowns, agent elimination, base damage, robot-contact metrics and obstacle-contact metrics.
+
+The accepted baseline uses population-based swarm-flow policy search: candidate team policies are sampled, evaluated against archive opponents from both yellow and blue sides, promoted through elite weighting, validated against candidate archives, then evaluated over 256 games. The accepted trace is replayed in IsaacLab with 100 vehicle-shaped actors, visible heading noses, bases, zones, barriers, tactical lanes and a telemetry panel.
+
+Formal 50v50 baseline:
+
+| Training Episodes | Eval Episodes | Yellow Win | Blue Win | Draw | Yellow Base Damage | Blue Base Damage | Robot Contacts Mean/P95 | Obstacle Contacts |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 960 | 256 | 59.77% | 40.23% | 0.00% | 41.63 | 24.71 | 83.88 / 102.00 | 0.00 |
+
+![50v50 IsaacLab replay GIF](./docs/media/large_scale_50v50_isaaclab_replay.gif)
+
+[50v50 IsaacLab replay MP4](./docs/media/large_scale_50v50_isaaclab_replay.mp4)
+
+![50v50 rule layout](./docs/figures/large_scale_50v50/large_scale_50v50_rule_layout.png)
+
+![50v50 rule-scoring closure](./docs/figures/large_scale_50v50/large_scale_50v50_rule_closure.png)
+
+![50v50 training curve](./docs/figures/large_scale_50v50/large_scale_50v50_training.png)
+
+![50v50 evaluation summary](./docs/figures/large_scale_50v50/large_scale_50v50_eval.png)
+
+This is a scalable rule-level training benchmark plus IsaacLab tactical replay evidence. It is not a claim that 100 robots have already been trained with full IsaacLab rigid-body physics or deployed on real hardware. The full rule, training and evaluation contract is documented in [Large-Scale 50v50 Multi-Agent Battle Plan](./docs/large_scale_50v50_plan.md), and the accepted run is summarized in [Large-Scale 50v50 Multi-Agent Battle Report](./docs/large_scale_50v50_report.md).
 
 ## Runtime Evidence
 
@@ -200,6 +226,8 @@ The rendered episode passes strict checks for static-obstacle penetration, pusha
 - `docs/parameter_tuning.md`: algorithm parameter reference and tuning recipes for stuck behavior, base aiming, win balance and resource usage.
 - `docs/scene_adaptation.md`: target-layout, blocker, pushable-box and ROS2 route adaptation workflow.
 - `docs/capability_boundaries.md`: explicit validated scope, measured metrics, unsupported large-scale/distributed claims and Sim2Real evidence boundary.
+- `docs/large_scale_50v50_plan.md`: 100-agent rule-level battle design, training plan, evaluation metrics, replay artifacts and promotion gate.
+- `docs/large_scale_50v50_report.md`: generated report for the trained 50v50 baseline.
 - `docs/architecture.md`: system architecture and ROS2/IsaacLab component boundaries.
 - `docs/reproducibility.md`: exact smoke-test, ROS2 dry-run, IsaacLab preview and evaluation commands.
 - `docs/rules_summary.md`: public rule summary used by tests and replay checks.

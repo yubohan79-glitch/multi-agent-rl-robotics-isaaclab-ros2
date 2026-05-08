@@ -1,0 +1,12 @@
+{
+  "checkpoint": "docs/rl_data/large_scale_50v50/policy_checkpoint.json",
+  "generations": 40,
+  "population": 12,
+  "episodes_per_candidate": 1,
+  "probe_episodes": 4,
+  "episodes_seen": 960,
+  "best_fitness": 509.5002792489166,
+  "selection_episodes_per_candidate": 24,
+  "selected_validation_score": 10.666666666666668,
+  "wall_time_s": 296.44325017929077
+}
