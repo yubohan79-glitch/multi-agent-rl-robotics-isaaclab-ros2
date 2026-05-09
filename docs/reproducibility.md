@@ -96,14 +96,10 @@ Record the exported policy path in any report or application material if it is u
 Published final three-view media:
 
 ```text
-docs/media/最终回放_顶视角.mp4
-docs/media/最终回放_黄车第一视角.mp4
-docs/media/最终回放_蓝车第一视角.mp4
-docs/media/最终回放_顶视角.gif
-docs/media/最终回放_黄车第一视角.gif
-docs/media/最终回放_蓝车第一视角.gif
-docs/media/最终回放_三视角同步拼接版.mp4
+docs/media/最终回放_三视角同步拼接版.gif
 ```
+
+The full-resolution individual MP4 views are local/generated artifacts. They are not committed in the compact repository state.
 
 Windows IsaacLab wrapper:
 
@@ -129,7 +125,6 @@ docs/large_scale_50v50_curriculum_plan.md
 docs/large_scale_50v50_report.md
 docs/rl_data/large_scale_50v50/
 docs/media/large_scale_50v50_isaaclab_replay.mp4
-docs/media/large_scale_50v50_isaaclab_replay.gif
 docs/figures/large_scale_50v50/
 ```
 

@@ -41,9 +41,7 @@ Primary evidence:
 - `docs/rl_data/world_model_sacflow_final/training_summary.json`
 - `docs/rl_data/world_model_sacflow_final/contract_eval_multiseed.json`
 - `docs/rl_data/world_model_sacflow_final/strict_replay_summary.json`
-- `docs/media/最终回放_顶视角.gif`
-- `docs/media/最终回放_黄车第一视角.gif`
-- `docs/media/最终回放_蓝车第一视角.gif`
+- `docs/media/最终回放_三视角同步拼接版.gif`
 
 ### Large-Scale 50v50 Extension
 
@@ -57,7 +55,7 @@ Primary evidence:
 - `docs/large_scale_50v50_curriculum_plan.md`
 - `docs/large_scale_50v50_report.md`
 - `docs/rl_data/large_scale_50v50/`
-- `docs/media/large_scale_50v50_isaaclab_replay.gif`
+- `docs/media/large_scale_50v50_isaaclab_replay.mp4`
 
 ## What I Would Emphasize in an Application
 

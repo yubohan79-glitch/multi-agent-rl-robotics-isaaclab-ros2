@@ -104,13 +104,10 @@ To inspect or stop only this project's IsaacLab processes:
 Published replay media:
 
 ```text
-docs/media/最终回放_顶视角.mp4
-docs/media/最终回放_黄车第一视角.mp4
-docs/media/最终回放_蓝车第一视角.mp4
-docs/media/最终回放_顶视角.gif
-docs/media/最终回放_黄车第一视角.gif
-docs/media/最终回放_蓝车第一视角.gif
+docs/media/最终回放_三视角同步拼接版.gif
 ```
+
+The individual MP4 source views are generated locally and are not required in the compact GitHub checkout.
 
 ## 3. Training and Evaluation
 

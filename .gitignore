@@ -32,7 +32,10 @@ desktop.ini
 *.mkv
 *.log
 !docs/media/
-!docs/media/*.gif
+docs/media/*
+!docs/media/最终回放_三视角同步拼接版.gif
+!docs/media/large_scale_50v50_isaaclab_replay.mp4
+!docs/media/large_scale_50v50_replay.mp4
 docs/media/debug_frames/
 isaaclab_sim/output/
 **/isaaclab_sim/output/

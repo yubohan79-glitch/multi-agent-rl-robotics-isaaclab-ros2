@@ -22,7 +22,7 @@ Core areas: multi-agent reinforcement learning, object-centric world models, SAC
 | Area | Public Evidence | Boundary |
 | --- | --- | --- |
 | 1v1 adversarial robot match | 128-episode eval: yellow 49.22%, blue 50.78%, draw 0.00%; zero static/box penetrations and zero robot contacts | Real-robot 1v1 experiments were performed, but public rosbag/statistical hardware tables are not yet packaged |
-| IsaacLab replay | Three-view MP4/GIF replay with top view, yellow first-person view and blue first-person view | Replay is an audited visualization of the selected run, not a substitute for real-world hardware statistics |
+| IsaacLab replay | Compact synchronized three-view GIF with top view, yellow first-person view and blue first-person view | Replay is an audited visualization of the selected run, not a substitute for real-world hardware statistics |
 | Object-centric SAC Flow / PolicyFlow | Training summaries, contract eval JSON/CSV, strict replay audit and generated figures under `docs/rl_data/` and `docs/figures/` | Current results are project-level evidence, not a peer-reviewed SOTA claim |
 | 50v50 extension | Staged 5v5 -> 10v10 -> 25v25 -> 50v50 rule-level curriculum, 256-game eval, IsaacLab tactical replay | Simulation-stage only; not 100-robot hardware deployment and not full rigid-body RL for all 100 vehicles |
 | Reproducibility | Python tests, ROS2 dry-run commands, IsaacLab wrapper, capability boundary docs | IsaacLab/ROS2 full setup still requires the documented platform dependencies |
@@ -192,8 +192,6 @@ Formal 50v50 baseline:
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 12000 | 256 | 36.72% | 42.19% | 21.09% | 44.90 | 44.89 | 0.00 / 0.00 | 0.00 |
 
-![50v50 IsaacLab replay GIF](./docs/media/large_scale_50v50_isaaclab_replay.gif)
-
 [50v50 IsaacLab replay MP4](./docs/media/large_scale_50v50_isaaclab_replay.mp4)
 
 ![50v50 rule layout](./docs/figures/large_scale_50v50/large_scale_50v50_rule_layout.png)
@@ -212,23 +210,11 @@ The ROS2 runtime is organized around `rcvrl_bringup`, `rcvrl_behavior`, `rcvrl_v
 
 [RoboCup VisionRL runtime/demo video](https://www.bilibili.com/video/BV1Pj9ZBKEc8/?spm_id_from=333.1387.list.card_archive.click&vd_source=f79b94dd69d0c8d08ee5c3400b69d46d)
 
-The compact IsaacLab replay below is generated from the audited physical-box trajectory trace. Both robots leave their start zones at `t=0`, attack opponent-side targets only, push rigid obstacle boxes with changing map poses, trigger armor removal after normal-target hits, and finish with a base-target win. The current deliverable uses Chinese filenames for the synchronized three-view replay and the individual source views:
+The compact IsaacLab replay below is generated from the audited physical-box trajectory trace. Both robots leave their start zones at `t=0`, attack opponent-side targets only, push rigid obstacle boxes with changing map poses, trigger armor removal after normal-target hits, and finish with a base-target win. The repository keeps a compact synchronized three-view GIF for GitHub display; full-resolution source videos are treated as local/generated artifacts rather than committed files.
 
 ![最终回放：三视角同步 GIF](./docs/media/最终回放_三视角同步拼接版.gif)
 
-![最终回放：顶视角 GIF](./docs/media/最终回放_顶视角.gif)
-
-![最终回放：黄车第一视角 GIF](./docs/media/最终回放_黄车第一视角.gif)
-
-![最终回放：蓝车第一视角 GIF](./docs/media/最终回放_蓝车第一视角.gif)
-
-[最终回放：顶视角 MP4](./docs/media/最终回放_顶视角.mp4)
-
-[最终回放：黄车第一视角 MP4](./docs/media/最终回放_黄车第一视角.mp4)
-
-[最终回放：蓝车第一视角 MP4](./docs/media/最终回放_蓝车第一视角.mp4)
-
-The rendered episode passes strict checks for static-obstacle penetration, pushable-box penetration, target legality, own-target safety, differential-drive step limits and score/armor consistency. The selected 8-episode strict audit reports 37.50% yellow wins, 62.50% blue wins, 0.00% draw/timeout, 0 hard violations and 0 own-target penalties; side balance is measured with the larger stochastic evaluation above. The README GIFs are trimmed to the active 34-second match window, while the linked MP4 files keep the full recorded IsaacLab output.
+The rendered episode passes strict checks for static-obstacle penetration, pushable-box penetration, target legality, own-target safety, differential-drive step limits and score/armor consistency. The selected 8-episode strict audit reports 37.50% yellow wins, 62.50% blue wins, 0.00% draw/timeout, 0 hard violations and 0 own-target penalties; side balance is measured with the larger stochastic evaluation above.
 
 ![ROS2 runtime evidence](./assets/readme/ros2_runtime_graph.png?raw=true)
 

@@ -195,9 +195,7 @@ Published replay artifacts:
 
 ```text
 docs/media/large_scale_50v50_isaaclab_replay.mp4
-docs/media/large_scale_50v50_isaaclab_replay.gif
 docs/media/large_scale_50v50_replay.mp4
-docs/media/large_scale_50v50_replay.gif
 ```
 
 ## 7. Figures

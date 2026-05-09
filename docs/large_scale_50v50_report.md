@@ -47,9 +47,7 @@ This report documents the first formal large-scale rule-level extension for the 
 - Evaluation JSON: `docs/rl_data/large_scale_50v50/eval_summary.json`
 - Evaluation CSV: `docs/rl_data/large_scale_50v50/eval_episodes.csv`
 - Rule-level preview MP4: `docs/media/large_scale_50v50_replay.mp4`
-- Rule-level preview GIF: `docs/media/large_scale_50v50_replay.gif`
 - IsaacLab tactical replay MP4: `docs/media/large_scale_50v50_isaaclab_replay.mp4`
-- IsaacLab tactical replay GIF: `docs/media/large_scale_50v50_isaaclab_replay.gif`
 - Figures: `docs/figures/large_scale_50v50/`
 
 ## Boundary

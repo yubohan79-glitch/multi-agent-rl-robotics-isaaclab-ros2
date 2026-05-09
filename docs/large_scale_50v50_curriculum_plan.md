@@ -71,7 +71,6 @@ Outputs:
 docs/rl_data/large_scale_curriculum/
 docs/rl_data/large_scale_50v50/
 docs/media/large_scale_50v50_replay.mp4
-docs/media/large_scale_50v50_replay.gif
 docs/figures/large_scale_50v50/
 ```
 

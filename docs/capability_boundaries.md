@@ -102,9 +102,7 @@ docs/large_scale_50v50_curriculum_plan.md
 docs/large_scale_50v50_report.md
 docs/rl_data/large_scale_50v50/
 docs/media/large_scale_50v50_isaaclab_replay.mp4
-docs/media/large_scale_50v50_isaaclab_replay.gif
 docs/media/large_scale_50v50_replay.mp4
-docs/media/large_scale_50v50_replay.gif
 docs/figures/large_scale_50v50/
 ```
 
@@ -130,7 +128,7 @@ Boundary for the 50v50 result:
 | IsaacLab two-robot replay | Validated | final three-view MP4/GIF |
 | 1v1 real-robot experiment | Performed | public docs state coverage; full statistical hardware benchmark is not yet packaged |
 | Large-scale 50v50 rule benchmark | Implemented and evaluated | 256-game eval and 50v50 artifacts |
-| Large-scale IsaacLab replay | Implemented for simulation-stage 50v50 | `large_scale_50v50_isaaclab_replay.mp4` and GIF |
+| Large-scale IsaacLab replay | Implemented for simulation-stage 50v50 | `large_scale_50v50_isaaclab_replay.mp4` and generated figures |
 | Full 100-robot rigid-body IsaacLab RL | Not yet validated | future physics-scaling milestone |
 | Distributed multi-node training | Not provided | no released worker/replay-server stack |
 | 50v50 real-robot deployment | Not validated | current 50v50 result remains simulation-stage only |

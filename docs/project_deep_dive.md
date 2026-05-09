@@ -857,15 +857,10 @@ docs/rl_data/rule_geometry_audit.csv
 最终媒体位于：
 
 ```text
-docs/media/最终回放_顶视角.gif
-docs/media/最终回放_黄车第一视角.gif
-docs/media/最终回放_蓝车第一视角.gif
-docs/media/最终回放_顶视角.mp4
-docs/media/最终回放_黄车第一视角.mp4
-docs/media/最终回放_蓝车第一视角.mp4
+docs/media/最终回放_三视角同步拼接版.gif
 ```
 
-README 中第一张本地项目媒体是顶视角 GIF，用于先展示完整赛场行为。三个视角分别用于：
+README 中第一张本地项目媒体是三视角同步 GIF，用于同时展示完整赛场行为和两车第一视角。全分辨率 MP4 与单视角 GIF 视为本地生成产物，不作为精简 GitHub 仓库的默认提交内容。三个视角分别用于：
 
 - 顶视角：检查整体路线、推箱、基地攻坚、两车相对位置和靶子状态。
 - 黄车第一视角：检查黄车是否真实看见靶、是否合法瞄准、是否卡在基地附近。
@@ -1076,7 +1071,8 @@ python3 isaaclab_sim/rl/export_world_model_sacflow_policy.py \
 ```bash
 python3 isaaclab_sim/rl/generate_rl_figures.py
 python3 scripts/generate_paper_figures.py
-python3 scripts/make_readme_gifs.py
+# README GIF is generated from the synchronized three-view replay MP4 with ffmpeg/imageio_ffmpeg,
+# then committed as docs/media/最终回放_三视角同步拼接版.gif.
 ```
 
 ## 18. 数据与产物管理
@@ -1086,8 +1082,7 @@ python3 scripts/make_readme_gifs.py
 - `docs/rl_data/world_model_sacflow_final/`
 - `docs/rl_data/rule_geometry_audit.json`
 - `docs/rl_data/rule_geometry_audit.csv`
-- `docs/media/最终回放_*.gif`
-- `docs/media/最终回放_*.mp4`
+- `docs/media/最终回放_三视角同步拼接版.gif`
 - `docs/figures/paper/`
 - `docs/figures/rl/`
 
@@ -1095,6 +1090,7 @@ python3 scripts/make_readme_gifs.py
 
 - `isaaclab_sim/output/rl/`
 - `isaaclab_sim/output/eval/`
+- full-resolution replay MP4 files under `docs/media/`
 - `isaaclab_sim/output/replay/`
 - `isaaclab_sim/output/export/`
 
