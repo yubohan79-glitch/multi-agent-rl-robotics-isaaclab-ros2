@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-111827)](LICENSE)
 
 
-![Final replay top view](./docs/media/最终回放_顶视角.gif)
+![Final replay three-view synchronized replay](./docs/media/最终回放_三视角同步拼接版.gif)
 
 ![RoboCup VisionRL overview](./assets/readme/overview.png?raw=true)
 
@@ -212,7 +212,9 @@ The ROS2 runtime is organized around `rcvrl_bringup`, `rcvrl_behavior`, `rcvrl_v
 
 [RoboCup VisionRL runtime/demo video](https://www.bilibili.com/video/BV1Pj9ZBKEc8/?spm_id_from=333.1387.list.card_archive.click&vd_source=f79b94dd69d0c8d08ee5c3400b69d46d)
 
-The compact IsaacLab replay below is generated from the audited physical-box trajectory trace. Both robots leave their start zones at `t=0`, attack opponent-side targets only, push rigid obstacle boxes with changing map poses, trigger armor removal after normal-target hits, and finish with a base-target win. The current deliverable uses Chinese filenames for the final three views, with the top-view GIF shown first:
+The compact IsaacLab replay below is generated from the audited physical-box trajectory trace. Both robots leave their start zones at `t=0`, attack opponent-side targets only, push rigid obstacle boxes with changing map poses, trigger armor removal after normal-target hits, and finish with a base-target win. The current deliverable uses Chinese filenames for the synchronized three-view replay and the individual source views:
+
+![最终回放：三视角同步 GIF](./docs/media/最终回放_三视角同步拼接版.gif)
 
 ![最终回放：顶视角 GIF](./docs/media/最终回放_顶视角.gif)
 
