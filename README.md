@@ -6,17 +6,28 @@
 [![RL](https://img.shields.io/badge/RL-World--Model%20SAC%20Flow-7C3AED)](isaaclab_sim/rl/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-111827)](LICENSE)
 
-Object-Centric World-Model Flow RL is a practical robotics stack for multi-agent reinforcement learning, IsaacLab simulation, ROS2/Nav2 deployment, sensor fusion, visual target interaction and Sim2Real evaluation. It uses a RoboCup-style visual challenge arena as a hard benchmark, but the reusable pieces are broader: object-centric state modeling, flow-policy SAC self-play, rule-aware action shielding, pushable rigid obstacles, ROS2 runtime contracts and reproducible evaluation/replay tooling.
-
-Search keywords: multi-agent reinforcement learning, world model RL, flow policy, SAC Flow, object-centric RL, robot learning, IsaacLab, Isaac Sim, ROS2, Nav2, Sim2Real, autonomous robots, sensor fusion, visual navigation.
-
-This repository documents the engineering solution evolved from a national top-three RoboCup China visual challenge entry, rewritten as a clean, reproducible, self-contained portfolio system. The submitted ROS2 engineering workspace is `crc_robocup_vision_ws/`.
 
 ![Final replay top view](./docs/media/最终回放_顶视角.gif)
 
 ![RoboCup VisionRL overview](./assets/readme/overview.png?raw=true)
 
-The project has been reorganized from a ROS1 research prototype into a ROS2 Jazzy portfolio project with separated navigation, vision, shooter control, behavior orchestration, robot description and documentation packages.
+Object-Centric World-Model Flow RL is a ROS2 + IsaacLab robotics portfolio project for adversarial multi-agent visual navigation. It combines object-centric state modeling, world-model-assisted SAC Flow / PolicyFlow self-play, rule-aware action shielding, pushable rigid obstacles, laser-target dwell/range constraints, IsaacLab replay, and a Sim2Real deployment contract.
+
+The repository is organized as a reproducible engineering artifact, not just a demo video. The validated main line is a two-robot RoboCup-style adversarial match with 128-episode stochastic evaluation, strict replay audits, three-view IsaacLab media, and subsequent 1v1 real-robot experiment coverage. A separate 50v50 simulation-stage benchmark is included as a scalable rule-level extension.
+
+Core areas: multi-agent reinforcement learning, object-centric world models, SAC Flow / PolicyFlow, IsaacLab, ROS2/Nav2, Sim2Real, visual target interaction, robot safety audits.
+
+## Evidence Snapshot
+
+| Area | Public Evidence | Boundary |
+| --- | --- | --- |
+| 1v1 adversarial robot match | 128-episode eval: yellow 49.22%, blue 50.78%, draw 0.00%; zero static/box penetrations and zero robot contacts | Real-robot 1v1 experiments were performed, but public rosbag/statistical hardware tables are not yet packaged |
+| IsaacLab replay | Three-view MP4/GIF replay with top view, yellow first-person view and blue first-person view | Replay is an audited visualization of the selected run, not a substitute for real-world hardware statistics |
+| Object-centric SAC Flow / PolicyFlow | Training summaries, contract eval JSON/CSV, strict replay audit and generated figures under `docs/rl_data/` and `docs/figures/` | Current results are project-level evidence, not a peer-reviewed SOTA claim |
+| 50v50 extension | Staged 5v5 -> 10v10 -> 25v25 -> 50v50 rule-level curriculum, 256-game eval, IsaacLab tactical replay | Simulation-stage only; not 100-robot hardware deployment and not full rigid-body RL for all 100 vehicles |
+| Reproducibility | Python tests, ROS2 dry-run commands, IsaacLab wrapper, capability boundary docs | IsaacLab/ROS2 full setup still requires the documented platform dependencies |
+
+For a short admissions/reviewer-oriented summary, start with [Admissions Project Brief](./docs/admissions_project_brief.md). For exact scope boundaries, read [Capability Boundaries and Measured Evidence](./docs/capability_boundaries.md).
 
 ## Highlights
 
@@ -123,7 +134,7 @@ The reinforcement-learning layer is implemented under `isaaclab_sim/rl/`. The cu
 
 The actor uses a velocity-reparameterized flow policy for high-level tactical controls, a centralized twin-Q critic, replay-buffer SAC updates, and an auxiliary object-centric dynamics model over both robots, targets, armor blockers and pushable boxes. This design is intended to express long-horizon push-box routes, target-order selection, early base-rush windows and asymmetric yellow/blue tactical tempo without hard-coding a single route.
 
-Latest embodied RL update: the rule environment and IsaacLab replay use a normal-target shooter-outlet range gate of `0.05 m` to `0.50 m` and a recessed-base gate of `0.20 m` to `0.80 m`; target knockdown requires a legal opponent target, line of sight, distance-dependent accuracy and `0.80 s` laser dwell. The current policy adds safe micro-aim scanning at the fire pose and denser base-side pose candidates so robots can make small legal angle/side adjustments instead of freezing near the base. The final replay uses recessed base targets, ground-touching blue armor blockers, 45-degree normal target placement, dynamic pushable boxes and strict replay collision checks. Details are tracked in `docs/rl_world_model_flow_policy_plan.md` and `docs/world_model_sacflow_rerun_final_report.md`.
+Latest embodied RL update: the rule environment and IsaacLab replay use a normal-target shooter-outlet range gate of `0.05 m` to `0.50 m` and a recessed-base gate of `0.20 m` to `0.80 m`; target knockdown requires a legal opponent target, line of sight, distance-dependent accuracy and `0.80 s` laser dwell. The current policy adds safe micro-aim scanning at the fire pose and denser base-side pose candidates so robots can make small legal angle/side adjustments instead of freezing near the base. The final replay uses recessed base targets, ground-touching blue armor blockers, 45-degree normal target placement, dynamic pushable boxes and strict replay collision checks. Details are tracked in `docs/rl_world_model_flow_policy_plan.md` and `docs/project_deep_dive.md`.
 
 Publication-style method and experiment figures:
 
@@ -149,7 +160,7 @@ Data-driven GPU training and evaluation figures:
 
 ![Pushable box metrics](./docs/figures/rl/rl_box_push_metrics.svg)
 
-Runtime checkpoints, replay traces and policy exports are generated under `isaaclab_sim/output/` after local training/evaluation and are intentionally ignored by Git except for the explicitly published final checkpoint/result artifacts. The current algorithm plan is in `docs/rl_world_model_flow_policy_plan.md`; the final replay report is in `docs/world_model_sacflow_rerun_final_report.md`.
+Runtime checkpoints, replay traces and policy exports are generated under `isaaclab_sim/output/` after local training/evaluation and are intentionally ignored by Git except for the explicitly published final checkpoint/result artifacts. The current algorithm plan is in `docs/rl_world_model_flow_policy_plan.md`; the compact reviewer brief is in `docs/admissions_project_brief.md`.
 
 Final stochastic evaluation for the selected residual scale:
 
@@ -221,6 +232,7 @@ The rendered episode passes strict checks for static-obstacle penetration, pusha
 
 ## Reproducibility
 
+- `docs/admissions_project_brief.md`: concise English portfolio/reviewer summary with contribution, evidence and limitation framing.
 - `docs/project_deep_dive.md`: full Chinese deep-dive covering rules, ROS2, IsaacLab, world-model SAC Flow training, evaluation, replay media, data artifacts and Sim2Real deployment.
 - `docs/getting_started.md`: step-by-step environment setup, quick demo, ROS2 dry run, IsaacLab preview and troubleshooting.
 - `docs/parameter_tuning.md`: algorithm parameter reference and tuning recipes for stuck behavior, base aiming, win balance and resource usage.
@@ -234,7 +246,6 @@ The rendered episode passes strict checks for static-obstacle penetration, pusha
 - `docs/sim2real.md`: sensor calibration, domain randomization and deployment validation plan.
 - `docs/strategy.md`: elimination strategy and self-play behavior design.
 - `docs/rl_world_model_flow_policy_plan.md`: object-centric world-model + SAC Flow / PolicyFlow algorithm plan.
-- `docs/world_model_sacflow_rerun_final_report.md`: final Chinese report for the world-model SAC Flow run, evaluation and replay media.
 
 ## Repository Layout
 

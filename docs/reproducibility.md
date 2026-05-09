@@ -1,17 +1,31 @@
 # Reproducibility
 
-This page keeps the current, minimal commands for rebuilding the public repository state after the cleanup pass. Runtime outputs are intentionally generated under `isaaclab_sim/output/` and are not committed.
+This page lists the minimal commands and artifact locations needed to reproduce or audit the public repository evidence.
 
-## Python Tests
+Generated outputs should stay under `isaaclab_sim/output/`. Only selected final evidence is committed under `docs/`.
+
+## 1. Python Tests
 
 ```bash
 python -m pip install -r isaaclab_sim/rl/requirements.txt
 python -m pytest tests -q
 ```
 
-## World-Model SAC Flow Training
+Expected result:
 
-Use WSL/Linux Python with PyTorch CUDA:
+- rule contracts pass;
+- target layout and scoring checks pass;
+- strategy and Sim2Real configuration checks pass.
+
+## 2. World-Model SAC Flow Training
+
+Recommended environment:
+
+- Linux or WSL with CUDA PyTorch
+- Python 3.10+
+- dependencies from `isaaclab_sim/rl/requirements.txt`
+
+Reference command:
 
 ```bash
 python3 isaaclab_sim/rl/train_world_model_sacflow_selfplay.py \
@@ -24,7 +38,7 @@ python3 isaaclab_sim/rl/train_world_model_sacflow_selfplay.py \
   --hidden-dim 256 \
   --device cuda \
   --seed 260707 \
-  --output ../output/rl/world_model_sacflow_seed260707
+  --output isaaclab_sim/output/rl/world_model_sacflow_seed260707
 ```
 
 Expected checkpoint:
@@ -33,7 +47,9 @@ Expected checkpoint:
 isaaclab_sim/output/rl/world_model_sacflow_seed260707/policy.pt
 ```
 
-## Evaluation
+## 3. Evaluation
+
+Stochastic policy evaluation:
 
 ```bash
 python3 isaaclab_sim/rl/evaluate_world_model_sacflow_policy.py \
@@ -41,7 +57,11 @@ python3 isaaclab_sim/rl/evaluate_world_model_sacflow_policy.py \
   --episodes 64 \
   --stochastic \
   --output isaaclab_sim/output/eval/world_model_sacflow_eval64.json
+```
 
+Rule-contract evaluation:
+
+```bash
 python3 isaaclab_sim/rl/evaluate_strategy_contract.py \
   --checkpoint isaaclab_sim/output/rl/world_model_sacflow_seed260707/policy.pt \
   --episodes 64 \
@@ -50,7 +70,17 @@ python3 isaaclab_sim/rl/evaluate_strategy_contract.py \
   --output-csv isaaclab_sim/output/eval/world_model_sacflow_contract_eval64.csv
 ```
 
-## Export
+Published reference artifacts:
+
+```text
+docs/rl_data/world_model_sacflow_final/training_summary.json
+docs/rl_data/world_model_sacflow_final/contract_eval_multiseed.json
+docs/rl_data/world_model_sacflow_final/contract_eval_multiseed.csv
+docs/rl_data/world_model_sacflow_final/strict_replay_summary.json
+docs/rl_data/world_model_sacflow_final/strict_replay_audit.md
+```
+
+## 4. Policy Export
 
 ```bash
 python3 isaaclab_sim/rl/export_world_model_sacflow_policy.py \
@@ -59,14 +89,56 @@ python3 isaaclab_sim/rl/export_world_model_sacflow_policy.py \
   --output-dir isaaclab_sim/output/policy_export/world_model_sacflow_seed260707
 ```
 
-## IsaacLab Replay
+Record the exported policy path in any report or application material if it is used for deployment.
 
-The retained public media is limited to:
+## 5. IsaacLab Replay
+
+Published final three-view media:
 
 ```text
 docs/media/最终回放_顶视角.mp4
 docs/media/最终回放_黄车第一视角.mp4
 docs/media/最终回放_蓝车第一视角.mp4
+docs/media/最终回放_顶视角.gif
+docs/media/最终回放_黄车第一视角.gif
+docs/media/最终回放_蓝车第一视角.gif
+docs/media/最终回放_三视角同步拼接版.mp4
 ```
 
-The strict replay source for these files is `docs/rl_expert_base_cap_rng_physical_boxes_strict8.md`.
+Windows IsaacLab wrapper:
+
+```powershell
+.\scripts\run_isaaclab_project.ps1 -Headless -DemoFlow -Duration 120
+```
+
+Process inspection:
+
+```powershell
+.\scripts\stop_project_isaaclab.ps1 -WhatIfOnly
+```
+
+## 6. 50v50 Simulation-Stage Benchmark
+
+The 50v50 benchmark is a rule-level large-scale extension with IsaacLab tactical replay. It is not claimed as full 100-robot hardware deployment.
+
+Primary artifacts:
+
+```text
+docs/large_scale_50v50_plan.md
+docs/large_scale_50v50_curriculum_plan.md
+docs/large_scale_50v50_report.md
+docs/rl_data/large_scale_50v50/
+docs/media/large_scale_50v50_isaaclab_replay.mp4
+docs/media/large_scale_50v50_isaaclab_replay.gif
+docs/figures/large_scale_50v50/
+```
+
+## 7. Claim Audit Checklist
+
+Before reporting a result, verify:
+
+- metrics come from JSON/CSV artifacts, not only screenshots;
+- replay videos correspond to the evaluated checkpoint or trace;
+- collision, penetration, target legality and base-blocker checks are reported;
+- 1v1 real-robot evidence is not overstated beyond packaged public logs;
+- 50v50 is described as simulation-stage rule-level evidence.

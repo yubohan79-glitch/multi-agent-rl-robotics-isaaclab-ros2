@@ -1,73 +1,67 @@
 # Getting Started Guide
 
-本文档解决“上手门槛高、缺少可复现路径”的问题。它把项目拆成三个可独立验证的层级：Python 规则环境、ROS2 运行栈、IsaacLab 回放/训练。新用户不需要一次性装完整 Isaac Sim，也可以先完成规则和算法 smoke test。
+This guide gives a minimal path for reproducing the public repository evidence. The project can be inspected at three levels: Python-only rule tests, ROS2 dry run, and IsaacLab replay.
 
 ## 1. Repository Scope
 
-推荐使用的仓库根目录：
-
-```text
-C:\Users\Administrator\Desktop\作品集\RoboCupVisionRL_IsaacLab_ROS2
-```
-
-主要目录：
+Main directories:
 
 | Path | Purpose |
 | --- | --- |
-| `crc_robocup_vision_ws/` | ROS2 Jazzy 工作空间，包含 bringup、navigation、vision、behavior、shooter、description、interfaces |
-| `isaaclab_sim/` | IsaacLab 场景、规则环境、RL 训练/评估/导出脚本 |
-| `config/` | 公开规则、靶子布局、计分契约 |
-| `docs/rl_data/world_model_sacflow_final/` | 已发布的训练摘要、128 局评估、严格回放审计数据 |
-| `docs/media/` | 最终三视角回放 MP4/GIF |
-| `tests/` | pytest 合约测试 |
+| `crc_robocup_vision_ws/` | ROS2 Jazzy workspace for robot bringup, navigation, vision, behavior, shooter and interfaces |
+| `isaaclab_sim/` | IsaacLab scene, replay utilities, rule environment and RL tooling |
+| `isaaclab_sim/rl/` | Self-play environments, world-model SAC Flow training, evaluation and export scripts |
+| `config/` | Public arena, target layout and scoring contracts |
+| `docs/rl_data/` | Published training summaries, evaluation JSON/CSV and replay audit data |
+| `docs/media/` | Final MP4/GIF replay media |
+| `tests/` | Pytest checks for rule contracts, target layout, strategy logic and Sim2Real configuration |
 
 ## 2. Environment Levels
 
 ### Level 0: Python-Only Smoke Test
 
-用途：不启动 ROS2、不启动 IsaacLab，只验证规则环境、评估脚本和测试是否能跑通。
+Use this first if you only want to validate the rule environment and evaluation utilities.
 
-环境建议：
+Requirements:
 
-- Python 3.10 或更高版本
-- PyTorch 可选；只跑部分测试时 CPU 也能工作
-- Windows PowerShell 或 WSL Bash 均可
+- Python 3.10 or newer
+- `pip`
+- Optional CUDA PyTorch for training; CPU is enough for many smoke tests
 
-命令：
+Commands:
 
-```powershell
-cd "C:\Users\Administrator\Desktop\作品集\RoboCupVisionRL_IsaacLab_ROS2"
-python -m pip install -r isaaclab_sim\rl\requirements.txt
+```bash
+python -m pip install -r isaaclab_sim/rl/requirements.txt
 python -m pytest tests -q
 ```
 
-快速评估：
+Quick rule-environment evaluation:
 
-```powershell
-cd "C:\Users\Administrator\Desktop\作品集\RoboCupVisionRL_IsaacLab_ROS2\isaaclab_sim\rl"
+```bash
+cd isaaclab_sim/rl
 python evaluate_selfplay.py --episodes 8
 ```
 
-预期结果：
+Expected behavior:
 
-- pytest 通过。
-- 评估脚本输出比赛胜负、分数、普通靶击倒、基地命中、碰撞/穿模等字段。
-- 如果失败，优先检查 Python 版本、依赖安装、当前路径是否正确。
+- tests complete without rule-contract failures;
+- evaluation prints match score, winner, target hits, base hits, collision and penetration fields;
+- no IsaacLab or ROS2 installation is required for this level.
 
 ### Level 1: ROS2 Dry Run
 
-用途：验证 ROS2 包、launch、行为节点、视觉/射击接口能启动，但不要求真实机器人硬件。
+Use this to validate that the ROS2 workspace builds and launch files start without requiring physical robot hardware.
 
-建议环境：
+Recommended platform:
 
 - Ubuntu 24.04
 - ROS2 Jazzy
 - `colcon`
 - `rosdep`
 
-重要说明：如果在 Windows + WSL 中使用，建议把 `crc_robocup_vision_ws/` 复制到 Linux 原生路径，例如 `~/crc_robocup_vision_ws`。直接在 Windows 挂载路径或含非 ASCII 字符路径下构建，ROSIDL 可能失败。
+If you use WSL, copy `crc_robocup_vision_ws/` to a native Linux path such as `~/crc_robocup_vision_ws`. Building ROS2 packages directly under a Windows-mounted path with non-ASCII characters can break ROSIDL generation.
 
-命令：
+Commands:
 
 ```bash
 cd ~/crc_robocup_vision_ws
@@ -77,175 +71,93 @@ source install/setup.bash
 ros2 launch rcvrl_bringup competition.launch.py start_navigation:=false shooter_dry_run:=true auto_start:=false
 ```
 
-黄方启动：
+Useful launch variants:
 
 ```bash
-ros2 launch rcvrl_bringup competition.launch.py \
-  team_color:=yellow \
-  target_file:=$(ros2 pkg prefix rcvrl_navigation)/share/rcvrl_navigation/config/targets.elimination.yellow.yaml
+ros2 launch rcvrl_bringup competition.launch.py team_color:=yellow target_file:=$(ros2 pkg prefix rcvrl_navigation)/share/rcvrl_navigation/config/targets.elimination.yellow.yaml
+ros2 launch rcvrl_bringup competition.launch.py team_color:=blue target_file:=$(ros2 pkg prefix rcvrl_navigation)/share/rcvrl_navigation/config/targets.elimination.blue.yaml
 ```
 
-蓝方启动：
+Expected behavior:
 
-```bash
-ros2 launch rcvrl_bringup competition.launch.py \
-  team_color:=blue \
-  target_file:=$(ros2 pkg prefix rcvrl_navigation)/share/rcvrl_navigation/config/targets.elimination.blue.yaml
-```
+- bringup, behavior, navigation, vision and shooter service nodes can be launched;
+- shooter can run in dry-run mode;
+- no physical robot is required for the dry run.
 
-预期结果：
+### Level 2: IsaacLab Replay
 
-- `rcvrl_bringup` 能启动 competition launch。
-- `shooter_dry_run:=true` 时不会调用真实激光硬件。
-- 行为节点会读取 `team_color` 和 target route，并拒绝攻击己方 target owner。
+Use this to inspect the published replay behavior. IsaacLab/Isaac Sim setup is heavier than the Python rule tests, so start here only after Level 0 works.
 
-### Level 2: IsaacLab Preview
-
-用途：查看物理场景、靶子倒下、红色箱子推动、挡板遮挡、双车回放。
-
-Windows PowerShell：
+On Windows, use the project wrapper so runtime files stay under `.isaaclab_runtime/` instead of the global Isaac Sim cache:
 
 ```powershell
-cd "C:\Users\Administrator\Desktop\作品集\RoboCupVisionRL_IsaacLab_ROS2"
 .\scripts\run_isaaclab_project.ps1 -Headless -DemoFlow -Duration 120
 ```
 
-检查项目内 IsaacLab 进程：
+To inspect or stop only this project's IsaacLab processes:
 
 ```powershell
 .\scripts\stop_project_isaaclab.ps1 -WhatIfOnly
-```
-
-仅在确认要停止本项目 IsaacLab 进程时执行：
-
-```powershell
 .\scripts\stop_project_isaaclab.ps1
 ```
 
-预期结果：
-
-- IsaacLab runtime 写入 `.isaaclab_runtime/`，不污染全局 Isaac Sim 目录。
-- 回放能展示双车同时出发、普通靶击倒、红色箱子位移、基地挡板阻挡和最终基地击中。
-
-## 3. Quick Demo Tutorial
-
-这是给第一次打开仓库的用户准备的最短路径。
-
-### Step 1: Read Current Evidence
-
-无需运行训练，先看已发布结果：
-
-```text
-docs/rl_data/world_model_sacflow_final/training_summary.json
-docs/rl_data/world_model_sacflow_final/contract_eval_multiseed.json
-docs/rl_data/world_model_sacflow_final/strict_replay_summary.json
-docs/media/最终回放_顶视角.mp4
-docs/media/最终回放_黄车第一视角.mp4
-docs/media/最终回放_蓝车第一视角.mp4
-```
-
-这些文件对应当前 README 中的 128 局随机评估和 8 局严格回放审计。
-
-### Step 2: Run Contract Tests
-
-```powershell
-cd "C:\Users\Administrator\Desktop\作品集\RoboCupVisionRL_IsaacLab_ROS2"
-python -m pytest tests -q
-```
-
-测试覆盖重点：
-
-- 靶子 owner 和己方/敌方规则。
-- 激光命中距离和 0.80 s dwell gate。
-- 红色箱子、墙体、挡板、出发区隔板的规则合约。
-- Sim2Real 配置格式和关键字段。
-
-### Step 3: Run a Short Evaluation
-
-```powershell
-cd "C:\Users\Administrator\Desktop\作品集\RoboCupVisionRL_IsaacLab_ROS2"
-python isaaclab_sim\rl\evaluate_strategy_contract.py --episodes 8 --stochastic
-```
-
-关注字段：
-
-- `yellow_win_rate`
-- `blue_win_rate`
-- `draw_rate`
-- `normal_hit_count_distribution`
-- `base_success_by_hits`
-- `push_events_per_episode`
-- `robot_contacts_per_episode`
-- `static_penetrations_total`
-- `box_penetrations_total`
-
-如果策略卡在点位附近，先看 `docs/parameter_tuning.md` 中的 micro-aim、side candidate 和 action shield 调参建议。
-
-### Step 4: Inspect Replay
-
-优先看顶视角，再看黄车和蓝车第一视角：
+Published replay media:
 
 ```text
 docs/media/最终回放_顶视角.mp4
 docs/media/最终回放_黄车第一视角.mp4
 docs/media/最终回放_蓝车第一视角.mp4
+docs/media/最终回放_顶视角.gif
+docs/media/最终回放_黄车第一视角.gif
+docs/media/最终回放_蓝车第一视角.gif
 ```
 
-检查项：
+## 3. Training and Evaluation
 
-- 三视角是否从完整比赛开始展示。
-- 两车是否同时离开起点。
-- 红色箱子是否真实位移。
-- 蓝色基地挡板是否在未拆除前阻挡车和激光。
-- 小车是否没有穿箱、穿墙、穿挡板。
-- 是否没有反复攻击不可见靶或己方靶。
+The public training and evaluation artifacts are already included under `docs/rl_data/`. If you want to regenerate them, use the commands in `docs/reproducibility.md`.
 
-## 4. Full Training Path
+Important generated-output rule:
 
-正式训练命令：
+- local training outputs go under `isaaclab_sim/output/`;
+- temporary videos, cache files and debug frames should not be committed unless they are selected final evidence;
+- public claims should point to JSON/CSV metrics, replay audits and MP4/GIF files.
+
+## 4. First Files to Read
+
+Recommended order:
+
+1. `README.md`
+2. `docs/admissions_project_brief.md`
+3. `docs/capability_boundaries.md`
+4. `docs/reproducibility.md`
+5. `docs/parameter_tuning.md`
+6. `docs/scene_adaptation.md`
+
+## 5. Common Issues
+
+### ROS2 build fails under WSL
+
+Move the workspace to a native Linux path:
 
 ```bash
-python3 isaaclab_sim/rl/train_world_model_sacflow_selfplay.py \
-  --config isaaclab_sim/rl/configs/world_model_flow.yaml \
-  --timesteps 200000 \
-  --num-envs 32 \
-  --batch-size 1024 \
-  --learning-starts 4096 \
-  --gradient-steps 2 \
-  --hidden-dim 256 \
-  --device cuda \
-  --seed 260707 \
-  --output isaaclab_sim/output/rl/world_model_sacflow_seed260707
+cp -r /mnt/c/path/to/crc_robocup_vision_ws ~/crc_robocup_vision_ws
 ```
 
-训练后评估：
+Then rebuild from `~/crc_robocup_vision_ws`.
 
-```bash
-python3 isaaclab_sim/rl/evaluate_strategy_contract.py \
-  --checkpoint isaaclab_sim/output/rl/world_model_sacflow_seed260707/policy.pt \
-  --episodes 128 \
-  --stochastic \
-  --output-json isaaclab_sim/output/eval/world_model_sacflow_contract_eval128.json \
-  --output-csv isaaclab_sim/output/eval/world_model_sacflow_contract_eval128.csv
-```
+### IsaacLab opens global cache or conflicts with another project
 
-导出策略：
+Use `scripts/run_isaaclab_project.ps1`, which sets project-local runtime paths. Inspect running processes with `scripts/stop_project_isaaclab.ps1 -WhatIfOnly` before stopping anything.
 
-```bash
-python3 isaaclab_sim/rl/export_world_model_sacflow_policy.py \
-  --checkpoint isaaclab_sim/output/rl/world_model_sacflow_seed260707/policy.pt \
-  --format torchscript \
-  --output-dir isaaclab_sim/output/policy_export/world_model_sacflow_seed260707
-```
+### A result looks too good
 
-## 5. Troubleshooting
+Do not rely on reward alone. Check:
 
-| Symptom | Likely Cause | Action |
-| --- | --- | --- |
-| ROS2 build fails under Windows path | ROSIDL/path encoding issue | Copy workspace to Linux native path and rebuild |
-| pytest cannot import RL modules | wrong working directory or missing requirements | run from repo root and install `isaaclab_sim/rl/requirements.txt` |
-| GPU idle, CPU high | too few gradient updates or CPU-bound env collection | tune `num_envs`, `batch_size`, `gradient_steps`; see `docs/parameter_tuning.md` |
-| Robot freezes near target/base | poor aim pose or shield over-constraining action | add slow micro-rotation, side candidate poses, and inspect fire gate |
-| Base target hit before blocker removal | scene/raycast rule bug | stop training, fix blocker geometry and raycast contract first |
-| Red box only moves visually | missing dynamic rigid-body/collider path | fix scene physical properties before training |
-| Results look good but replay violates rules | evaluation/replay contract mismatch | align target layout, collision, scoring and line-of-sight code before reporting |
+- `docs/capability_boundaries.md`
+- `docs/rl_data/world_model_sacflow_final/contract_eval_multiseed.json`
+- `docs/rl_data/world_model_sacflow_final/strict_replay_summary.json`
+- replay MP4/GIF files under `docs/media/`
+
+### A 50v50 claim is being evaluated
+
+Treat 50v50 as simulation-stage rule-level evidence only. The current repository does not claim 100-robot hardware deployment or full rigid-body RL training for all 100 vehicles.
